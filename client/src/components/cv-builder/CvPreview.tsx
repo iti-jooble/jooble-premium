@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { MapPinIcon, PhoneIcon, MailIcon } from "lucide-react";
 import { PersonalInfoValues } from "./PersonalInfoSection";
-import { Education } from "./EducationSection";
 
 interface Skill {
   id: string;
@@ -9,7 +8,16 @@ interface Skill {
   level?: "beginner" | "intermediate" | "advanced" | "expert";
 }
 
-
+interface Education {
+  id: string;
+  school: string;
+  degree: string;
+  field?: string;
+  startYear: string;
+  endYear: string | null;
+  description: string;
+  isCurrent: boolean;
+}
 
 interface WorkExperience {
   id: string;
@@ -165,7 +173,7 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                         <h3 className="text-sm font-medium">{edu.school}</h3>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {edu.startYear} - {edu.endYear || "Present"}
+                        {edu.startYear} - {edu.isCurrent ? "Present" : edu.endYear}
                       </div>
                     </div>
                   </div>

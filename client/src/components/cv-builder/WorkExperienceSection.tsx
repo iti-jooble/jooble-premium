@@ -24,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AiAssistantButton } from "./AiAssistantButton";
 
 // Generate years from 1970 to current year
 const currentYear = new Date().getFullYear();
@@ -399,7 +398,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                 <p className="text-blue-800 font-medium">Need a hint?</p>
               </div>
               <p className="text-sm text-blue-700 mb-3">
-                Start with a draft or use AI to improve your description.
+                Start with a draft or add your text and use the tools below to improve it.
               </p>
               
               <div className="flex flex-wrap gap-2">
@@ -414,21 +413,16 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                   Get a draft
                 </Button>
                 
-                <AiAssistantButton 
-                  variant="button" 
+                <Button 
+                  type="button" 
+                  variant="outline" 
                   size="sm"
-                  type="work-experience"
-                  defaultPosition={form.getValues("position")}
-                  defaultCompany={form.getValues("company")}
-                  defaultDescription={form.getValues("description")}
-                  onImprovedContent={(content) => {
-                    form.setValue("description", content);
-                    toast({
-                      title: "Description improved",
-                      description: "Your description has been enhanced by AI.",
-                    });
-                  }}
-                />
+                  className="bg-white"
+                  onClick={improveDescription}
+                >
+                  <Wand2 className="h-4 w-4 mr-1" />
+                  Make more professional
+                </Button>
                 
                 <Button 
                   type="button" 

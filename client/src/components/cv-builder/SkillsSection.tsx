@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, KeyboardEvent } from "react";
-import { PlusCircle, Trash2, Sparkles, X, Wand2 } from "lucide-react";
+import { PlusCircle, Trash2, Sparkles, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
-import { AiAssistantButton } from "./AiAssistantButton";
 
 interface Skill {
   id: string;
@@ -147,18 +146,9 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       
       {/* AI suggestion box */}
       <div className="bg-blue-50 rounded-lg p-5 mt-6">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            <Sparkles className="text-blue-500 h-5 w-5 mr-2" />
-            <h3 className="text-blue-800 font-medium">Skills index for Front-end Developer</h3>
-          </div>
-          <AiAssistantButton 
-            variant="link" 
-            type="skills"
-            onImprovedContent={(content) => {
-              handleAddSuggestion(content);
-            }}
-          />
+        <div className="flex items-center mb-3">
+          <Sparkles className="text-blue-500 h-5 w-5 mr-2" />
+          <h3 className="text-blue-800 font-medium">Skills index for Front-end Developer</h3>
         </div>
         
         <div className="flex flex-wrap gap-2">
@@ -174,16 +164,6 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
               {suggestion}
             </Button>
           ))}
-        </div>
-        
-        <div className="mt-4 flex items-center justify-center">
-          <AiAssistantButton 
-            variant="button" 
-            type="skills"
-            onImprovedContent={(content) => {
-              handleAddSuggestion(content);
-            }}
-          />
         </div>
       </div>
       
