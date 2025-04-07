@@ -29,15 +29,13 @@ import {
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: currentYear - 1969 }, (_, i) => (currentYear - i).toString());
 
-interface Education {
+export interface Education {
   id: string;
   school: string;
   degree: string;
   field?: string;
   startYear: string;
   endYear: string | null;
-  description: string;
-  isCurrent: boolean;
 }
 
 interface EducationSectionProps {
@@ -51,8 +49,6 @@ const educationSchema = z.object({
   field: z.string().optional(),
   startYear: z.string().min(4, { message: "Start year is required" }),
   endYear: z.string().optional().nullable(),
-  isCurrent: z.boolean().default(false),
-  description: z.string().optional().default(""),
 });
 
 type EducationFormValues = z.infer<typeof educationSchema>;
@@ -71,8 +67,6 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
       field: "",
       startYear: currentYear.toString(),
       endYear: "",
-      isCurrent: false,
-      description: "",
     }
   });
 
@@ -84,8 +78,6 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
       field: "",
       startYear: currentYear.toString(),
       endYear: "",
-      isCurrent: false,
-      description: "",
     });
   };
 
@@ -97,8 +89,6 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
       field: edu.field,
       startYear: edu.startYear,
       endYear: edu.endYear || "",
-      isCurrent: edu.isCurrent,
-      description: edu.description,
     });
   };
 
@@ -113,9 +103,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
               degree: values.degree,
               field: values.field,
               startYear: values.startYear,
-              endYear: values.isCurrent ? null : values.endYear || null,
-              isCurrent: values.isCurrent,
-              description: values.description
+              endYear: values.endYear || null
             } 
           : edu
       );
@@ -129,9 +117,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
         degree: values.degree,
         field: values.field,
         startYear: values.startYear,
-        endYear: values.isCurrent ? null : values.endYear || null,
-        isCurrent: values.isCurrent,
-        description: values.description
+        endYear: values.endYear || null
       };
       setLocalEducations([...localEducations, newEducation]);
     }
@@ -168,44 +154,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
     }
   };
 
-  const generateDescription = () => {
-    // This would normally call an AI service to generate content
-    const sampleDescription = "Acquired comprehensive knowledge in the core principles and methodologies. Participated in group projects and research activities.";
-    form.setValue("description", sampleDescription);
-    
-    toast({
-      title: "Description generated",
-      description: "A sample description has been added. Feel free to edit it to match your education.",
-    });
-  };
-
-  const improveDescription = () => {
-    const currentText = form.getValues("description");
-    if (!currentText) {
-      toast({
-        title: "No text to improve",
-        description: "Please enter some text first before trying to improve it.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // This would normally call an AI service to improve content
-    const improvedText = currentText + " Developed critical thinking and problem-solving abilities through challenging coursework.";
-    form.setValue("description", improvedText);
-    
-    toast({
-      title: "Description improved",
-      description: "Your description has been enhanced.",
-    });
-  };
-
-  const checkSpelling = () => {
-    toast({
-      title: "Spelling checked",
-      description: "No spelling errors were found in your description.",
-    });
-  };
+  // AI functions removed
 
   return (
     <div className="space-y-4">
@@ -224,7 +173,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                       <p className="text-sm text-gray-600">{edu.field}</p>
                       <p className="text-sm text-gray-600">{edu.school}</p>
                       <p className="text-xs text-gray-500">
-                        {edu.startYear} - {edu.isCurrent ? "Present" : edu.endYear}
+                        {edu.startYear} - {edu.endYear}
                       </p>
                     </div>
                     <div className="flex space-x-1">
@@ -359,7 +308,6 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value || ""}
-                      disabled={form.watch("isCurrent")}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -377,76 +325,6 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                 )}
               />
             </div>
-
-            <FormField
-              control={form.control}
-              name="isCurrent"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-2">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Currently studying here</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-medium">Description</FormLabel>
-                  <div className="space-y-2">
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Describe your educational experience, achievements, and responsibilities..."
-                        className="min-h-[120px]" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        className="flex items-center text-xs"
-                        onClick={generateDescription}
-                      >
-                        <Wand2 className="h-3 w-3 mr-1" />
-                        Generate
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        className="flex items-center text-xs"
-                        onClick={improveDescription}
-                      >
-                        <SparkleIcon className="h-3 w-3 mr-1" />
-                        Improve
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        className="flex items-center text-xs"
-                        onClick={checkSpelling}
-                      >
-                        <Check className="h-3 w-3 mr-1" />
-                        Check Spelling
-                      </Button>
-                    </div>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <div className="flex justify-end space-x-2 pt-4">
               <Button 

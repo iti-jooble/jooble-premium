@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import { PersonalInfoSection, PersonalInfoValues } from "@/components/cv-builder/PersonalInfoSection";
 import { WorkExperienceSection } from "@/components/cv-builder/WorkExperienceSection";
-import { EducationSection } from "@/components/cv-builder/EducationSection";
+import { EducationSection, Education } from "@/components/cv-builder/EducationSection";
 import { SkillsSection } from "@/components/cv-builder/SkillsSection";
 import { SummarySection, SummaryValues } from "@/components/cv-builder/SummarySection";
 import { CvPreview } from "@/components/cv-builder/CvPreview";
@@ -25,16 +25,7 @@ interface WorkExperience {
   isCurrent: boolean;
 }
 
-interface Education {
-  id: string;
-  school: string;
-  degree: string;
-  field?: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
+
 
 interface Skill {
   id: string;
