@@ -19,8 +19,8 @@ interface WorkExperience {
   id: string;
   company: string;
   position: string;
-  startDate: string;
-  endDate: string | null;
+  startYear: string;
+  endYear: string | null;
   description: string;
   isCurrent: boolean;
 }
@@ -30,8 +30,8 @@ interface Education {
   school: string;
   degree: string;
   field: string;
-  startDate: string;
-  endDate: string | null;
+  startYear: string;
+  endYear: string | null;
   description: string;
   isCurrent: boolean;
 }

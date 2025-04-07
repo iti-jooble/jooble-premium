@@ -13,8 +13,8 @@ interface Education {
   school: string;
   degree: string;
   field: string;
-  startDate: string;
-  endDate: string | null;
+  startYear: string;
+  endYear: string | null;
   description: string;
   isCurrent: boolean;
 }
@@ -23,8 +23,8 @@ interface WorkExperience {
   id: string;
   company: string;
   position: string;
-  startDate: string;
-  endDate: string | null;
+  startYear: string;
+  endYear: string | null;
   description: string;
   isCurrent: boolean;
 }
@@ -117,7 +117,7 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                         <h4 className="text-xs">{exp.position}</h4>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {exp.startDate} - {exp.isCurrent ? "Actuellement" : exp.endDate}
+                        {exp.startYear} - {exp.isCurrent ? "Actuellement" : exp.endYear}
                       </div>
                     </div>
                     <p className="text-xs text-gray-600 mt-1 leading-relaxed">
@@ -173,7 +173,7 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                         <h3 className="text-sm font-medium">{edu.school}</h3>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {edu.startDate} - {edu.isCurrent ? "Actuellement" : edu.endDate}
+                        {edu.startYear} - {edu.isCurrent ? "Actuellement" : edu.endYear}
                       </div>
                     </div>
                   </div>
