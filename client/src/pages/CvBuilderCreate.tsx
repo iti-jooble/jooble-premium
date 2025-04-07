@@ -122,7 +122,7 @@ const CvBuilderCreate = () => {
                 <div className="flex items-center text-left">
                   <PlusCircle className="h-5 w-5 mr-2 text-blue-600" />
                   <div>
-                    <h3 className="text-base font-medium">Informations personnelles</h3>
+                    <h3 className="text-base font-medium">Personal Information</h3>
                     <p className="text-xs text-gray-500">Contact details, name, location</p>
                   </div>
                 </div>
@@ -141,7 +141,7 @@ const CvBuilderCreate = () => {
                 <div className="flex items-center text-left">
                   <BriefcaseBusiness className="h-5 w-5 mr-2 text-blue-600" />
                   <div>
-                    <h3 className="text-base font-medium">Expérience professionnelle</h3>
+                    <h3 className="text-base font-medium">Work Experience</h3>
                     <p className="text-xs text-gray-500">Work history, internships</p>
                   </div>
                 </div>
@@ -160,7 +160,7 @@ const CvBuilderCreate = () => {
                 <div className="flex items-center text-left">
                   <GraduationCap className="h-5 w-5 mr-2 text-blue-600" />
                   <div>
-                    <h3 className="text-base font-medium">Éducation</h3>
+                    <h3 className="text-base font-medium">Education</h3>
                     <p className="text-xs text-gray-500">Academic background, courses</p>
                   </div>
                 </div>
@@ -179,7 +179,7 @@ const CvBuilderCreate = () => {
                 <div className="flex items-center text-left">
                   <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
                   <div>
-                    <h3 className="text-base font-medium">Compétences</h3>
+                    <h3 className="text-base font-medium">Skills</h3>
                     <p className="text-xs text-gray-500">Technical and soft skills</p>
                   </div>
                 </div>
@@ -198,7 +198,7 @@ const CvBuilderCreate = () => {
                 <div className="flex items-center text-left">
                   <FileText className="h-5 w-5 mr-2 text-blue-600" />
                   <div>
-                    <h3 className="text-base font-medium">Résumé professionnel</h3>
+                    <h3 className="text-base font-medium">Professional Summary</h3>
                     <p className="text-xs text-gray-500">Brief description about you</p>
                   </div>
                 </div>

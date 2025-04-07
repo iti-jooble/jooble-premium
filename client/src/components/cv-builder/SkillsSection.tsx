@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, KeyboardEvent } from "react";
-import { PlusCircle, Trash2, Sparkles } from "lucide-react";
+import { PlusCircle, Trash2, Sparkles, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
 
@@ -18,16 +18,16 @@ interface SkillsSectionProps {
 
 // Front-end developer skill suggestions
 const frontendSkillSuggestions = [
-  "Développeur Front-end",
+  "Front-end Developer",
   "HTML CSS JavaScript",
-  "Conception Responsive",
-  "Débogage Code",
-  "Optimisation Performance",
-  "Framework Front-end",
-  "Expérience Utilisateur",
-  "Travail d'Équipe",
-  "Formation Développement Web",
-  "Certification HTML CSS JavaScript"
+  "Responsive Design",
+  "Code Debugging",
+  "Performance Optimization",
+  "Front-end Framework",
+  "User Experience",
+  "Team Work",
+  "Web Development Training",
+  "HTML CSS JavaScript Certification"
 ];
 
 export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
@@ -74,8 +74,8 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
     // Check if the skill already exists
     if (localSkills.some(s => s.name.toLowerCase() === suggestion.toLowerCase())) {
       toast({
-        title: "Compétence déjà ajoutée",
-        description: `La compétence '${suggestion}' est déjà dans votre liste.`,
+        title: "Skill already added",
+        description: `The skill '${suggestion}' is already in your list.`,
         variant: "default",
       });
       return;
@@ -87,8 +87,8 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
     handleSaveSkills([...localSkills, skill]);
     
     toast({
-      title: "Compétence ajoutée",
-      description: `La compétence '${suggestion}' a été ajoutée.`,
+      title: "Skill added",
+      description: `The skill '${suggestion}' has been added.`,
     });
   };
 
@@ -99,8 +99,8 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       onSave(skillsToSave);
     } catch (error) {
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'enregistrement des compétences.",
+        title: "Error",
+        description: "An error occurred while saving skills.",
         variant: "destructive",
       });
     } finally {
@@ -111,24 +111,24 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
   return (
     <div className="space-y-4">
       {/* Skills list */}
-      <div className="space-y-3">
-        {localSkills.map((skill, index) => (
+      <div className="flex flex-wrap gap-2">
+        {localSkills.map((skill) => (
           <div 
-            key={skill.id} 
-            className="relative flex items-center border border-gray-300 rounded-lg p-4"
+            key={skill.id}
+            className="relative group"
           >
-            <Input 
-              value={skill.name || `Compétence ${index + 1}`} 
-              disabled 
-              className="bg-white border-none shadow-none focus-visible:ring-0 pr-12"
-            />
             <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 text-gray-400 hover:text-gray-600"
-              onClick={() => handleRemoveSkill(skill.id)}
+              variant="outline"
+              size="sm"
+              className="bg-white pr-7 text-gray-700 hover:bg-gray-50"
             >
-              <Trash2 className="h-5 w-5" />
+              {skill.name}
+              <span 
+                className="absolute right-2 hover:text-red-500 cursor-pointer"
+                onClick={() => handleRemoveSkill(skill.id)}
+              >
+                <X className="h-3.5 w-3.5 ml-1" />
+              </span>
             </Button>
           </div>
         ))}
@@ -138,17 +138,17 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       <Button 
         variant="ghost" 
         className="text-blue-600 pl-0" 
-        onClick={() => setNewSkill("Nouvelle compétence")}
+        onClick={() => setNewSkill("New skill")}
       >
         <PlusCircle className="h-4 w-4 mr-2" />
-        Ajouter une autre compétence
+        Add another skill
       </Button>
       
       {/* AI suggestion box */}
       <div className="bg-blue-50 rounded-lg p-5 mt-6">
         <div className="flex items-center mb-3">
           <Sparkles className="text-blue-500 h-5 w-5 mr-2" />
-          <h3 className="text-blue-800 font-medium">Indice de compétences pour Front end developer</h3>
+          <h3 className="text-blue-800 font-medium">Skills index for Front-end Developer</h3>
         </div>
         
         <div className="flex flex-wrap gap-2">
@@ -174,7 +174,7 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
           onClick={() => handleSaveSkills(localSkills)}
           disabled={isSaving}
         >
-          {isSaving ? "Enregistrement..." : "Enregistrer"}
+          {isSaving ? "Saving..." : "Save"}
         </Button>
       </div>
     </div>

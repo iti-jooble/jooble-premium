@@ -63,7 +63,7 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
           name="summary"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">Résumé professionnel</FormLabel>
+              <FormLabel className="text-sm">Professional Summary</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="Write a brief overview of your professional background, key skills, and career goals..."

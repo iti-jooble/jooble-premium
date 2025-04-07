@@ -117,7 +117,7 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                         <h4 className="text-xs">{exp.position}</h4>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {exp.startYear} - {exp.isCurrent ? "Actuellement" : exp.endYear}
+                        {exp.startYear} - {exp.isCurrent ? "Present" : exp.endYear}
                       </div>
                     </div>
                     <p className="text-xs text-gray-600 mt-1 leading-relaxed">
@@ -133,7 +133,7 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                         <h3 className="text-sm font-medium">ABC Company</h3>
                         <h4 className="text-xs">Driver</h4>
                       </div>
-                      <div className="text-xs text-gray-500">2018 - Actuellement</div>
+                      <div className="text-xs text-gray-500">2018 - Present</div>
                     </div>
                     <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                       Driving vehicles and managing safe transportation. Following traffic laws and ensuring on-time deliveries. Maintaining client communication and vehicle maintenance.
@@ -173,7 +173,7 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                         <h3 className="text-sm font-medium">{edu.school}</h3>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {edu.startYear} - {edu.isCurrent ? "Actuellement" : edu.endYear}
+                        {edu.startYear} - {edu.isCurrent ? "Present" : edu.endYear}
                       </div>
                     </div>
                   </div>

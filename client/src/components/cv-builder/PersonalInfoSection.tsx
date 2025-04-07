@@ -76,7 +76,7 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Prénom</FormLabel>
+                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">First Name</FormLabel>
                 <FormControl>
                   <Input placeholder="John" {...field} className="h-9" />
                 </FormControl>
@@ -90,7 +90,7 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Nom</FormLabel>
+                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Last Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Doe" {...field} className="h-9" />
                 </FormControl>
@@ -124,7 +124,7 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Numéro de téléphone</FormLabel>
+              <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Phone Number</FormLabel>
               <FormControl>
                 <div className="flex">
                   <div className="flex items-center justify-center bg-gray-100 border border-gray-300 rounded-l-md px-3">
@@ -148,7 +148,7 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Ville</FormLabel>
+                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">City</FormLabel>
                 <FormControl>
                   <Input placeholder="Paris" {...field} className="h-9" />
                 </FormControl>
@@ -162,7 +162,7 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Pays</FormLabel>
+                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Country</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className="h-9">

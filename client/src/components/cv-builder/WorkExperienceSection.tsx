@@ -11,7 +11,7 @@ import {
   FormMessage  
 } from "@/components/ui/form";
 import { useState } from "react";
-import { PlusCircle, Pencil, Check, SparkleIcon, TextIcon, Wand2 } from "lucide-react";
+import { PlusCircle, Pencil, Check, SparkleIcon, TextIcon, Wand2, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -221,13 +221,26 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                         {exp.startYear} - {exp.isCurrent ? "Present" : exp.endYear}
                       </p>
                     </div>
-                    <Button 
-                      size="sm" 
-                      variant="ghost" 
-                      onClick={() => handleEditExperience(exp)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
+                    <div className="flex space-x-1">
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        onClick={() => handleEditExperience(exp)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => {
+                          const updatedExperiences = localExperiences.filter(e => e.id !== exp.id);
+                          setLocalExperiences(updatedExperiences);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -236,12 +249,12 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
           
           <div className="flex justify-between mt-3">
             <Button 
-              variant="outline" 
-              size="sm" 
+              variant="ghost" 
+              className="text-blue-600 pl-0" 
               onClick={handleAddExperience}
             >
-              <PlusCircle className="h-4 w-4 mr-1" />
-              Ajouter une expérience
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Add another experience
             </Button>
             
             {localExperiences.length > 0 && (
@@ -279,7 +292,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
               name="company"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Société</FormLabel>
+                  <FormLabel>Company</FormLabel>
                   <FormControl>
                     <Input placeholder="Ex: Google" {...field} />
                   </FormControl>
@@ -294,7 +307,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                 name="startYear"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Année de début</FormLabel>
+                    <FormLabel>Start Year</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -321,7 +334,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                   name="endYear"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Année de fin</FormLabel>
+                      <FormLabel>End Year</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value || ""}
@@ -354,7 +367,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormLabel className="text-sm font-normal">Je travaille actuellement ici</FormLabel>
+                      <FormLabel className="text-sm font-normal">I currently work here</FormLabel>
                     </FormItem>
                   )}
                 />
@@ -366,10 +379,10 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Responsabilités et réalisations</FormLabel>
+                  <FormLabel>Responsibilities and achievements</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Décrivez ce que vous avez fait, vos tâches quotidiennes et mentionnez les résultats que vous avez aidé à obtenir."
+                      placeholder="Describe what you did, your daily tasks, and mention the results you helped to achieve."
                       className="min-h-[120px]"
                       {...field}
                     />
@@ -382,10 +395,10 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
             <div className="bg-blue-50 p-4 rounded-md">
               <div className="flex items-center mb-2">
                 <SparkleIcon className="h-5 w-5 text-blue-500 mr-2" />
-                <p className="text-blue-800 font-medium">Besoin d'un indice ?</p>
+                <p className="text-blue-800 font-medium">Need a hint?</p>
               </div>
               <p className="text-sm text-blue-700 mb-3">
-                Commencez avec un brouillon ou ajoutez votre texte et utilisez les outils ci-dessous pour l'améliorer.
+                Start with a draft or add your text and use the tools below to improve it.
               </p>
               
               <div className="flex flex-wrap gap-2">
@@ -397,7 +410,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                   onClick={generateDescription}
                 >
                   <TextIcon className="h-4 w-4 mr-1" />
-                  Obtenez un brouillon
+                  Get a draft
                 </Button>
                 
                 <Button 
@@ -408,7 +421,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                   onClick={improveDescription}
                 >
                   <Wand2 className="h-4 w-4 mr-1" />
-                  Rendre plus professionnel
+                  Make more professional
                 </Button>
                 
                 <Button 
@@ -419,7 +432,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                   onClick={checkSpelling}
                 >
                   <Check className="h-4 w-4 mr-1" />
-                  Corriger l'orthographe
+                  Check spelling
                 </Button>
               </div>
             </div>
