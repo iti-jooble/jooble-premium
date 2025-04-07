@@ -13,8 +13,14 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MapPinIcon, PhoneIcon, MailIcon, CheckIcon } from "lucide-react";
+import { MapPinIcon, PhoneIcon, MailIcon, PlusCircle, GraduationCap, BriefcaseBusiness, Sparkles, FileText } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
@@ -63,181 +69,240 @@ const CvBuilderStep1 = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left side with stepper and form */}
-        <div className="flex-1">
-          {/* Stepper */}
-          <div className="flex mb-5 overflow-x-auto py-1 text-sm">
-            <div className="flex items-center flex-shrink-0">
-              <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
-                <CheckIcon className="h-4 w-4" />
-              </div>
-              <div className="mx-1 text-green-700 font-medium">À Propos</div>
-            </div>
-            <div className="w-10 h-1 bg-gray-200 mx-1 mt-3"></div>
-            <div className="flex items-center flex-shrink-0">
-              <div className="w-6 h-6 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold text-xs">2</div>
-              <div className="mx-1 text-gray-500">Expérience</div>
-            </div>
-            <div className="w-10 h-1 bg-gray-200 mx-1 mt-3"></div>
-            <div className="flex items-center flex-shrink-0">
-              <div className="w-6 h-6 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold text-xs">3</div>
-              <div className="mx-1 text-gray-500">Éducation</div>
-            </div>
-            <div className="w-10 h-1 bg-gray-200 mx-1 mt-3"></div>
-            <div className="flex items-center flex-shrink-0">
-              <div className="w-6 h-6 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold text-xs">4</div>
-              <div className="mx-1 text-gray-500">Compétences</div>
-            </div>
-            <div className="w-10 h-1 bg-gray-200 mx-1 mt-3"></div>
-            <div className="flex items-center flex-shrink-0">
-              <div className="w-6 h-6 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold text-xs">5</div>
-              <div className="mx-1 text-gray-500">Résumé</div>
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="bg-white rounded-md p-6 shadow-sm border">
-            <h2 className="text-xl font-medium mb-4">Informations personnelles</h2>
-            <p className="text-gray-600 mb-6 text-sm">
-              Assurez-vous que votre employeur potentiel puisse vous contacter
-            </p>
-
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                <FormField
-                  control={form.control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="after:content-['*'] after:text-red-500 after:ml-0.5">Prénom</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="after:content-['*'] after:text-red-500 after:ml-0.5">Nom</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Doe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="after:content-['*'] after:text-red-500 after:ml-0.5">Numéro de téléphone</FormLabel>
-                        <FormControl>
-                          <div className="flex">
-                            <div className="flex items-center justify-center bg-gray-100 border border-gray-300 rounded-l-md px-3">
-                              <span className="text-gray-500 text-sm">+33</span>
-                            </div>
-                            <Input 
-                              className="rounded-l-none" 
-                              placeholder="612345678" 
-                              {...field} 
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="after:content-['*'] after:text-red-500 after:ml-0.5">Email</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="email"
-                            placeholder="john.doe@example.com" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+        {/* Left side with accordion form */}
+        <div className="w-full lg:w-2/5">
+          <Accordion type="single" collapsible defaultValue="personal" className="w-full">
+            {/* Personal Information Section */}
+            <AccordionItem value="personal" className="bg-white rounded-md shadow-sm border mb-3">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center text-left">
+                  <PlusCircle className="h-5 w-5 mr-2 text-blue-600" />
+                  <div>
+                    <h3 className="text-base font-medium">Informations personnelles</h3>
+                    <p className="text-xs text-gray-500">Contact details, name, location</p>
+                  </div>
                 </div>
+              </AccordionTrigger>
+              <AccordionContent className="p-4">
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Prénom</FormLabel>
+                            <FormControl>
+                              <Input placeholder="John" {...field} className="h-9" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="after:content-['*'] after:text-red-500 after:ml-0.5">Ville de résidence</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Paris" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                        control={form.control}
+                        name="lastName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Nom</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Doe" {...field} className="h-9" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
 
-                  <FormField
-                    control={form.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="after:content-['*'] after:text-red-500 after:ml-0.5">Pays</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Email</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a country" />
-                            </SelectTrigger>
+                            <Input 
+                              type="email"
+                              placeholder="john.doe@example.com" 
+                              {...field} 
+                              className="h-9"
+                            />
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="France">France</SelectItem>
-                            <SelectItem value="Belgium">Belgium</SelectItem>
-                            <SelectItem value="Switzerland">Switzerland</SelectItem>
-                            <SelectItem value="Canada">Canada</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="flex justify-between mt-8 space-x-4">
-                  <Button 
-                    type="button" 
-                    variant="outline"
-                    onClick={() => navigate("/cv-builder")}
-                  >
-                    Retour
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    className="px-8"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Saving..." : "Continuez"}
-                  </Button>
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Numéro de téléphone</FormLabel>
+                          <FormControl>
+                            <div className="flex">
+                              <div className="flex items-center justify-center bg-gray-100 border border-gray-300 rounded-l-md px-3">
+                                <span className="text-gray-500 text-sm">+33</span>
+                              </div>
+                              <Input 
+                                className="rounded-l-none h-9" 
+                                placeholder="612345678" 
+                                {...field} 
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="city"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Ville</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Paris" {...field} className="h-9" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="country"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Pays</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="h-9">
+                                  <SelectValue placeholder="Select a country" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="France">France</SelectItem>
+                                <SelectItem value="Belgium">Belgium</SelectItem>
+                                <SelectItem value="Switzerland">Switzerland</SelectItem>
+                                <SelectItem value="Canada">Canada</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </form>
+                </Form>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Work Experience Section */}
+            <AccordionItem value="experience" className="bg-white rounded-md shadow-sm border mb-3">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center text-left">
+                  <BriefcaseBusiness className="h-5 w-5 mr-2 text-blue-600" />
+                  <div>
+                    <h3 className="text-base font-medium">Expérience professionnelle</h3>
+                    <p className="text-xs text-gray-500">Work history, internships</p>
+                  </div>
                 </div>
-              </form>
-            </Form>
+              </AccordionTrigger>
+              <AccordionContent className="p-4">
+                <p className="text-sm text-gray-600">Add your work experience here.</p>
+                <Button variant="outline" size="sm" className="mt-3">
+                  <PlusCircle className="h-4 w-4 mr-1" />
+                  Ajouter une expérience
+                </Button>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Education Section */}
+            <AccordionItem value="education" className="bg-white rounded-md shadow-sm border mb-3">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center text-left">
+                  <GraduationCap className="h-5 w-5 mr-2 text-blue-600" />
+                  <div>
+                    <h3 className="text-base font-medium">Éducation</h3>
+                    <p className="text-xs text-gray-500">Academic background, courses</p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="p-4">
+                <p className="text-sm text-gray-600">Add your education here.</p>
+                <Button variant="outline" size="sm" className="mt-3">
+                  <PlusCircle className="h-4 w-4 mr-1" />
+                  Ajouter une formation
+                </Button>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Skills Section */}
+            <AccordionItem value="skills" className="bg-white rounded-md shadow-sm border mb-3">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center text-left">
+                  <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+                  <div>
+                    <h3 className="text-base font-medium">Compétences</h3>
+                    <p className="text-xs text-gray-500">Technical and soft skills</p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="p-4">
+                <p className="text-sm text-gray-600">Add your skills here.</p>
+                <Button variant="outline" size="sm" className="mt-3">
+                  <PlusCircle className="h-4 w-4 mr-1" />
+                  Ajouter une compétence
+                </Button>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Summary Section */}
+            <AccordionItem value="summary" className="bg-white rounded-md shadow-sm border mb-3">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center text-left">
+                  <FileText className="h-5 w-5 mr-2 text-blue-600" />
+                  <div>
+                    <h3 className="text-base font-medium">Résumé professionnel</h3>
+                    <p className="text-xs text-gray-500">Brief description about you</p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="p-4">
+                <p className="text-sm text-gray-600">Add a professional summary.</p>
+                <Button variant="outline" size="sm" className="mt-3">
+                  <PlusCircle className="h-4 w-4 mr-1" />
+                  Ajouter un résumé
+                </Button>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
+          <div className="flex justify-between mt-6 space-x-4">
+            <Button 
+              type="button" 
+              variant="outline"
+              onClick={() => navigate("/cv-builder")}
+            >
+              Retour
+            </Button>
+            <Button 
+              onClick={form.handleSubmit(onSubmit)}
+              className="px-8"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Sauvegarder"}
+            </Button>
           </div>
         </div>
 
         {/* Right side - Preview */}
-        <div className="flex-1 bg-gray-100 rounded-md p-4">
+        <div className="w-full lg:w-3/5 bg-gray-100 rounded-md p-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-medium">Aperçu</h2>
             <Button variant="outline" size="sm">
