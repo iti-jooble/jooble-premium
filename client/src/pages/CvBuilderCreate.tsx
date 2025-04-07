@@ -114,7 +114,7 @@ const CvBuilderCreate = () => {
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left side with accordion form */}
-        <div className="w-full lg:w-2/5">
+        <div className="flex-1">
           <Accordion type="single" collapsible defaultValue="personal" className="w-full">
             {/* Personal Information Section */}
             <AccordionItem value="personal" className="bg-white rounded-md shadow-sm border mb-3">
