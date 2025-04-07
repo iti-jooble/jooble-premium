@@ -46,10 +46,10 @@ interface EducationSectionProps {
 }
 
 const educationSchema = z.object({
-  school: z.string().min(1, { message: "Le nom de l'établissement est requis" }),
-  degree: z.string().min(1, { message: "Le niveau d'études est requis" }),
+  school: z.string().min(1, { message: "School name is required" }),
+  degree: z.string().min(1, { message: "Degree is required" }),
   field: z.string().optional(),
-  startYear: z.string().min(4, { message: "L'année de début est requise" }),
+  startYear: z.string().min(4, { message: "Start year is required" }),
   endYear: z.string().optional().nullable(),
   isCurrent: z.boolean().default(false),
   description: z.string().optional().default(""),
@@ -227,13 +227,31 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                         {edu.startYear} - {edu.isCurrent ? "Present" : edu.endYear}
                       </p>
                     </div>
-                    <Button 
-                      size="sm" 
-                      variant="ghost" 
-                      onClick={() => handleEditEducation(edu)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
+                    <div className="flex">
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        onClick={() => handleEditEducation(edu)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => {
+                          const newEducations = localEducations.filter(e => e.id !== edu.id);
+                          setLocalEducations(newEducations);
+                          onSave(newEducations);
+                          toast({
+                            title: "Education removed",
+                            description: "The education entry has been removed."
+                          });
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -246,7 +264,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
             onClick={handleAddEducation}
           >
             <PlusCircle className="h-4 w-4 mr-2" />
-            Une autre éducation
+            Add another education
           </Button>
             
           {localEducations.length > 0 && (
@@ -256,7 +274,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                 onClick={handleSaveAll}
                 disabled={isSaving}
               >
-                {isSaving ? "Enregistrement..." : "Enregistrer"}
+                {isSaving ? "Saving..." : "Save"}
               </Button>
             </div>
           )}
@@ -271,9 +289,9 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
               name="degree"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium">Niveau d'études <span className="text-red-500">*</span></FormLabel>
+                  <FormLabel className="font-medium">Degree <span className="text-red-500">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Master, Licence, BTS..." {...field} />
+                    <Input placeholder="Ex: Master's, Bachelor's, Associate's..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -285,9 +303,9 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
               name="field"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium">Domaine d'études</FormLabel>
+                  <FormLabel className="font-medium">Field of Study</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Informatique, Commerce, Droit..." {...field} />
+                    <Input placeholder="Ex: Computer Science, Business, Law..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -299,9 +317,9 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
               name="school"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium">Nom de l'établissement <span className="text-red-500">*</span></FormLabel>
+                  <FormLabel className="font-medium">School Name <span className="text-red-500">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Université de Paris, HEC..." {...field} />
+                    <Input placeholder="Ex: University of London, Harvard..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -314,14 +332,14 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                 name="startYear"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-medium">Année de début</FormLabel>
+                    <FormLabel className="font-medium">Start Year</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez" />
+                          <SelectValue placeholder="Select" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -340,7 +358,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                 name="endYear"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-medium">Année de fin (ou fin prévue)</FormLabel>
+                    <FormLabel className="font-medium">End Year (or expected)</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value || ""}
@@ -348,7 +366,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez" />
+                          <SelectValue placeholder="Select" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -373,10 +391,10 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                   form.reset();
                 }}
               >
-                Annuler
+                Cancel
               </Button>
               <Button type="submit">
-                {editingId !== null ? "Enregistrer" : "Ajouter"}
+                {editingId !== null ? "Update" : "Add"}
               </Button>
             </div>
           </form>
