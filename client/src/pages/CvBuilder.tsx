@@ -112,33 +112,6 @@ const CvBuilder = () => {
           </CardContent>
         </Card>
       )}
-
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">CV Builder Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            {
-              title: "Professional Templates",
-              description: "Choose from various professionally designed templates tailored for different industries"
-            },
-            {
-              title: "ATS Optimization",
-              description: "Our CVs are optimized for Applicant Tracking Systems to increase your interview chances"
-            },
-            {
-              title: "Real-time Score",
-              description: "Get instant feedback on your CV with our scoring system highlighting areas for improvement"
-            }
-          ].map((feature, index) => (
-            <Card key={index} className="shadow-sm hover:shadow transition-shadow">
-              <CardContent className="p-4">
-                <h3 className="font-medium mb-2">{feature.title}</h3>
-                <p className="text-sm text-neutral-600">{feature.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
