@@ -33,7 +33,7 @@ interface Education {
   id: string;
   school: string;
   degree: string;
-  field: string;
+  field?: string;
   startYear: string;
   endYear: string | null;
   description: string;
@@ -46,15 +46,13 @@ interface EducationSectionProps {
 }
 
 const educationSchema = z.object({
-  school: z.string().min(1, { message: "School is required" }),
-  degree: z.string().min(1, { message: "Degree is required" }),
-  field: z.string().min(1, { message: "Field of study is required" }),
-  startYear: z.string().min(4, { message: "Start year is required" }),
+  school: z.string().min(1, { message: "Le nom de l'établissement est requis" }),
+  degree: z.string().min(1, { message: "Le niveau d'études est requis" }),
+  field: z.string().optional(),
+  startYear: z.string().min(4, { message: "L'année de début est requise" }),
   endYear: z.string().optional().nullable(),
   isCurrent: z.boolean().default(false),
-  description: z.string()
-    .min(10, { message: "Description should be at least 10 characters" })
-    .max(1000, { message: "Description should not exceed 1000 characters" }),
+  description: z.string().optional().default(""),
 });
 
 type EducationFormValues = z.infer<typeof educationSchema>;
@@ -242,26 +240,26 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
             </div>
           )}
           
-          <div className="flex justify-between mt-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleAddEducation}
-            >
-              <PlusCircle className="h-4 w-4 mr-1" />
-              Ajouter une formation
-            </Button>
+          <Button 
+            variant="ghost" 
+            className="mt-4 text-blue-600 pl-0" 
+            onClick={handleAddEducation}
+          >
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Une autre éducation
+          </Button>
             
-            {localEducations.length > 0 && (
+          {localEducations.length > 0 && (
+            <div className="flex justify-end mt-3">
               <Button 
                 size="sm"
                 onClick={handleSaveAll}
                 disabled={isSaving}
               >
-                {isSaving ? "Saving..." : "Save"}
+                {isSaving ? "Enregistrement..." : "Enregistrer"}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </>
       )}
 
@@ -270,26 +268,12 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
           <form onSubmit={form.handleSubmit(handleSaveForm)} className="space-y-4">
             <FormField
               control={form.control}
-              name="school"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Établissement</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ex: Université de Paris" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="degree"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Diplôme</FormLabel>
+                  <FormLabel className="font-medium">Niveau d'études <span className="text-red-500">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Master" {...field} />
+                    <Input placeholder="Ex: Master, Licence, BTS..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -301,9 +285,23 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
               name="field"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Domaine d'étude</FormLabel>
+                  <FormLabel className="font-medium">Domaine d'études</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Informatique" {...field} />
+                    <Input placeholder="Ex: Informatique, Commerce, Droit..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="school"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-medium">Nom de l'établissement <span className="text-red-500">*</span></FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ex: Université de Paris, HEC..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -316,14 +314,14 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                 name="startYear"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Année de début</FormLabel>
+                    <FormLabel className="font-medium">Année de début</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select year" />
+                          <SelectValue placeholder="Sélectionnez" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -337,116 +335,35 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                 )}
               />
 
-              <div>
-                <FormField
-                  control={form.control}
-                  name="endYear"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Année de fin</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        disabled={form.watch("isCurrent")}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select year" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {years.map(year => (
-                            <SelectItem key={year} value={year}>{year}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="isCurrent"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-2 space-y-0 mt-2">
+              <FormField
+                control={form.control}
+                name="endYear"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Année de fin (ou fin prévue)</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={form.watch("isCurrent")}
+                    >
                       <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionnez" />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormLabel className="text-sm font-normal">J'étudie actuellement ici</FormLabel>
-                    </FormItem>
-                  )}
-                />
-              </div>
+                      <SelectContent>
+                        {years.map(year => (
+                          <SelectItem key={year} value={year}>{year}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description de la formation</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Décrivez ce que vous avez étudié et les compétences acquises."
-                      className="min-h-[120px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="bg-blue-50 p-4 rounded-md">
-              <div className="flex items-center mb-2">
-                <SparkleIcon className="h-5 w-5 text-blue-500 mr-2" />
-                <p className="text-blue-800 font-medium">Besoin d'un indice ?</p>
-              </div>
-              <p className="text-sm text-blue-700 mb-3">
-                Commencez avec un brouillon ou ajoutez votre texte et utilisez les outils ci-dessous pour l'améliorer.
-              </p>
-              
-              <div className="flex flex-wrap gap-2">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  className="bg-white"
-                  onClick={generateDescription}
-                >
-                  <TextIcon className="h-4 w-4 mr-1" />
-                  Obtenez un brouillon
-                </Button>
-                
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  className="bg-white"
-                  onClick={improveDescription}
-                >
-                  <Wand2 className="h-4 w-4 mr-1" />
-                  Rendre plus professionnel
-                </Button>
-                
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  className="bg-white"
-                  onClick={checkSpelling}
-                >
-                  <Check className="h-4 w-4 mr-1" />
-                  Corriger l'orthographe
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-2 pt-2">
+            <div className="flex justify-end space-x-2 pt-4">
               <Button 
                 type="button" 
                 variant="outline"
@@ -456,10 +373,10 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                   form.reset();
                 }}
               >
-                Cancel
+                Annuler
               </Button>
               <Button type="submit">
-                {editingId !== null ? "Update" : "Add"} Education
+                {editingId !== null ? "Enregistrer" : "Ajouter"}
               </Button>
             </div>
           </form>
