@@ -7,7 +7,7 @@ import SideMenu from "@/components/layout/SideMenu";
 import Content from "@/components/layout/Content";
 import HomePage from "@/pages/HomePage";
 import CvBuilder from "@/pages/CvBuilder";
-import CvBuilderStep1 from "@/pages/CvBuilderStep1";
+import CvBuilderCreate from "@/pages/CvBuilderCreate";
 import CvReview from "@/pages/CvReview";
 import JobSearch from "@/pages/JobSearch";
 import CvMatching from "@/pages/CvMatching";
@@ -23,7 +23,7 @@ function Router() {
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/cv-builder" component={CvBuilder} />
-          <Route path="/cv-builder/create" component={CvBuilderStep1} />
+          <Route path="/cv-builder/create" component={CvBuilderCreate} />
           <Route path="/cv-review" component={CvReview} />
           <Route path="/job-search" component={JobSearch} />
           <Route path="/cv-matching" component={CvMatching} />
