@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Check, SparkleIcon, Wand2 } from "lucide-react";
+import { Check, SparkleIcon, FileText, Wand2 } from "lucide-react";
 
 const summarySchema = z.object({
   summary: z.string().min(10, { message: "Summary should be at least 10 characters" }).max(1000, { message: "Summary should not exceed 1000 characters" }),
@@ -110,37 +110,50 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
                   {...field}
                 />
               </FormControl>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="flex items-center text-xs"
-                  onClick={generateSummary}
-                >
-                  <Wand2 className="h-3 w-3 mr-1" />
-                  Generate Summary
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="flex items-center text-xs"
-                  onClick={improveSummary}
-                >
-                  <SparkleIcon className="h-3 w-3 mr-1" />
-                  Improve Summary
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="flex items-center text-xs"
-                  onClick={checkSpelling}
-                >
-                  <Check className="h-3 w-3 mr-1" />
-                  Check Spelling
-                </Button>
+              
+              <div className="bg-blue-50 p-4 rounded-md mt-3">
+                <div className="flex items-center mb-2">
+                  <SparkleIcon className="h-5 w-5 text-blue-500 mr-2" />
+                  <p className="text-blue-800 font-medium">Need a hint?</p>
+                </div>
+                <p className="text-sm text-blue-700 mb-3">
+                  Start with a draft or add your text and use the tools below to improve it.
+                </p>
+                
+                <div className="flex flex-wrap gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-white"
+                    onClick={generateSummary}
+                  >
+                    <FileText className="h-4 w-4 mr-1" />
+                    Get a draft
+                  </Button>
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-white"
+                    onClick={improveSummary}
+                  >
+                    <Wand2 className="h-4 w-4 mr-1" />
+                    Make more professional
+                  </Button>
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    className="bg-white"
+                    onClick={checkSpelling}
+                  >
+                    <Check className="h-4 w-4 mr-1" />
+                    Check spelling
+                  </Button>
+                </div>
               </div>
               <FormMessage />
             </FormItem>

@@ -11,7 +11,7 @@ import {
   FormMessage  
 } from "@/components/ui/form";
 import { useState } from "react";
-import { PlusCircle, Pencil, Check, SparkleIcon, TextIcon, Wand2, Trash2 } from "lucide-react";
+import { PlusCircle, Pencil, Check, SparkleIcon, FileText, Wand2, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -409,7 +409,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                   className="bg-white"
                   onClick={generateDescription}
                 >
-                  <TextIcon className="h-4 w-4 mr-1" />
+                  <FileText className="h-4 w-4 mr-1" />
                   Get a draft
                 </Button>
                 
