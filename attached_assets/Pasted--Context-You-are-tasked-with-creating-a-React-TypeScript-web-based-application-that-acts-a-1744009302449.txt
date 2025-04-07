@@ -1,0 +1,37 @@
+### **Context:**
+You are tasked with creating a React + TypeScript web-based application that acts as a comprehensive dashboard for job seekers. This dashboard should offer five key tools: **CV Builder**, **CV Review**, **Job Search**, **CV Matching**, and **Cover Letter Creator**. The layout should feature a fixed side menu on the left for navigation, with the default page being a Home page that provides an overview of the available tools and describes their benefits.
+
+---
+
+### **Task:**
+Develop the core React structure for the "Job Seeker's Dashboard" using TypeScript. The application should consist of:
+1. A **Side Menu** (fixed on the left) housing links to all tools.
+2. A **Home Page** as the default view, featuring a list of tools with descriptions for each.
+3. Components and routing set up for modular navigation between tools.
+
+Produce the code in a complete and modularized format using TypeScript in **React Functional Components**. Use React Router for navigation.
+
+---
+
+### **Guidelines:**
+1. Use TypeScript to define component props and states for type safety.
+2. Divide the application into smaller, reusable components: e.g., `SideMenu`, `Home`, `ToolPage` for individual tool views (placeholder pages for now).
+3. Utilize **React Router** for navigation between pages.
+4. Add clear placeholder descriptions for each tool page to simulate navigation.
+5. Apply basic styling using **CSS Modules** for scoped styles (file naming convention: `ComponentName.module.css`).
+6. Wrap the code structure in a Markdown code block with file-specific details for easy copying.
+
+---
+
+### **Constraints:**
+1. Use **React Router v6** for navigation.
+2. Keep styles simple but professional, with a focus on a clean and intuitive UI.
+3. Do not include any backend or data-fetching logic—focus purely on the front-end architecture.
+4. Avoid additional libraries for state management like Redux or external UI frameworks like Material-UI.
+
+---
+
+### **Output Format:**
+Split the implementation into relevant files. Provide each file (e.g., `App.tsx`, component files, `.css` files) in a **Markdown code block** prefixed with the filename. Ensure the implementation is well-organized, with comments explaining key parts of the code.
+
+Would you like me to proceed with a basic example of this structure?
