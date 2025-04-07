@@ -1,9 +1,5 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { 
-  Card, 
-  CardContent, 
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
   Form, 
@@ -17,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeftIcon, MapPinIcon, PhoneIcon, MailIcon, CheckIcon } from "lucide-react";
+import { MapPinIcon, PhoneIcon, MailIcon, CheckIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
@@ -61,54 +57,45 @@ const CvBuilderStep1 = () => {
 
   return (
     <div className="p-6 animate-in fade-in duration-300">
-      <div className="mb-6 flex items-center">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="mr-2"
-          onClick={() => navigate("/cv-builder")}
-        >
-          <ArrowLeftIcon className="h-4 w-4 mr-1" />
-          Back
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-neutral-800">Create New CV</h1>
-          <p className="text-neutral-600 mt-1">Build your professional CV</p>
-        </div>
-      </div>
-
-      <div className="flex mb-6 overflow-x-auto py-2">
-        <div className="flex items-center flex-shrink-0">
-          <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
-            <CheckIcon className="h-5 w-5" />
-          </div>
-          <div className="mx-2 text-green-700 font-medium">À Propos</div>
-        </div>
-        <div className="w-16 h-1 bg-gray-200 mx-1 mt-4"></div>
-        <div className="flex items-center flex-shrink-0">
-          <div className="w-8 h-8 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold">2</div>
-          <div className="mx-2 text-gray-500">Expérience</div>
-        </div>
-        <div className="w-16 h-1 bg-gray-200 mx-1 mt-4"></div>
-        <div className="flex items-center flex-shrink-0">
-          <div className="w-8 h-8 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold">3</div>
-          <div className="mx-2 text-gray-500">Éducation</div>
-        </div>
-        <div className="w-16 h-1 bg-gray-200 mx-1 mt-4"></div>
-        <div className="flex items-center flex-shrink-0">
-          <div className="w-8 h-8 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold">4</div>
-          <div className="mx-2 text-gray-500">Compétences</div>
-        </div>
-        <div className="w-16 h-1 bg-gray-200 mx-1 mt-4"></div>
-        <div className="flex items-center flex-shrink-0">
-          <div className="w-8 h-8 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold">5</div>
-          <div className="mx-2 text-gray-500">Résumé</div>
-        </div>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-neutral-800">Create New CV</h1>
+        <p className="text-neutral-600 mt-1">Build your professional CV</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left side - Form */}
+        {/* Left side with stepper and form */}
         <div className="flex-1">
+          {/* Stepper */}
+          <div className="flex mb-5 overflow-x-auto py-1 text-sm">
+            <div className="flex items-center flex-shrink-0">
+              <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
+                <CheckIcon className="h-4 w-4" />
+              </div>
+              <div className="mx-1 text-green-700 font-medium">À Propos</div>
+            </div>
+            <div className="w-10 h-1 bg-gray-200 mx-1 mt-3"></div>
+            <div className="flex items-center flex-shrink-0">
+              <div className="w-6 h-6 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold text-xs">2</div>
+              <div className="mx-1 text-gray-500">Expérience</div>
+            </div>
+            <div className="w-10 h-1 bg-gray-200 mx-1 mt-3"></div>
+            <div className="flex items-center flex-shrink-0">
+              <div className="w-6 h-6 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold text-xs">3</div>
+              <div className="mx-1 text-gray-500">Éducation</div>
+            </div>
+            <div className="w-10 h-1 bg-gray-200 mx-1 mt-3"></div>
+            <div className="flex items-center flex-shrink-0">
+              <div className="w-6 h-6 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold text-xs">4</div>
+              <div className="mx-1 text-gray-500">Compétences</div>
+            </div>
+            <div className="w-10 h-1 bg-gray-200 mx-1 mt-3"></div>
+            <div className="flex items-center flex-shrink-0">
+              <div className="w-6 h-6 bg-gray-200 text-gray-500 border-2 border-white rounded-full flex items-center justify-center font-semibold text-xs">5</div>
+              <div className="mx-1 text-gray-500">Résumé</div>
+            </div>
+          </div>
+
+          {/* Form */}
           <div className="bg-white rounded-md p-6 shadow-sm border">
             <h2 className="text-xl font-medium mb-4">Informations personnelles</h2>
             <p className="text-gray-600 mb-6 text-sm">
@@ -259,23 +246,23 @@ const CvBuilderStep1 = () => {
           </div>
           
           <div className="bg-white rounded-md shadow-sm overflow-hidden">
-            <div className="flex">
+            <div className="flex flex-col md:flex-row">
               {/* Left sidebar in preview */}
-              <div className="w-1/3 bg-blue-50 p-4">
+              <div className="w-full md:w-1/3 bg-blue-50 p-4">
                 <div className="mb-6">
                   <h3 className="text-blue-800 font-medium mb-2">Contacts</h3>
                   <div className="text-sm space-y-1.5">
                     <div className="flex items-center text-gray-600">
                       <MailIcon className="h-3.5 w-3.5 mr-2" />
-                      <span>john.doe@example.com</span>
+                      <span>{form.watch("email") || "john.doe@example.com"}</span>
                     </div>
                     <div className="flex items-center text-gray-600">
                       <PhoneIcon className="h-3.5 w-3.5 mr-2" />
-                      <span>+33 612345678</span>
+                      <span>+33 {form.watch("phone") || "612345678"}</span>
                     </div>
                     <div className="flex items-center text-gray-600">
                       <MapPinIcon className="h-3.5 w-3.5 mr-2" />
-                      <span>Paris, France</span>
+                      <span>{form.watch("city") || "Paris"}, {form.watch("country") || "France"}</span>
                     </div>
                   </div>
                 </div>
@@ -298,7 +285,7 @@ const CvBuilderStep1 = () => {
               </div>
               
               {/* Right content in preview */}
-              <div className="w-2/3 p-6">
+              <div className="w-full md:w-2/3 p-6">
                 <div className="mb-4">
                   <h1 className="text-lg font-semibold text-gray-800">
                     {form.watch("firstName") || "Alyson"} {form.watch("lastName") || "Lawrence"}
