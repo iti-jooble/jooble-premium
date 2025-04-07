@@ -27,7 +27,7 @@ const SideMenu = () => {
           <div className="bg-primary text-primary-foreground rounded-lg p-2">
             <BriefcaseIcon className="h-5 w-5" />
           </div>
-          <h1 className="font-semibold text-lg text-neutral-800">JobCompass</h1>
+          <h1 className="font-semibold text-lg text-neutral-800">Job Compass</h1>
         </div>
         <p className="text-xs text-muted-foreground mt-2">Your career navigator</p>
       </div>

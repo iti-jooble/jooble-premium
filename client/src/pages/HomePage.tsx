@@ -53,13 +53,13 @@ const HomePage = () => {
             </p>
             <Button
               variant="secondary"
-              className="mt-4 bg-white text-indigo-600 hover:bg-white/90"
+              className="mt-4 bg-white text-primary hover:bg-white/90"
             >
               Complete Profile
             </Button>
           </div>
           <div className="flex items-center">
-            <div className="w-16 h-16 rounded-full bg-blue-400 flex items-center justify-center mr-2">
+            <div className="w-16 h-16 rounded-full bg-primary-400 flex items-center justify-center mr-2">
               <span className="font-bold text-2xl">68%</span>
             </div>
             <div className="w-16 h-16 flex items-center justify-center">

@@ -1,0 +1,46 @@
+### **Context:**
+You're enhancing the **CV Builder** page in a job seeker's dashboard. The updated page should meet the following goals:
+1. Display a list of existing CVs, showing **Title**, **Score**, **Date Created**, and available **actions** (Edit/Delete).
+2. Allow users to create new CVs via two options:
+   - **"Create New CV"**: Redirect the user to the first step of the CV Builder constructor.
+   - **"Create New from LinkedIn"**: Placeholder logic at this stage to fetch/import a CV from LinkedIn.
+3. Provide an intuitive UI for managing existing CVs and initiating new creations using React + TypeScript.
+
+---
+
+### **Task:**
+1. Create a CV Builder page that:
+   - Displays a table of existing CVs with title, score, date created, and action buttons (edit and delete).
+   - Includes two buttons: **"Create New CV"** and **"Create New from LinkedIn"**.
+2. Implement routing logic where **"Create New CV"** redirects the user to the first step of the CV Builder constructor.
+3. Use TypeScript to enforce type safety, especially for the list of CV objects.
+4. Ensure design is clean and user-friendly, using CSS Modules for scoped styles.
+
+---
+
+### **Guidelines:**
+1. Use mock data for CVs matching the required structure: `{ id, title, score, dateCreated }`.
+2. Modularize the application:
+   - **Components**: Table for listing CVs, action buttons, reusable modal for deletion confirmation.
+   - Pages: CV listing and the CV constructor step one template.
+3. Add placeholder functions for LinkedIn import or user actions (Edit/Delete).
+4. Use React Router for navigation: `/cv-builder/create` (Step one of CV Builder), `/cv-builder` (CV listing page).
+5. Keep the layout visually clean and accessible. Use basic transitions for smooth UI/UX.
+
+---
+
+### **Constraints:**
+1. No backend integration; mock data only.
+2. Minimal dependencies (only React + TypeScript + React Router; styling via CSS Modules).
+3. Avoid unnecessary animations or effects to keep the code simple and focused.
+
+---
+
+### **Output Format:**
+Provide modular, file-based code split into:
+1. The **CV Builder listing page (`CVBuilder.tsx`)**.
+2. The **Step 1 constructor page (`CVBuilderStep1.tsx`)**.
+3. Reusable **components**: CV Table, Action Buttons, Confirmation Modal.
+4. Related **CSS Module files**: Scoped `.module.css` for styling purposeful UI.
+
+All implementation should be wrapped in **Markdown code blocks**. Let me know if you need detailed inline comments or just the code!
