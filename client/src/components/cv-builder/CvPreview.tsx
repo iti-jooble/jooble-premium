@@ -5,14 +5,14 @@ import { PersonalInfoValues } from "./PersonalInfoSection";
 interface Skill {
   id: string;
   name: string;
-  level: "beginner" | "intermediate" | "advanced" | "expert";
+  level?: "beginner" | "intermediate" | "advanced" | "expert";
 }
 
 interface Education {
   id: string;
   school: string;
   degree: string;
-  field: string;
+  field?: string;
   startYear: string;
   endYear: string | null;
   description: string;

@@ -343,7 +343,7 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                     <FormLabel className="font-medium">Année de fin (ou fin prévue)</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      defaultValue={field.value || ""}
                       disabled={form.watch("isCurrent")}
                     >
                       <FormControl>

@@ -324,7 +324,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                       <FormLabel>Année de fin</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={field.value || ""}
                         disabled={form.watch("isCurrent")}
                       >
                         <FormControl>
