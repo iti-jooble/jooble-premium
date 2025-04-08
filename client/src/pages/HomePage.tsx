@@ -23,55 +23,6 @@ const HomePage = () => {
         </p>
       </div>
 
-      <div className="bg-gradient-to-r from-primary/90 to-primary rounded-xl p-6 text-primary-foreground mb-8 shadow-lg border border-primary/10">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-          <div>
-            <h2 className="font-semibold text-xl mb-2">
-              Create Your Professional CV
-            </h2>
-            <p className="opacity-90 max-w-md">
-              Our CV Builder helps you craft a professional CV in minutes. Use our modern templates 
-              and get instantly higher interview rates.
-            </p>
-            <Link href="/cv-builder">
-              <a>
-                <Button
-                  size="lg"
-                  className="mt-4 bg-white text-primary hover:bg-white/90"
-                >
-                  <FileEditIcon className="mr-2 h-4 w-4" />
-                  Create Your CV
-                </Button>
-              </a>
-            </Link>
-          </div>
-          <div className="flex flex-row md:flex-col items-center gap-4">
-            <div className="flex items-center gap-2 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-              <div className="rounded-full bg-white/20 p-2">
-                <FileIcon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">Modern Templates</p>
-                <p className="text-xs text-white/80">ATS-friendly formats</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-              <div className="rounded-full bg-white/20 p-2">
-                <CheckCircleIcon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">AI Assistance</p>
-                <p className="text-xs text-white/80">Expert content suggestions</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <h2 className="text-xl font-semibold text-neutral-800 mb-6">
-        Job Search Toolkit
-      </h2>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {toolsData.map((tool) => (
           <Card
