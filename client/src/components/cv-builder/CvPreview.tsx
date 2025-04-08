@@ -44,15 +44,15 @@ interface CvPreviewProps {
 
 export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
   return (
-    <div className="w-[492px] flex-shrink-0 bg-gray-100 rounded-md p-4 flex flex-col h-[calc(100vh-150px)]">
-      <div className="flex justify-between items-center mb-4 flex-shrink-0">
+    <div className="w-full lg:w-1/2 flex-shrink-0 bg-gray-100 rounded-md p-4 flex flex-col items-center h-[calc(100vh-150px)]">
+      <div className="flex justify-between items-center mb-4 flex-shrink-0 w-full max-w-[492px]">
         <h2 className="text-lg font-medium">Aperçu</h2>
         <Button variant="outline" size="sm" onClick={onChangeTemplate}>
           Changer de modèle
         </Button>
       </div>
       
-      <div className="bg-white rounded-md shadow-sm overflow-auto flex-grow">
+      <div className="bg-white rounded-md shadow-sm overflow-auto flex-grow w-full max-w-[492px]">
         <div className="flex flex-col md:flex-row">
           {/* Left sidebar in preview */}
           <div className="w-full md:w-1/3 bg-blue-50 p-4">
