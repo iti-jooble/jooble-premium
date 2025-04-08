@@ -1,69 +1,68 @@
 import React from "react";
 import {
-  SearchIcon,
-  BellIcon,
-  UserIcon,
+  FileEditIcon,
+  FileIcon,
+  CheckCircleIcon,
   ArrowRightIcon,
-  MoreHorizontalIcon,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { toolsData, recentActivities } from "@/lib/data";
+import { toolsData } from "@/lib/data";
 import { Link } from "wouter";
 
 const HomePage = () => {
   return (
-    <div className="p-8 animate-in fade-in duration-300">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-neutral-800">
-            Welcome back, John
-          </h1>
-          <p className="text-neutral-600 mt-1">
-            Your job search toolkit is ready to help you succeed.
-          </p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="relative">
-            <SearchIcon className="h-4 w-4 absolute left-3 top-3 text-neutral-400" />
-            <Input
-              type="text"
-              placeholder="Search..."
-              className="pl-10 pr-4 py-2 w-64"
-            />
-          </div>
-          <Button variant="outline" size="icon" className="text-neutral-600">
-            <BellIcon className="h-4 w-4" />
-          </Button>
-        </div>
+    <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">
+          Welcome back, John
+        </h1>
+        <p className="text-muted-foreground mt-2">
+          Your job search toolkit is ready to help you succeed.
+        </p>
       </div>
 
-      <div className="bg-gradient-to-r from-indigo-600 to-blue-500 rounded-xl p-6 text-white mb-8 shadow-lg">
-        <div className="flex items-start justify-between">
+      <div className="bg-gradient-to-r from-primary/90 to-primary rounded-xl p-6 text-primary-foreground mb-8 shadow-lg border border-primary/10">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div>
-            <h2 className="font-semibold text-xl mb-1">
-              Complete your profile
+            <h2 className="font-semibold text-xl mb-2">
+              Create Your Professional CV
             </h2>
             <p className="opacity-90 max-w-md">
-              A complete profile increases your chances of finding the perfect
-              job by 75%.
+              Our CV Builder helps you craft a professional CV in minutes. Use our modern templates 
+              and get instantly higher interview rates.
             </p>
-            <Button
-              variant="secondary"
-              className="mt-4 bg-white text-primary hover:bg-white/90"
-            >
-              Complete Profile
-            </Button>
+            <Link href="/cv-builder">
+              <a>
+                <Button
+                  size="lg"
+                  className="mt-4 bg-white text-primary hover:bg-white/90"
+                >
+                  <FileEditIcon className="mr-2 h-4 w-4" />
+                  Create Your CV
+                </Button>
+              </a>
+            </Link>
           </div>
-          <div className="flex items-center">
-            <div className="w-16 h-16 rounded-full bg-primary-400 flex items-center justify-center mr-2">
-              <span className="font-bold text-2xl">68%</span>
+          <div className="flex flex-row md:flex-col items-center gap-4">
+            <div className="flex items-center gap-2 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+              <div className="rounded-full bg-white/20 p-2">
+                <FileIcon className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">Modern Templates</p>
+                <p className="text-xs text-white/80">ATS-friendly formats</p>
+              </div>
             </div>
-            <div className="w-16 h-16 flex items-center justify-center">
-              <UserIcon className="h-10 w-10 opacity-80" />
+            <div className="flex items-center gap-2 bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+              <div className="rounded-full bg-white/20 p-2">
+                <CheckCircleIcon className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">AI Assistance</p>
+                <p className="text-xs text-white/80">Expert content suggestions</p>
+              </div>
             </div>
           </div>
         </div>
@@ -135,49 +134,6 @@ const HomePage = () => {
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      <div className="mt-10 mb-4">
-        <h2 className="text-xl font-semibold text-neutral-800 mb-6">
-          Recent Activity
-        </h2>
-
-        <Card className="shadow-sm">
-          <div className="px-6 py-4 border-b border-neutral-200 flex justify-between items-center">
-            <h3 className="font-medium text-neutral-800">Your Activities</h3>
-            <Button variant="link" className="text-primary p-0 h-auto">
-              View All
-            </Button>
-          </div>
-
-          <div>
-            {recentActivities.map((activity, index) => (
-              <React.Fragment key={activity.id}>
-                {index > 0 && <Separator />}
-                <div className="px-6 py-4 flex items-center">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${activity.iconBgColor}`}
-                  >
-                    {activity.icon}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-neutral-800">{activity.text}</p>
-                    <p className="text-xs text-neutral-500 mt-1">
-                      {activity.date}
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-neutral-400 hover:text-neutral-600"
-                  >
-                    <MoreHorizontalIcon className="h-4 w-4" />
-                  </Button>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        </Card>
       </div>
     </div>
   );
