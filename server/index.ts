@@ -10,6 +10,7 @@ const app = express();
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public')); // Serve files from the public folder
 
 // Request logging middleware for API routes
 app.use((req, res, next) => {

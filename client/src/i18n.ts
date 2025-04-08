@@ -17,11 +17,15 @@ i18n
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
+    // Change backend loading path to correctly point to the locales folder
     backend: {
-      loadPath: '/src/locales/{{lng}}/{{ns}}.json',
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
     ns: ['translation'],
     defaultNS: 'translation',
+    react: {
+      useSuspense: false // Prevents issues during initial render
+    }
   });
 
 export default i18n;
