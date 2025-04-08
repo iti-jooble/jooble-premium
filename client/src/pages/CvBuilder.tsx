@@ -84,10 +84,10 @@ const CvBuilder = () => {
   };
 
   return (
-    <div className="p-6 sm:p-8 animate-in fade-in duration-300">
+    <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">CV Builder</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-primary-foreground">CV Builder</h1>
           <p className="text-muted-foreground mt-2">Create and manage your professional CVs</p>
         </div>
         <div className="flex gap-3">
@@ -132,10 +132,12 @@ const CvBuilder = () => {
           </CardContent>
         </Card>
       ) : (
-        <Card className="shadow-md border overflow-hidden">
+        <Card className="shadow-md border-border/30 border overflow-hidden rounded-xl bg-card">
           <CardHeader className="bg-muted/40 pb-4">
             <CardTitle className="text-xl flex items-center">
-              <FileEditIcon className="mr-2 h-5 w-5 text-primary" />
+              <div className="rounded-full bg-primary/10 p-1.5 mr-2">
+                <FileEditIcon className="h-5 w-5 text-primary" />
+              </div>
               Your CVs
             </CardTitle>
           </CardHeader>

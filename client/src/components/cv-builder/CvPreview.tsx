@@ -44,7 +44,7 @@ interface CvPreviewProps {
 
 export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
   return (
-    <div className="w-full lg:w-1/2 flex-shrink-0 bg-muted/30 rounded-lg p-5 flex flex-col items-center h-[calc(100vh-150px)]">
+    <div className="w-full lg:w-1/2 flex-shrink-0 rounded-lg flex flex-col items-center h-[calc(100vh-150px)]">
       <div className="flex justify-between items-center mb-4 flex-shrink-0 w-full max-w-[492px]">
         <h2 className="text-xl font-medium text-foreground flex items-center">
           <span className="mr-2 p-1 rounded-full bg-primary/10">
@@ -52,9 +52,9 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
           </span>
           Preview
         </h2>
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onChangeTemplate}
           className="bg-card hover:bg-card/80 shadow-sm transition-all"
         >
