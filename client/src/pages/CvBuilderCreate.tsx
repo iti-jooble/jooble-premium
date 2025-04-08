@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { PlusCircle, GraduationCap, BriefcaseBusiness, Sparkles, FileText } from "lucide-react";
+import { GraduationCap, BriefcaseBusiness, Sparkles, FileText } from "lucide-react";
+import { User } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -106,28 +107,30 @@ const CvBuilderCreate = () => {
   };
 
   return (
-    <div className="p-6 animate-in fade-in duration-300">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-neutral-800">Create New CV</h1>
-        <p className="text-neutral-600 mt-1">Build your professional CV</p>
+    <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
+      <div className="mb-8 max-w-3xl">
+        <h1 className="text-3xl font-bold tracking-tight text-primary-foreground">Create New CV</h1>
+        <p className="text-muted-foreground mt-2">Build a professional CV that stands out to employers</p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Left side with accordion form */}
         <div className="w-full lg:w-1/2 min-w-[380px]">
           <Accordion type="single" collapsible defaultValue="personal" className="w-full">
             {/* Personal Information Section */}
-            <AccordionItem value="personal" className="bg-white rounded-md shadow-sm border mb-3">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+            <AccordionItem value="personal" className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md">
+              <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <PlusCircle className="h-5 w-5 mr-2 text-blue-600" />
+                  <div className="rounded-full bg-primary/10 p-2 mr-3">
+                    <User className="h-5 w-5 text-primary" />
+                  </div>
                   <div>
                     <h3 className="text-base font-medium">Personal Information</h3>
-                    <p className="text-xs text-gray-500">Contact details, name, location</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Contact details, name, location</p>
                   </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="p-4">
+              <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <PersonalInfoSection 
                   defaultValues={cvData.personalInfo}
                   onSave={handlePersonalInfoSave}
@@ -136,17 +139,19 @@ const CvBuilderCreate = () => {
             </AccordionItem>
 
             {/* Work Experience Section */}
-            <AccordionItem value="experience" className="bg-white rounded-md shadow-sm border mb-3">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+            <AccordionItem value="experience" className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md">
+              <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <BriefcaseBusiness className="h-5 w-5 mr-2 text-blue-600" />
+                  <div className="rounded-full bg-primary/10 p-2 mr-3">
+                    <BriefcaseBusiness className="h-5 w-5 text-primary" />
+                  </div>
                   <div>
                     <h3 className="text-base font-medium">Work Experience</h3>
-                    <p className="text-xs text-gray-500">Work history, internships</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Work history, internships</p>
                   </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="p-4">
+              <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <WorkExperienceSection 
                   experiences={cvData.workExperience}
                   onSave={handleWorkExperienceSave}
@@ -155,17 +160,19 @@ const CvBuilderCreate = () => {
             </AccordionItem>
 
             {/* Education Section */}
-            <AccordionItem value="education" className="bg-white rounded-md shadow-sm border mb-3">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+            <AccordionItem value="education" className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md">
+              <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <GraduationCap className="h-5 w-5 mr-2 text-blue-600" />
+                  <div className="rounded-full bg-primary/10 p-2 mr-3">
+                    <GraduationCap className="h-5 w-5 text-primary" />
+                  </div>
                   <div>
                     <h3 className="text-base font-medium">Education</h3>
-                    <p className="text-xs text-gray-500">Academic background, courses</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Academic background, courses</p>
                   </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="p-4">
+              <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <EducationSection 
                   educations={cvData.education}
                   onSave={handleEducationSave}
@@ -174,17 +181,19 @@ const CvBuilderCreate = () => {
             </AccordionItem>
 
             {/* Skills Section */}
-            <AccordionItem value="skills" className="bg-white rounded-md shadow-sm border mb-3">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+            <AccordionItem value="skills" className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md">
+              <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+                  <div className="rounded-full bg-primary/10 p-2 mr-3">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                  </div>
                   <div>
                     <h3 className="text-base font-medium">Skills</h3>
-                    <p className="text-xs text-gray-500">Technical and soft skills</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Technical and soft skills</p>
                   </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="p-4">
+              <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <SkillsSection 
                   skills={cvData.skills}
                   onSave={handleSkillsSave}
@@ -193,17 +202,19 @@ const CvBuilderCreate = () => {
             </AccordionItem>
 
             {/* Summary Section */}
-            <AccordionItem value="summary" className="bg-white rounded-md shadow-sm border mb-3">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+            <AccordionItem value="summary" className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md">
+              <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <FileText className="h-5 w-5 mr-2 text-blue-600" />
+                  <div className="rounded-full bg-primary/10 p-2 mr-3">
+                    <FileText className="h-5 w-5 text-primary" />
+                  </div>
                   <div>
                     <h3 className="text-base font-medium">Professional Summary</h3>
-                    <p className="text-xs text-gray-500">Brief description about you</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Brief description about you</p>
                   </div>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="p-4">
+              <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <SummarySection 
                   defaultValues={{ summary: cvData.summary || "" }}
                   onSave={handleSummarySave}
