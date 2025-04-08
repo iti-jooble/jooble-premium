@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "@/hooks/use-toast";
 import {
   SearchForm,
   FilterBar,
@@ -107,12 +108,53 @@ const jobListings = [
   }
 ];
 
+interface JobSearchParams {
+  keywords: string;
+  location: string;
+}
+
 const JobSearch = () => {
   const { t } = useTranslation();
   const [selectedJob, setSelectedJob] = useState<(typeof jobListings)[0] | null>(null);
+  const [filteredJobs, setFilteredJobs] = useState(jobListings);
 
   const handleJobSelect = (job: typeof jobListings[0]) => {
     setSelectedJob(job);
+  };
+  
+  const handleSearch = (searchParams: JobSearchParams) => {
+    // In a real app, this would call an API with the search parameters
+    // For now, we'll just filter our mock data
+    const { keywords, location } = searchParams;
+    
+    const filtered = jobListings.filter(job => {
+      const matchesKeywords = keywords === '' || 
+        job.title.toLowerCase().includes(keywords.toLowerCase()) ||
+        job.company.toLowerCase().includes(keywords.toLowerCase()) ||
+        job.description.toLowerCase().includes(keywords.toLowerCase());
+        
+      const matchesLocation = location === '' ||
+        job.location.toLowerCase().includes(location.toLowerCase());
+        
+      return matchesKeywords && matchesLocation;
+    });
+    
+    setFilteredJobs(filtered);
+    
+    if (filtered.length === 0) {
+      toast({
+        title: t("jobSearch.noResults.title"),
+        description: t("jobSearch.noResults.description"),
+      });
+    } else {
+      toast({
+        title: t("jobSearch.resultsFound.title", { count: filtered.length }),
+        description: t("jobSearch.resultsFound.description", { count: filtered.length }),
+      });
+      
+      // Reset selected job when search results change
+      setSelectedJob(null);
+    }
   };
 
   return (
@@ -123,7 +165,7 @@ const JobSearch = () => {
       </div>
 
       {/* Search Form */}
-      <SearchForm />
+      <SearchForm onSearch={handleSearch} />
 
       {/* Filters */}
       <FilterBar />
@@ -131,7 +173,7 @@ const JobSearch = () => {
       {/* Job Listings and Detail View */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <JobListings 
-          jobs={jobListings} 
+          jobs={filteredJobs} 
           selectedJobId={selectedJob?.id || null} 
           onSelectJob={handleJobSelect} 
         />
