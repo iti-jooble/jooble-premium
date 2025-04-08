@@ -55,6 +55,23 @@ const CvBuilder = () => {
     setCvs(cvs.filter((cv) => cv.id !== id));
   };
 
+  const handleDuplicate = (cv: CV) => {
+    // Create a new CV with a unique ID but the same content
+    const newCv: CV = {
+      ...cv,
+      id: crypto.randomUUID(),
+      title: `${cv.title} (Copy)`,
+      dateCreated: new Date().toISOString(),
+    };
+    setCvs([...cvs, newCv]);
+  };
+
+  const handleDownload = (cv: CV) => {
+    // In a real application, this would generate a PDF and trigger a download
+    console.log("Download CV:", cv);
+    // For now we just show a toast in the CvTable component
+  };
+
   const handleCreateNew = () => {
     navigate("/cv-builder/create");
   };
@@ -123,7 +140,13 @@ const CvBuilder = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <CvTable cvs={cvs} onEdit={handleEdit} onDelete={handleDelete} />
+            <CvTable 
+              cvs={cvs} 
+              onEdit={handleEdit} 
+              onDelete={handleDelete} 
+              onDuplicate={handleDuplicate}
+              onDownload={handleDownload}
+            />
           </CardContent>
         </Card>
       )}
