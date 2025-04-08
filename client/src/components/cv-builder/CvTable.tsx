@@ -29,6 +29,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface CvTableProps {
   cvs: CV[];
@@ -240,48 +246,83 @@ export const CvTable = ({
                       
                       {/* Medium/large screens: Show all action buttons */}
                       <div className="hidden sm:flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => handleDownload(cv, e)}
-                          className="h-9 px-3 font-medium transition-all hover:shadow-sm hover:bg-primary/5"
-                        >
-                          <DownloadIcon className="h-4 w-4 mr-1.5" />
-                          Download
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => handleDuplicate(cv, e)}
-                          className="h-9 px-3 font-medium transition-all hover:shadow-sm hover:bg-primary/5"
-                        >
-                          <CopyIcon className="h-4 w-4 mr-1.5" />
-                          Duplicate
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEdit(cv);
-                          }}
-                          className="h-9 px-3 font-medium transition-all hover:shadow-sm"
-                        >
-                          <Edit2Icon className="h-4 w-4 mr-1.5" />
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteClick(cv.id);
-                          }}
-                          className="h-9 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 transition-all hover:shadow-sm"
-                        >
-                          <Trash2Icon className="h-4 w-4 mr-1.5" />
-                          Delete
-                        </Button>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => handleDownload(cv, e)}
+                                className="h-9 w-9 p-0 transition-all hover:shadow-sm hover:bg-primary/5"
+                              >
+                                <DownloadIcon className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Download CV</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => handleDuplicate(cv, e)}
+                                className="h-9 w-9 p-0 transition-all hover:shadow-sm hover:bg-primary/5"
+                              >
+                                <CopyIcon className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Duplicate CV</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onEdit(cv);
+                                }}
+                                className="h-9 w-9 p-0 transition-all hover:shadow-sm"
+                              >
+                                <Edit2Icon className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Edit CV</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(cv.id);
+                                }}
+                                className="h-9 w-9 p-0 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 transition-all hover:shadow-sm"
+                              >
+                                <Trash2Icon className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete CV</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                     </div>
                   </TableCell>
