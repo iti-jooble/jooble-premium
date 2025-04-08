@@ -34,9 +34,13 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [localSkills, setLocalSkills] = useState<Skill[]>(skills);
   const [newSkill, setNewSkill] = useState("");
+  const [isAddingSkill, setIsAddingSkill] = useState(false);
 
   const handleAddSkill = () => {
-    if (newSkill.trim() === "") return;
+    if (newSkill.trim() === "") {
+      setIsAddingSkill(false);
+      return;
+    }
     
     const skill: Skill = {
       id: uuidv4(),
@@ -45,6 +49,7 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
     
     setLocalSkills([...localSkills, skill]);
     setNewSkill("");
+    setIsAddingSkill(false);
     
     // Auto-save as we add skills
     handleSaveSkills([...localSkills, skill]);
@@ -54,6 +59,10 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleAddSkill();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsAddingSkill(false);
+      setNewSkill("");
     }
   };
 
@@ -135,14 +144,47 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       </div>
       
       {/* Add new skill */}
-      <Button 
-        variant="ghost" 
-        className="text-blue-600 pl-0" 
-        onClick={() => setNewSkill("New skill")}
-      >
-        <PlusCircle className="h-4 w-4 mr-2" />
-        Add another skill
-      </Button>
+      {isAddingSkill ? (
+        <div className="flex gap-2 items-center mt-2">
+          <Input
+            value={newSkill}
+            onChange={(e) => setNewSkill(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type a skill and press Enter"
+            className="max-w-xs"
+            autoFocus
+          />
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            onClick={handleAddSkill}
+          >
+            Add
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => {
+              setIsAddingSkill(false);
+              setNewSkill("");
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <Button 
+          variant="ghost" 
+          className="text-blue-600 pl-0" 
+          onClick={() => {
+            setIsAddingSkill(true);
+            setNewSkill("");
+          }}
+        >
+          <PlusCircle className="h-4 w-4 mr-2" />
+          Add another skill
+        </Button>
+      )}
       
       {/* AI suggestion box */}
       <div className="bg-blue-50 rounded-lg p-5 mt-6">
