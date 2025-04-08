@@ -5,20 +5,22 @@ import { FileSearchIcon, UploadIcon, SearchCheckIcon, LayoutIcon, BookTextIcon, 
 const CvReview = () => {
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
-      <div className="mb-8 max-w-3xl flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div className="max-w-2xl">
           <h1 className="text-3xl font-bold tracking-tight">CV Review</h1>
           <p className="text-muted-foreground mt-2">
             Get instant feedback on your CV with our AI-powered review system
           </p>
         </div>
-        <Button
-          size="lg"
-          className="px-6 transition-all hover:shadow-md hover:scale-105 mt-4 sm:mt-0"
-        >
-          <UploadIcon className="h-5 w-5 mr-2" />
-          Upload CV
-        </Button>
+        <div className="mt-4 sm:mt-0 flex justify-end">
+          <Button
+            size="lg"
+            className="px-6 transition-all hover:shadow-md hover:scale-105"
+          >
+            <UploadIcon className="h-5 w-5 mr-2" />
+            Upload CV
+          </Button>
+        </div>
       </div>
 
       <div className="mt-4">
