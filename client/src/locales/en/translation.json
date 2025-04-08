@@ -1,0 +1,110 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "add": "Add",
+      "manage": "Manage",
+      "enable": "Enable",
+      "update": "Update"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account preferences",
+    "tabs": {
+      "profile": "Profile",
+      "security": "Security",
+      "notifications": "Notifications",
+      "billing": "Billing"
+    },
+    "profile": {
+      "personalInfo": {
+        "title": "Personal Information",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Phone"
+      },
+      "professionalInfo": {
+        "title": "Professional Information",
+        "currentTitle": "Current Title",
+        "company": "Company",
+        "industry": "Industry"
+      },
+      "photo": {
+        "title": "Change Photo",
+        "helperText": "JPG, GIF or PNG. Max size 1MB"
+      }
+    },
+    "security": {
+      "password": {
+        "title": "Change Password",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "updateButton": "Update Password"
+      },
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "description": "Add an extra layer of security to your account by enabling two-factor authentication.",
+        "enableButton": "Enable 2FA"
+      }
+    },
+    "notifications": {
+      "title": "Notification Preferences",
+      "emailNotifications": {
+        "title": "Email Notifications",
+        "description": "Receive email notifications for job matches, application updates, and more"
+      },
+      "jobAlerts": {
+        "title": "Job Alerts",
+        "description": "Get notified when new jobs matching your profile are posted"
+      },
+      "applicationUpdates": {
+        "title": "Application Updates",
+        "description": "Receive updates about your job applications"
+      },
+      "productUpdates": {
+        "title": "Product Updates",
+        "description": "Stay informed about new features and improvements"
+      },
+      "saveButton": "Save Preferences"
+    },
+    "billing": {
+      "currentPlan": {
+        "title": "Current Plan",
+        "premiumBadge": "Premium",
+        "freeBadge": "Free",
+        "premiumDescription": "You are currently on the Premium plan, which includes all features and unlimited access.",
+        "freeDescription": "You are currently on the Free plan. Upgrade to Premium for full access to all features.",
+        "manageButton": "Manage Plan",
+        "upgradeButton": "Upgrade to Premium",
+        "cancelButton": "Cancel Subscription"
+      },
+      "paymentMethods": {
+        "title": "Payment Methods",
+        "cardExpiry": "Expires {{month}}/{{year}}",
+        "addButton": "Add Payment Method"
+      },
+      "unsubscribe": {
+        "title": "Cancel Premium Subscription",
+        "description": "Are you sure you want to cancel your Premium subscription? You'll lose access to premium features after your current billing period ends.",
+        "featuresLostTitle": "You will lose access to:",
+        "featuresLost": [
+          "Unlimited CV creation",
+          "Expert CV review and feedback",
+          "Advanced job matching",
+          "AI-powered cover letter generator"
+        ],
+        "keepButton": "Keep Subscription",
+        "cancelButton": "Cancel Subscription",
+        "successTitle": "Unsubscribed Successfully",
+        "successMessage": "Your Premium subscription has been cancelled. You will continue to have access to Premium features until the end of your current billing period.",
+        "toastTitle": "Subscription Cancelled",
+        "toastDescription": "Your Premium plan has been cancelled successfully."
+      }
+    }
+  }
+}

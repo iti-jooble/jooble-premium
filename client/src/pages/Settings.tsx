@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ const Settings = () => {
   const [unsubscribeDialogOpen, setUnsubscribeDialogOpen] = useState(false);
   const [unsubscribeSuccess, setUnsubscribeSuccess] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const handleUnsubscribe = () => {
     // Here would be the API call to unsubscribe the user
@@ -29,8 +31,8 @@ const Settings = () => {
     setUnsubscribeSuccess(true);
     
     toast({
-      title: "Subscription Cancelled",
-      description: "Your Premium plan has been cancelled successfully.",
+      title: t('settings.billing.unsubscribe.toastTitle'),
+      description: t('settings.billing.unsubscribe.toastDescription'),
       variant: "default",
     });
   };
@@ -38,27 +40,27 @@ const Settings = () => {
   return (
     <div className="p-8 animate-in fade-in duration-300">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-neutral-800">Settings</h1>
-        <p className="text-neutral-600 mt-1">Manage your account preferences</p>
+        <h1 className="text-2xl font-bold text-neutral-800">{t('settings.title')}</h1>
+        <p className="text-neutral-600 mt-1">{t('settings.subtitle')}</p>
       </div>
 
       <Tabs defaultValue="profile" className="mb-8">
         <TabsList className="mb-6">
           <TabsTrigger value="profile" className="flex items-center">
             <UserIcon className="h-4 w-4 mr-2" />
-            Profile
+            {t('settings.tabs.profile')}
           </TabsTrigger>
           <TabsTrigger value="security" className="flex items-center">
             <ShieldIcon className="h-4 w-4 mr-2" />
-            Security
+            {t('settings.tabs.security')}
           </TabsTrigger>
           <TabsTrigger value="notifications" className="flex items-center">
             <BellIcon className="h-4 w-4 mr-2" />
-            Notifications
+            {t('settings.tabs.notifications')}
           </TabsTrigger>
           <TabsTrigger value="billing" className="flex items-center">
             <CreditCardIcon className="h-4 w-4 mr-2" />
-            Billing
+            {t('settings.tabs.billing')}
           </TabsTrigger>
         </TabsList>
         
@@ -201,11 +203,11 @@ const Settings = () => {
           <Card className="shadow-sm mb-6">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">Current Plan</h2>
+                <h2 className="text-lg font-semibold">{t('settings.billing.currentPlan.title')}</h2>
                 {isPremium ? (
-                  <Badge className="bg-primary text-white">Premium</Badge>
+                  <Badge className="bg-primary text-white">{t('settings.billing.currentPlan.premiumBadge')}</Badge>
                 ) : (
-                  <Badge variant="outline">Free</Badge>
+                  <Badge variant="outline">{t('settings.billing.currentPlan.freeBadge')}</Badge>
                 )}
               </div>
               
@@ -216,9 +218,9 @@ const Settings = () => {
                       <CheckIcon className="h-5 w-5 text-green-500" />
                     </div>
                     <div className="ml-3">
-                      <h3 className="text-sm font-medium text-green-800">Unsubscribed Successfully</h3>
+                      <h3 className="text-sm font-medium text-green-800">{t('settings.billing.unsubscribe.successTitle')}</h3>
                       <div className="mt-2 text-sm text-green-700">
-                        <p>Your Premium subscription has been cancelled. You will continue to have access to Premium features until the end of your current billing period.</p>
+                        <p>{t('settings.billing.unsubscribe.successMessage')}</p>
                       </div>
                     </div>
                   </div>
@@ -228,25 +230,25 @@ const Settings = () => {
               {isPremium ? (
                 <>
                   <p className="text-neutral-600 mb-4">
-                    You are currently on the Premium plan, which includes all features and unlimited access.
+                    {t('settings.billing.currentPlan.premiumDescription')}
                   </p>
                   <div className="flex space-x-3">
-                    <Button variant="outline">Manage Plan</Button>
+                    <Button variant="outline">{t('settings.billing.currentPlan.manageButton')}</Button>
                     <Button 
                       variant="outline" 
                       className="text-destructive hover:text-destructive"
                       onClick={() => setUnsubscribeDialogOpen(true)}
                     >
-                      Cancel Subscription
+                      {t('settings.billing.currentPlan.cancelButton')}
                     </Button>
                   </div>
                 </>
               ) : (
                 <>
                   <p className="text-neutral-600 mb-4">
-                    You are currently on the Free plan. Upgrade to Premium for full access to all features.
+                    {t('settings.billing.currentPlan.freeDescription')}
                   </p>
-                  <Button>Upgrade to Premium</Button>
+                  <Button>{t('settings.billing.currentPlan.upgradeButton')}</Button>
                 </>
               )}
             </CardContent>
@@ -255,19 +257,21 @@ const Settings = () => {
           {isPremium && (
             <Card className="shadow-sm">
               <CardContent className="p-6">
-                <h2 className="text-lg font-semibold mb-4">Payment Methods</h2>
+                <h2 className="text-lg font-semibold mb-4">{t('settings.billing.paymentMethods.title')}</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between py-2 px-4 border rounded-lg">
                     <div className="flex items-center">
                       <div className="w-10 h-6 bg-neutral-200 rounded mr-3"></div>
                       <div>
                         <p className="font-medium">•••• •••• •••• 4242</p>
-                        <p className="text-xs text-neutral-500">Expires 06/2025</p>
+                        <p className="text-xs text-neutral-500">
+                          {t('settings.billing.paymentMethods.cardExpiry', { month: '06', year: '2025' })}
+                        </p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm">Edit</Button>
+                    <Button variant="ghost" size="sm">{t('common.buttons.edit')}</Button>
                   </div>
-                  <Button variant="outline" className="w-full">Add Payment Method</Button>
+                  <Button variant="outline" className="w-full">{t('settings.billing.paymentMethods.addButton')}</Button>
                 </div>
               </CardContent>
             </Card>
@@ -280,39 +284,29 @@ const Settings = () => {
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <AlertTriangleIcon className="h-5 w-5 text-amber-500" />
-                <span>Cancel Premium Subscription</span>
+                <span>{t('settings.billing.unsubscribe.title')}</span>
               </DialogTitle>
               <DialogDescription>
-                Are you sure you want to cancel your Premium subscription? You'll lose access to premium features after your current billing period ends.
+                {t('settings.billing.unsubscribe.description')}
               </DialogDescription>
             </DialogHeader>
             <div className="bg-muted/50 rounded-md p-4">
-              <h4 className="font-medium text-sm mb-2">You will lose access to:</h4>
+              <h4 className="font-medium text-sm mb-2">{t('settings.billing.unsubscribe.featuresLostTitle')}</h4>
               <ul className="text-sm space-y-1">
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
-                  Unlimited CV creation
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
-                  Expert CV review and feedback
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
-                  Advanced job matching
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
-                  AI-powered cover letter generator
-                </li>
+                {t('settings.billing.unsubscribe.featuresLost', { returnObjects: true }).map((feature, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                    {feature}
+                  </li>
+                ))}
               </ul>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setUnsubscribeDialogOpen(false)}>
-                Keep Subscription
+                {t('settings.billing.unsubscribe.keepButton')}
               </Button>
               <Button variant="destructive" onClick={handleUnsubscribe}>
-                Cancel Subscription
+                {t('settings.billing.unsubscribe.cancelButton')}
               </Button>
             </DialogFooter>
           </DialogContent>
