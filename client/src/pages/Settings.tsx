@@ -1,11 +1,40 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SettingsIcon, UserIcon, ShieldIcon, BellIcon, CreditCardIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { UserIcon, ShieldIcon, BellIcon, CreditCardIcon, CheckIcon, AlertTriangleIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const Settings = () => {
+  const [isPremium, setIsPremium] = useState(true);
+  const [unsubscribeDialogOpen, setUnsubscribeDialogOpen] = useState(false);
+  const [unsubscribeSuccess, setUnsubscribeSuccess] = useState(false);
+  const { toast } = useToast();
+  
+  const handleUnsubscribe = () => {
+    // Here would be the API call to unsubscribe the user
+    setIsPremium(false);
+    setUnsubscribeDialogOpen(false);
+    setUnsubscribeSuccess(true);
+    
+    toast({
+      title: "Subscription Cancelled",
+      description: "Your Premium plan has been cancelled successfully.",
+      variant: "default",
+    });
+  };
+  
   return (
     <div className="p-8 animate-in fade-in duration-300">
       <div className="mb-6">
@@ -173,39 +202,121 @@ const Settings = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Current Plan</h2>
-                <Badge className="bg-primary text-white">Premium</Badge>
+                {isPremium ? (
+                  <Badge className="bg-primary text-white">Premium</Badge>
+                ) : (
+                  <Badge variant="outline">Free</Badge>
+                )}
               </div>
-              <p className="text-neutral-600 mb-4">
-                You are currently on the Premium plan, which includes all features and unlimited access.
-              </p>
-              <div className="flex space-x-3">
-                <Button variant="outline">Upgrade Plan</Button>
-                <Button variant="outline" className="text-destructive hover:text-destructive">
-                  Cancel Subscription
-                </Button>
-              </div>
+              
+              {unsubscribeSuccess ? (
+                <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-4">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <CheckIcon className="h-5 w-5 text-green-500" />
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-green-800">Unsubscribed Successfully</h3>
+                      <div className="mt-2 text-sm text-green-700">
+                        <p>Your Premium subscription has been cancelled. You will continue to have access to Premium features until the end of your current billing period.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+              
+              {isPremium ? (
+                <>
+                  <p className="text-neutral-600 mb-4">
+                    You are currently on the Premium plan, which includes all features and unlimited access.
+                  </p>
+                  <div className="flex space-x-3">
+                    <Button variant="outline">Manage Plan</Button>
+                    <Button 
+                      variant="outline" 
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => setUnsubscribeDialogOpen(true)}
+                    >
+                      Cancel Subscription
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-neutral-600 mb-4">
+                    You are currently on the Free plan. Upgrade to Premium for full access to all features.
+                  </p>
+                  <Button>Upgrade to Premium</Button>
+                </>
+              )}
             </CardContent>
           </Card>
           
-          <Card className="shadow-sm">
-            <CardContent className="p-6">
-              <h2 className="text-lg font-semibold mb-4">Payment Methods</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between py-2 px-4 border rounded-lg">
-                  <div className="flex items-center">
-                    <div className="w-10 h-6 bg-neutral-200 rounded mr-3"></div>
-                    <div>
-                      <p className="font-medium">•••• •••• •••• 4242</p>
-                      <p className="text-xs text-neutral-500">Expires 06/2025</p>
+          {isPremium && (
+            <Card className="shadow-sm">
+              <CardContent className="p-6">
+                <h2 className="text-lg font-semibold mb-4">Payment Methods</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between py-2 px-4 border rounded-lg">
+                    <div className="flex items-center">
+                      <div className="w-10 h-6 bg-neutral-200 rounded mr-3"></div>
+                      <div>
+                        <p className="font-medium">•••• •••• •••• 4242</p>
+                        <p className="text-xs text-neutral-500">Expires 06/2025</p>
+                      </div>
                     </div>
+                    <Button variant="ghost" size="sm">Edit</Button>
                   </div>
-                  <Button variant="ghost" size="sm">Edit</Button>
+                  <Button variant="outline" className="w-full">Add Payment Method</Button>
                 </div>
-                <Button variant="outline" className="w-full">Add Payment Method</Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
+        
+        {/* Unsubscribe Confirmation Dialog */}
+        <Dialog open={unsubscribeDialogOpen} onOpenChange={setUnsubscribeDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <AlertTriangleIcon className="h-5 w-5 text-amber-500" />
+                <span>Cancel Premium Subscription</span>
+              </DialogTitle>
+              <DialogDescription>
+                Are you sure you want to cancel your Premium subscription? You'll lose access to premium features after your current billing period ends.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="bg-muted/50 rounded-md p-4">
+              <h4 className="font-medium text-sm mb-2">You will lose access to:</h4>
+              <ul className="text-sm space-y-1">
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                  Unlimited CV creation
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                  Expert CV review and feedback
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                  Advanced job matching
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
+                  AI-powered cover letter generator
+                </li>
+              </ul>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setUnsubscribeDialogOpen(false)}>
+                Keep Subscription
+              </Button>
+              <Button variant="destructive" onClick={handleUnsubscribe}>
+                Cancel Subscription
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </Tabs>
     </div>
   );
