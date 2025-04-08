@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit2Icon, TrashIcon } from "lucide-react";
+import { Edit2Icon, Trash2Icon, FileTextIcon, BarChart3Icon, CalendarIcon } from "lucide-react";
 import ConfirmationModal from "@/components/cv-builder/ConfirmationModal";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -47,9 +47,15 @@ export const CvTable = ({ cvs, onEdit, onDelete }: CvTableProps) => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "bg-green-100 text-green-800";
-    if (score >= 60) return "bg-yellow-100 text-yellow-800";
-    return "bg-red-100 text-red-800";
+    if (score >= 80) return "bg-green-100 text-green-800 border-green-200";
+    if (score >= 60) return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    return "bg-red-100 text-red-800 border-red-200";
+  };
+
+  const getScoreClass = (score: number) => {
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
   };
 
   const formatDate = (dateString: string) => {
@@ -63,51 +69,99 @@ export const CvTable = ({ cvs, onEdit, onDelete }: CvTableProps) => {
 
   return (
     <>
-      <div className="rounded-md border">
+      <div>
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Score</TableHead>
-              <TableHead>Date Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+            <TableRow className="border-b-2 border-muted">
+              <TableHead className="py-4 text-sm font-semibold">
+                <div className="flex items-center">
+                  <FileTextIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Title
+                </div>
+              </TableHead>
+              <TableHead className="py-4 text-sm font-semibold">
+                <div className="flex items-center">
+                  <BarChart3Icon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Score
+                </div>
+              </TableHead>
+              <TableHead className="py-4 text-sm font-semibold">
+                <div className="flex items-center">
+                  <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Date Created
+                </div>
+              </TableHead>
+              <TableHead className="text-right py-4 text-sm font-semibold">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {cvs.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-8 text-neutral-500">
-                  No CVs found. Create a new one to get started.
+                <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">
+                  <div className="flex flex-col items-center">
+                    <FileTextIcon className="h-10 w-10 mb-2 text-muted-foreground/50" />
+                    No CVs found. Create a new one to get started.
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
               cvs.map((cv) => (
-                <TableRow key={cv.id}>
-                  <TableCell className="font-medium">{cv.title}</TableCell>
-                  <TableCell>
-                    <Badge className={getScoreColor(cv.score)}>
-                      {cv.score}%
-                    </Badge>
+                <TableRow 
+                  key={cv.id} 
+                  className="hover:bg-muted/30 transition-colors group cursor-pointer border-b border-dashed"
+                  onClick={() => onEdit(cv)}
+                >
+                  <TableCell className="font-medium py-4">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-primary/10 rounded-md flex items-center justify-center mr-3 group-hover:bg-primary/20 transition-colors">
+                        <FileTextIcon className="h-5 w-5 text-primary" />
+                      </div>
+                      <span className="group-hover:text-primary transition-colors">{cv.title}</span>
+                    </div>
                   </TableCell>
-                  <TableCell>{formatDate(cv.dateCreated)}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onEdit(cv)}
-                        className="h-8 px-2"
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-2">
+                      <Badge 
+                        variant="outline" 
+                        className={`${getScoreColor(cv.score)} px-2.5 py-1 rounded-full font-medium border`}
                       >
-                        <Edit2Icon className="h-4 w-4 mr-1" />
+                        {cv.score}%
+                      </Badge>
+                      <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full ${getScoreClass(cv.score)}`}
+                          style={{ width: `${cv.score}%`, backgroundColor: 'currentColor' }}
+                        />
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4 text-muted-foreground">
+                    {formatDate(cv.dateCreated)}
+                  </TableCell>
+                  <TableCell className="text-right py-4">
+                    <div className="flex justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit(cv);
+                        }}
+                        className="h-9 px-3 font-medium transition-all hover:shadow-sm"
+                      >
+                        <Edit2Icon className="h-4 w-4 mr-1.5" />
                         Edit
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleDeleteClick(cv.id)}
-                        className="h-8 px-2 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(cv.id);
+                        }}
+                        className="h-9 px-3 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 transition-all hover:shadow-sm"
                       >
-                        <TrashIcon className="h-4 w-4 mr-1" />
+                        <Trash2Icon className="h-4 w-4 mr-1.5" />
                         Delete
                       </Button>
                     </div>

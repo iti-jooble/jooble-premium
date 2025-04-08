@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileEditIcon, LinkedinIcon, PlusIcon } from "lucide-react";
+import { FileEditIcon, LinkedinIcon, PlusIcon, ChevronRightIcon } from "lucide-react";
 import { CvTable } from "@/components/cv-builder/CvTable";
 import { CV } from "@/components/cv-builder/types";
 import { useToast } from "@/hooks/use-toast";
@@ -67,47 +67,62 @@ const CvBuilder = () => {
   };
 
   return (
-    <div className="p-8 animate-in fade-in duration-300">
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="p-6 sm:p-8 animate-in fade-in duration-300">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-800">CV Builder</h1>
-          <p className="text-neutral-600 mt-1">Create and manage your professional CVs</p>
+          <h1 className="text-3xl font-bold tracking-tight">CV Builder</h1>
+          <p className="text-muted-foreground mt-2">Create and manage your professional CVs</p>
         </div>
         <div className="flex gap-3">
-          <Button onClick={handleCreateNew} className="flex-1 sm:flex-auto">
-            <PlusIcon className="h-4 w-4 mr-2" />
+          <Button 
+            onClick={handleCreateNew} 
+            className="flex-1 sm:flex-auto transition-all hover:scale-105"
+            size="lg"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
             Create New CV
           </Button>
           <Button 
             variant="outline" 
             onClick={handleCreateFromLinkedIn}
-            className="flex-1 sm:flex-auto"
+            className="flex-1 sm:flex-auto transition-all hover:border-primary/70"
+            size="lg"
           >
-            <LinkedinIcon className="h-4 w-4 mr-2" />
+            <LinkedinIcon className="h-5 w-5 mr-2" />
             Import from LinkedIn
           </Button>
         </div>
       </div>
 
       {cvs.length === 0 ? (
-        <Card className="shadow-sm">
-          <CardContent className="p-8 flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-              <FileEditIcon className="h-8 w-8 text-blue-500" />
+        <Card className="shadow-lg border-0 bg-gradient-to-br from-background to-muted/50">
+          <CardContent className="p-10 flex flex-col items-center justify-center text-center">
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 ring-4 ring-primary/5">
+              <FileEditIcon className="h-10 w-10 text-primary" />
             </div>
-            <h2 className="text-xl font-semibold mb-2">Start Building Your CV</h2>
-            <p className="text-neutral-600 max-w-md mb-6">
+            <h2 className="text-2xl font-semibold mb-3">Start Building Your CV</h2>
+            <p className="text-muted-foreground max-w-md mb-8">
               Create a professional CV with our easy-to-use builder. Choose from multiple templates and customize to match your style.
             </p>
-            <Button onClick={handleCreateNew}>Create New CV</Button>
+            <Button 
+              onClick={handleCreateNew} 
+              size="lg" 
+              className="px-8 transition-all hover:shadow-md hover:scale-105"
+            >
+              Create New CV
+              <ChevronRightIcon className="ml-2 h-4 w-4" />
+            </Button>
           </CardContent>
         </Card>
       ) : (
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle>Your CVs</CardTitle>
+        <Card className="shadow-md border overflow-hidden">
+          <CardHeader className="bg-muted/40 pb-4">
+            <CardTitle className="text-xl flex items-center">
+              <FileEditIcon className="mr-2 h-5 w-5 text-primary" />
+              Your CVs
+            </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             <CvTable cvs={cvs} onEdit={handleEdit} onDelete={handleDelete} />
           </CardContent>
         </Card>
