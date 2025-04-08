@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { BriefcaseIcon, HomeIcon, FileEditIcon, FileSearchIcon, SearchIcon, LinkIcon, MailIcon, SettingsIcon, HelpCircleIcon, LogOutIcon, UserIcon } from "lucide-react";
+import { BriefcaseIcon, HomeIcon, FileEditIcon, FileSearchIcon, SearchIcon, LinkIcon, MailIcon, SettingsIcon, HelpCircleIcon, LogOutIcon, UserIcon, CompassIcon, MapIcon } from "lucide-react";
 import { NavItem } from "@/types";
 import { Separator } from "@/components/ui/separator";
 
@@ -24,10 +24,17 @@ const SideMenu = () => {
     <aside className="w-64 bg-white shadow-md flex flex-col z-10 h-screen">
       <div className="p-6 border-b border-neutral-200">
         <div className="flex items-center space-x-3">
-          <div className="bg-primary text-primary-foreground rounded-lg p-2">
-            <BriefcaseIcon className="h-5 w-5" />
+          <div className="relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary/60 rounded-lg blur-sm opacity-70"></div>
+            <div className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-lg p-2.5 overflow-hidden">
+              <CompassIcon className="h-5 w-5 absolute opacity-20 -top-1 -left-1 rotate-12 scale-150" />
+              <MapIcon className="h-5 w-5 relative z-10" />
+            </div>
           </div>
-          <h1 className="font-semibold text-lg text-neutral-800">Job Compass</h1>
+          <div>
+            <h1 className="font-semibold text-lg text-neutral-800">Job Compass</h1>
+            <p className="text-xs text-primary font-medium -mt-0.5">by Jooble</p>
+          </div>
         </div>
         <p className="text-xs text-muted-foreground mt-2">Your career navigator</p>
       </div>
