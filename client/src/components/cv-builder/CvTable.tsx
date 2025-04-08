@@ -246,7 +246,7 @@ export const CvTable = ({
                       
                       {/* Medium/large screens: Show all action buttons */}
                       <div className="hidden sm:flex gap-2">
-                        <TooltipProvider>
+                        <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
@@ -258,13 +258,13 @@ export const CvTable = ({
                                 <DownloadIcon className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>
+                            <TooltipContent side="bottom" sideOffset={5}>
                               <p>Download CV</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                         
-                        <TooltipProvider>
+                        <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
@@ -276,34 +276,34 @@ export const CvTable = ({
                                 <CopyIcon className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>
+                            <TooltipContent side="bottom" sideOffset={5}>
                               <p>Duplicate CV</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                         
-                        <TooltipProvider>
+                        <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
-                                variant="secondary"
+                                variant="outline"
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   onEdit(cv);
                                 }}
-                                className="h-9 w-9 p-0 transition-all hover:shadow-sm"
+                                className="h-9 w-9 p-0 transition-all hover:shadow-sm hover:bg-primary/5"
                               >
                                 <Edit2Icon className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>
+                            <TooltipContent side="bottom" sideOffset={5}>
                               <p>Edit CV</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                         
-                        <TooltipProvider>
+                        <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
@@ -318,7 +318,7 @@ export const CvTable = ({
                                 <Trash2Icon className="h-4 w-4" />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>
+                            <TooltipContent side="bottom" sideOffset={5}>
                               <p>Delete CV</p>
                             </TooltipContent>
                           </Tooltip>
