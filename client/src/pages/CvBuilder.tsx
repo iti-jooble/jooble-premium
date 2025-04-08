@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileEditIcon, LinkedinIcon, PlusIcon, ChevronRightIcon } from "lucide-react";
+import {
+  FileEditIcon,
+  LinkedinIcon,
+  PlusIcon,
+  ChevronRightIcon,
+} from "lucide-react";
 import { CvTable } from "@/components/cv-builder/CvTable";
 import { CV } from "@/components/cv-builder/types";
 import { useToast } from "@/hooks/use-toast";
@@ -87,20 +92,22 @@ const CvBuilder = () => {
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-primary-foreground">CV Builder</h1>
-          <p className="text-muted-foreground mt-2">Create and manage your professional CVs</p>
+          <h1 className="text-3xl font-bold tracking-tight">CV Builder</h1>
+          <p className="text-muted-foreground mt-2">
+            Create and manage your professional CVs
+          </p>
         </div>
         <div className="flex gap-3">
-          <Button 
-            onClick={handleCreateNew} 
+          <Button
+            onClick={handleCreateNew}
             className="flex-1 sm:flex-auto transition-all hover:scale-105"
             size="lg"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
             Create New CV
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={handleCreateFromLinkedIn}
             className="flex-1 sm:flex-auto transition-all hover:border-primary/70"
             size="lg"
@@ -117,13 +124,16 @@ const CvBuilder = () => {
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 ring-4 ring-primary/5">
               <FileEditIcon className="h-10 w-10 text-primary" />
             </div>
-            <h2 className="text-2xl font-semibold mb-3">Start Building Your CV</h2>
+            <h2 className="text-2xl font-semibold mb-3">
+              Start Building Your CV
+            </h2>
             <p className="text-muted-foreground max-w-md mb-8">
-              Create a professional CV with our easy-to-use builder. Choose from multiple templates and customize to match your style.
+              Create a professional CV with our easy-to-use builder. Choose from
+              multiple templates and customize to match your style.
             </p>
-            <Button 
-              onClick={handleCreateNew} 
-              size="lg" 
+            <Button
+              onClick={handleCreateNew}
+              size="lg"
               className="px-8 transition-all hover:shadow-md hover:scale-105"
             >
               Create New CV
@@ -142,10 +152,10 @@ const CvBuilder = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <CvTable 
-              cvs={cvs} 
-              onEdit={handleEdit} 
-              onDelete={handleDelete} 
+            <CvTable
+              cvs={cvs}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
               onDuplicate={handleDuplicate}
               onDownload={handleDownload}
             />
