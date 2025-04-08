@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   SearchForm,
   FilterBar,
@@ -107,6 +108,7 @@ const jobListings = [
 ];
 
 const JobSearch = () => {
+  const { t } = useTranslation();
   const [selectedJob, setSelectedJob] = useState<(typeof jobListings)[0] | null>(null);
 
   const handleJobSelect = (job: typeof jobListings[0]) => {
@@ -116,8 +118,8 @@ const JobSearch = () => {
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20 min-h-screen">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Job Search</h1>
-        <p className="text-muted-foreground mt-2">Search thousands of job listings from multiple sources in one place</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t("jobSearch.title")}</h1>
+        <p className="text-muted-foreground mt-2">{t("jobSearch.subtitle")}</p>
       </div>
 
       {/* Search Form */}

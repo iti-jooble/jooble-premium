@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useTranslation } from "react-i18next";
 import {
   BriefcaseIcon,
   ChevronDownIcon,
@@ -17,13 +18,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const FilterBar = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="mb-6 flex flex-wrap gap-3">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="flex items-center">
             <BriefcaseIcon className="h-4 w-4 mr-2" />
-            Job Type
+            {t("jobSearch.filters.jobType")}
             <ChevronDownIcon className="h-4 w-4 ml-2" />
           </Button>
         </DropdownMenuTrigger>
@@ -45,7 +48,7 @@ export const FilterBar = () => {
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="flex items-center">
             <BuildingIcon className="h-4 w-4 mr-2" />
-            Experience Level
+            {t("jobSearch.filters.experienceLevel")}
             <ChevronDownIcon className="h-4 w-4 ml-2" />
           </Button>
         </DropdownMenuTrigger>
@@ -67,13 +70,13 @@ export const FilterBar = () => {
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="flex items-center">
             <DollarSignIcon className="h-4 w-4 mr-2" />
-            Salary Range
+            {t("jobSearch.filters.salary")}
             <ChevronDownIcon className="h-4 w-4 ml-2" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-72 p-4">
           <div className="space-y-4">
-            <h4 className="font-medium text-sm">Salary Range</h4>
+            <h4 className="font-medium text-sm">{t("jobSearch.filters.salary")}</h4>
             <Slider defaultValue={[100000]} max={200000} step={10000} className="my-6" />
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>$0</span>
@@ -81,7 +84,7 @@ export const FilterBar = () => {
               <span>$200,000+</span>
             </div>
             <div className="pt-2 flex justify-end">
-              <Button size="sm">Apply</Button>
+              <Button size="sm">{t("common.buttons.apply")}</Button>
             </div>
           </div>
         </DropdownMenuContent>
@@ -89,12 +92,12 @@ export const FilterBar = () => {
 
       <Button variant="outline" size="sm" className="flex items-center">
         <CalendarIcon className="h-4 w-4 mr-2" />
-        Date Posted
+        {t("jobSearch.filters.datePosted")}
         <ChevronDownIcon className="h-4 w-4 ml-2" />
       </Button>
 
       <Button variant="outline" size="sm" className="ml-auto flex items-center">
-        Clear All
+        {t("jobSearch.filters.clearButton")}
         <XIcon className="h-4 w-4 ml-2" />
       </Button>
     </div>

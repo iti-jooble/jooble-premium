@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CV } from "./types";
 import {
   Table,
@@ -51,6 +52,7 @@ export const CvTable = ({
   onDuplicate = () => {}, 
   onDownload = () => {} 
 }: CvTableProps) => {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCvId, setSelectedCvId] = useState<string | null>(null);
   const { toast } = useToast();
@@ -65,7 +67,7 @@ export const CvTable = ({
       onDelete(selectedCvId);
       setIsModalOpen(false);
       toast({
-        title: "CV deleted",
+        title: t("common.notifications.success"),
         description: "Your CV has been deleted successfully.",
       });
     }
@@ -80,7 +82,7 @@ export const CvTable = ({
     e.stopPropagation();
     // In a real app, this would create a copy with a new ID, but for demo we just show a toast
     toast({
-      title: "CV duplicated",
+      title: t("common.notifications.success"),
       description: `A copy of "${cv.title}" has been created.`,
     });
     onDuplicate(cv);
@@ -90,7 +92,7 @@ export const CvTable = ({
     e.stopPropagation();
     // In a real app, this would create a PDF and download it, but for demo we just show a toast
     toast({
-      title: "CV downloaded",
+      title: t("common.notifications.success"),
       description: `"${cv.title}" has been downloaded.`,
     });
     onDownload(cv);
@@ -126,22 +128,22 @@ export const CvTable = ({
               <TableHead className="py-4 text-sm font-semibold">
                 <div className="flex items-center">
                   <FileTextIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-                  Title
+                  {t("cvBuilder.table.title")}
                 </div>
               </TableHead>
               <TableHead className="py-4 text-sm font-semibold">
                 <div className="flex items-center">
                   <BarChart3Icon className="h-4 w-4 mr-2 text-muted-foreground" />
-                  Score
+                  {t("cvBuilder.table.score")}
                 </div>
               </TableHead>
               <TableHead className="py-4 text-sm font-semibold">
                 <div className="flex items-center">
                   <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-                  Date Created
+                  {t("cvBuilder.table.created")}
                 </div>
               </TableHead>
-              <TableHead className="text-right py-4 text-sm font-semibold">Actions</TableHead>
+              <TableHead className="text-right py-4 text-sm font-semibold">{t("cvBuilder.table.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -220,14 +222,14 @@ export const CvTable = ({
                               className="cursor-pointer"
                             >
                               <DownloadIcon className="h-4 w-4 mr-2" />
-                              <span>Download</span>
+                              <span>{t("common.buttons.download")}</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem 
                               onClick={(e) => handleDuplicate(cv, e as unknown as React.MouseEvent)}
                               className="cursor-pointer"
                             >
                               <CopyIcon className="h-4 w-4 mr-2" />
-                              <span>Duplicate</span>
+                              <span>{t("common.buttons.duplicate")}</span>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem 
@@ -238,7 +240,7 @@ export const CvTable = ({
                               className="cursor-pointer text-red-600 focus:text-red-600"
                             >
                               <Trash2Icon className="h-4 w-4 mr-2" />
-                              <span>Delete</span>
+                              <span>{t("common.buttons.delete")}</span>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -259,7 +261,7 @@ export const CvTable = ({
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent side="bottom" sideOffset={5}>
-                              <p>Download CV</p>
+                              <p>{t("common.buttons.download")} CV</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -277,7 +279,7 @@ export const CvTable = ({
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent side="bottom" sideOffset={5}>
-                              <p>Duplicate CV</p>
+                              <p>{t("common.buttons.duplicate")} CV</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -298,7 +300,7 @@ export const CvTable = ({
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent side="bottom" sideOffset={5}>
-                              <p>Edit CV</p>
+                              <p>{t("common.buttons.edit")} CV</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -319,7 +321,7 @@ export const CvTable = ({
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent side="bottom" sideOffset={5}>
-                              <p>Delete CV</p>
+                              <p>{t("common.buttons.delete")} CV</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -337,10 +339,10 @@ export const CvTable = ({
         isOpen={isModalOpen}
         onClose={cancelDelete}
         onConfirm={confirmDelete}
-        title="Delete CV"
+        title={t("common.buttons.delete") + " CV"}
         message="Are you sure you want to delete this CV? This action cannot be undone."
-        confirmButtonText="Delete"
-        cancelButtonText="Cancel"
+        confirmButtonText={t("common.buttons.delete")}
+        cancelButtonText={t("common.buttons.cancel")}
       />
     </>
   );

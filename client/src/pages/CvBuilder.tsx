@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +42,7 @@ const mockCvs: CV[] = [
 ];
 
 const CvBuilder = () => {
+  const { t } = useTranslation();
   const [cvs, setCvs] = useState<CV[]>(mockCvs);
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -48,8 +50,8 @@ const CvBuilder = () => {
   const handleEdit = (cv: CV) => {
     // In a real application, we would navigate to the edit page with the CV ID
     toast({
-      title: "Editing CV",
-      description: `Editing CV: ${cv.title}`,
+      title: t("cvBuilder.editingCv.title"),
+      description: t("cvBuilder.editingCv.description", { title: cv.title }),
     });
     console.log("Edit CV:", cv);
     // For now, we'll just redirect to step 1
@@ -83,8 +85,8 @@ const CvBuilder = () => {
 
   const handleCreateFromLinkedIn = () => {
     toast({
-      title: "LinkedIn Import",
-      description: "This feature is coming soon. Stay tuned!",
+      title: t("cvBuilder.linkedInImport.title"),
+      description: t("cvBuilder.linkedInImport.description"),
     });
   };
 
@@ -92,9 +94,9 @@ const CvBuilder = () => {
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">CV Builder</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t("cvBuilder.title")}</h1>
           <p className="text-muted-foreground mt-2">
-            Create and manage your professional CVs
+            {t("cvBuilder.subtitle")}
           </p>
         </div>
         <div className="flex gap-3">
@@ -104,7 +106,7 @@ const CvBuilder = () => {
             size="lg"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
-            Create New CV
+            {t("cvBuilder.createNew")}
           </Button>
           <Button
             variant="outline"
@@ -113,7 +115,7 @@ const CvBuilder = () => {
             size="lg"
           >
             <LinkedinIcon className="h-5 w-5 mr-2" />
-            Import from LinkedIn
+            {t("cvBuilder.importFromLinkedIn")}
           </Button>
         </div>
       </div>
@@ -125,18 +127,17 @@ const CvBuilder = () => {
               <FileEditIcon className="h-10 w-10 text-primary" />
             </div>
             <h2 className="text-2xl font-semibold mb-3">
-              Start Building Your CV
+              {t("cvBuilder.noData.title")}
             </h2>
             <p className="text-muted-foreground max-w-md mb-8">
-              Create a professional CV with our easy-to-use builder. Choose from
-              multiple templates and customize to match your style.
+              {t("cvBuilder.noData.description")}
             </p>
             <Button
               onClick={handleCreateNew}
               size="lg"
               className="px-8 transition-all hover:shadow-md hover:scale-105"
             >
-              Create New CV
+              {t("cvBuilder.noData.button")}
               <ChevronRightIcon className="ml-2 h-4 w-4" />
             </Button>
           </CardContent>
@@ -148,7 +149,7 @@ const CvBuilder = () => {
               <div className="rounded-full bg-primary/10 p-1.5 mr-2">
                 <FileEditIcon className="h-5 w-5 text-primary" />
               </div>
-              Your CVs
+              {t("cvBuilder.yourCvs")}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">

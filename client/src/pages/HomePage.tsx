@@ -10,14 +10,19 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { toolsData } from "@/lib/data";
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 
 const HomePage = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Welcome, John</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {t("homePage.welcome", { name: "John" })}
+        </h1>
         <p className="text-muted-foreground mt-2">
-          Your job search toolkit is ready to help you succeed.
+          {t("homePage.subtitle")}
         </p>
       </div>
 
@@ -34,7 +39,7 @@ const HomePage = () => {
                     variant="outline"
                     className="bg-neutral-800 text-white border-none"
                   >
-                    Coming Soon
+                    {t("common.labels.comingSoon")}
                   </Badge>
                 </div>
               )}
@@ -67,7 +72,7 @@ const HomePage = () => {
                         : "text-primary group-hover:underline"
                     }`}
                   >
-                    {tool.comingSoon ? "Join Waitlist" : tool.linkText}
+                    {tool.comingSoon ? t("common.labels.joinWaitlist") : tool.linkText}
                     <ArrowRightIcon
                       className={`h-4 w-4 ml-1 ${
                         !tool.comingSoon &&

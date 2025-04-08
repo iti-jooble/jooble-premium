@@ -7,7 +7,167 @@
       "add": "Add",
       "manage": "Manage",
       "enable": "Enable",
-      "update": "Update"
+      "update": "Update",
+      "create": "Create",
+      "delete": "Delete",
+      "duplicate": "Duplicate",
+      "download": "Download",
+      "import": "Import",
+      "submit": "Submit",
+      "search": "Search",
+      "apply": "Apply",
+      "filter": "Filter",
+      "clear": "Clear"
+    },
+    "labels": {
+      "loading": "Loading...",
+      "comingSoon": "Coming Soon",
+      "new": "New",
+      "joinWaitlist": "Join Waitlist"
+    },
+    "notifications": {
+      "success": "Success!",
+      "error": "Error!",
+      "warning": "Warning!"
+    }
+  },
+  "homePage": {
+    "welcome": "Welcome, {{name}}",
+    "subtitle": "Your job search toolkit is ready to help you succeed."
+  },
+  "jobSearch": {
+    "title": "Job Search",
+    "subtitle": "Search thousands of job listings from multiple sources in one place",
+    "search": {
+      "title": "Find Your Next Opportunity",
+      "keywords": "Job title, keywords, or company",
+      "location": "Location (city, state, or zip)",
+      "searchButton": "Search Jobs",
+      "advancedSearch": "Advanced Search"
+    },
+    "filters": {
+      "title": "Filters",
+      "jobType": "Job Type",
+      "datePosted": "Date Posted",
+      "salary": "Salary Range",
+      "experienceLevel": "Experience Level",
+      "clearButton": "Clear Filters"
+    },
+    "jobListings": {
+      "title": "Job Listings",
+      "noResults": "No results found. Try adjusting your search criteria.",
+      "loadMore": "Load More Jobs"
+    },
+    "jobDetail": {
+      "applyNow": "Apply Now",
+      "saveJob": "Save Job",
+      "aboutRole": "About The Role",
+      "requirements": "Requirements",
+      "benefits": "Benefits",
+      "similar": "Similar Jobs",
+      "noJobSelected": "Select a job to see details"
+    }
+  },
+  "cvBuilder": {
+    "title": "CV Builder",
+    "subtitle": "Create and manage your professional CVs",
+    "createNew": "Create New CV",
+    "importFromLinkedIn": "Import from LinkedIn",
+    "noData": {
+      "title": "Start Building Your CV",
+      "description": "Create a professional CV with our easy-to-use builder. Choose from multiple templates and customize to match your style.",
+      "button": "Create New CV"
+    },
+    "yourCvs": "Your CVs",
+    "linkedInImport": {
+      "title": "LinkedIn Import",
+      "description": "This feature is coming soon. Stay tuned!"
+    },
+    "editingCv": {
+      "title": "Editing CV",
+      "description": "Editing CV: {{title}}"
+    },
+    "table": {
+      "title": "Title",
+      "score": "Score",
+      "created": "Created",
+      "actions": "Actions"
+    }
+  },
+  "cvBuilderCreate": {
+    "title": "Create Your CV",
+    "subtitle": "Fill in the sections below to build your professional CV",
+    "preview": "Preview",
+    "changeTemplate": "Change Template",
+    "sections": {
+      "personalInfo": "Personal Information",
+      "summary": "Professional Summary",
+      "experience": "Work Experience",
+      "education": "Education",
+      "skills": "Skills"
+    },
+    "addMore": "Add More",
+    "downloadCV": "Download CV"
+  },
+  "cvReview": {
+    "title": "CV Review",
+    "subtitle": "Get expert feedback on your CV",
+    "upload": {
+      "title": "Upload Your CV",
+      "subtitle": "Drag and drop your CV file or click to browse",
+      "button": "Upload CV",
+      "formats": "Supports PDF, DOCX, TXT formats (max 5MB)"
+    },
+    "analysis": {
+      "title": "CV Analysis",
+      "processing": "Processing your CV...",
+      "overview": "Overview",
+      "strengths": "Strengths",
+      "weaknesses": "Areas for Improvement",
+      "score": "Overall Score"
+    }
+  },
+  "cvMatching": {
+    "title": "CV Job Matching",
+    "subtitle": "See how well your CV matches with job listings",
+    "selectCv": "Select CV",
+    "selectJob": "Select Job Listing",
+    "results": {
+      "title": "Match Results",
+      "overallMatch": "Overall Match",
+      "keywordMatch": "Keyword Match",
+      "skillsMatch": "Skills Match",
+      "experienceMatch": "Experience Match",
+      "suggestions": "Improvement Suggestions"
+    }
+  },
+  "coverLetter": {
+    "title": "Cover Letter Generator",
+    "subtitle": "Create personalized cover letters for your job applications",
+    "form": {
+      "jobTitle": "Job Title",
+      "company": "Company Name",
+      "keyPoints": "Key Points to Include",
+      "tone": "Tone",
+      "toneOptions": {
+        "professional": "Professional",
+        "conversational": "Conversational",
+        "enthusiastic": "Enthusiastic",
+        "formal": "Formal"
+      },
+      "length": "Length",
+      "lengthOptions": {
+        "short": "Short",
+        "medium": "Medium",
+        "long": "Long"
+      },
+      "generateButton": "Generate Cover Letter"
+    },
+    "results": {
+      "title": "Your Cover Letter",
+      "regenerate": "Regenerate",
+      "download": "Download as PDF",
+      "copy": "Copy to Clipboard"
     }
   },
   "settings": {
