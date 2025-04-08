@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 import {
   LinkIcon,
   UploadIcon,
@@ -10,12 +11,14 @@ import {
 import { Progress } from "@/components/ui/progress";
 
 const CvMatching = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 max-w-3xl">
-        <h1 className="text-3xl font-bold tracking-tight">CV Matching</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("cvMatching.title")}</h1>
         <p className="text-muted-foreground mt-2">
-          Match your CV against job descriptions to identify strengths and gaps
+          {t("cvMatching.subtitle")}
         </p>
       </div>
 
@@ -25,7 +28,7 @@ const CvMatching = () => {
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-5 ring-4 ring-primary/5">
               <FileTextIcon className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="text-xl font-semibold mb-3">Upload Your CV</h2>
+            <h2 className="text-xl font-semibold mb-3">{t("cvMatching.selectCv")}</h2>
             <p className="text-muted-foreground mb-5">
               Upload your CV to start the matching process. We support PDF,
               DOCX, and TXT formats.
@@ -35,7 +38,7 @@ const CvMatching = () => {
               className="transition-all hover:shadow-md hover:scale-105"
             >
               <UploadIcon className="h-5 w-5 mr-2" />
-              Select File
+              {t("common.buttons.upload")}
             </Button>
           </CardContent>
         </Card>
@@ -46,7 +49,7 @@ const CvMatching = () => {
               <LinkIcon className="h-8 w-8 text-primary" />
             </div>
             <h2 className="text-xl font-semibold mb-3">
-              Paste Job Description
+              {t("cvMatching.selectJob")}
             </h2>
             <p className="text-muted-foreground mb-5">
               Copy and paste the job description you want to match against your

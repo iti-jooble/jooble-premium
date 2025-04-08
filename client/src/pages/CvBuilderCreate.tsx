@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import {
   GraduationCap,
   BriefcaseBusiness,
@@ -63,6 +64,7 @@ interface CvData {
 }
 
 const CvBuilderCreate = () => {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
 
   // State to track CV data
@@ -112,7 +114,7 @@ const CvBuilderCreate = () => {
 
   const handleChangeTemplate = () => {
     toast({
-      title: "Coming Soon",
+      title: t("common.labels.comingSoon"),
       description: "Template selection will be available in a future update.",
     });
   };
@@ -120,9 +122,9 @@ const CvBuilderCreate = () => {
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 max-w-3xl">
-        <h1 className="text-3xl font-bold tracking-tight">Create New CV</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("cvBuilderCreate.title")}</h1>
         <p className="text-muted-foreground mt-2">
-          Build a professional CV that stands out to employers
+          {t("cvBuilderCreate.subtitle")}
         </p>
       </div>
 
@@ -147,7 +149,7 @@ const CvBuilderCreate = () => {
                   </div>
                   <div>
                     <h3 className="text-base font-medium">
-                      Personal Information
+                      {t("cvBuilderCreate.sections.personalInfo")}
                     </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Contact details, name, location
@@ -174,7 +176,7 @@ const CvBuilderCreate = () => {
                     <BriefcaseBusiness className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-base font-medium">Work Experience</h3>
+                    <h3 className="text-base font-medium">{t("cvBuilderCreate.sections.experience")}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Work history, internships
                     </p>
@@ -200,7 +202,7 @@ const CvBuilderCreate = () => {
                     <GraduationCap className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-base font-medium">Education</h3>
+                    <h3 className="text-base font-medium">{t("cvBuilderCreate.sections.education")}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Academic background, courses
                     </p>
@@ -226,7 +228,7 @@ const CvBuilderCreate = () => {
                     <Sparkles className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-base font-medium">Skills</h3>
+                    <h3 className="text-base font-medium">{t("cvBuilderCreate.sections.skills")}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Technical and soft skills
                     </p>
@@ -253,7 +255,7 @@ const CvBuilderCreate = () => {
                   </div>
                   <div>
                     <h3 className="text-base font-medium">
-                      Professional Summary
+                      {t("cvBuilderCreate.sections.summary")}
                     </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Brief description about you

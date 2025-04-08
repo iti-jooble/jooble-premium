@@ -1,15 +1,18 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 import { FileSearchIcon, UploadIcon, SearchCheckIcon, LayoutIcon, BookTextIcon, BarChart3Icon, AwardIcon, TrendingUpIcon, GanttChartIcon, ListChecksIcon } from "lucide-react";
 
 const CvReview = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div className="max-w-2xl">
-          <h1 className="text-3xl font-bold tracking-tight">CV Review</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t("cvReview.title")}</h1>
           <p className="text-muted-foreground mt-2">
-            Get instant feedback on your CV with our AI-powered review system
+            {t("cvReview.subtitle")}
           </p>
         </div>
         <div className="mt-4 sm:mt-0 flex justify-end">
@@ -18,7 +21,7 @@ const CvReview = () => {
             className="px-6 transition-all hover:shadow-md hover:scale-105"
           >
             <UploadIcon className="h-5 w-5 mr-2" />
-            Upload CV
+            {t("cvReview.upload.button")}
           </Button>
         </div>
       </div>
@@ -183,7 +186,7 @@ const CvReview = () => {
             className="px-8 py-6 text-lg transition-all hover:shadow-md hover:scale-105"
           >
             <UploadIcon className="h-5 w-5 mr-2" />
-            Start Your CV Review Now
+            {t("cvReview.upload.button")}
           </Button>
         </div>
       </div>

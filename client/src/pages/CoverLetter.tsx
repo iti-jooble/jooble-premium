@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 import {
   MailIcon,
   FileTextIcon,
@@ -11,14 +12,16 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const CoverLetter = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 max-w-3xl">
         <h1 className="text-3xl font-bold tracking-tight">
-          Cover Letter Creator
+          {t("coverLetter.title")}
         </h1>
         <p className="text-muted-foreground mt-2">
-          Generate personalized cover letters in minutes
+          {t("coverLetter.subtitle")}
         </p>
       </div>
 
@@ -39,7 +42,7 @@ const CoverLetter = () => {
             className="px-6 transition-all hover:shadow-md hover:scale-105"
           >
             <PencilIcon className="h-5 w-5 mr-2" />
-            Get Started
+            {t("common.buttons.create")}
           </Button>
         </CardContent>
       </Card>
@@ -83,7 +86,7 @@ const CoverLetter = () => {
                   </div>
                   <div className="absolute inset-0 bg-black/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                     <Button variant="secondary" size="sm" className="shadow-lg">
-                      Preview
+                      {t("common.buttons.search")}
                     </Button>
                   </div>
                 </div>
@@ -145,7 +148,7 @@ const CoverLetter = () => {
         </TabsContent>
       </Tabs>
 
-      <h2 className="text-2xl font-semibold mb-6">Recent Cover Letters</h2>
+      <h2 className="text-2xl font-semibold mb-6">{t("coverLetter.results.title")}</h2>
 
       <Card className="shadow-md border-border/30 border rounded-xl overflow-hidden bg-card">
         <div className="px-6 py-4 border-b border-border/40 flex justify-between items-center bg-muted/40">
