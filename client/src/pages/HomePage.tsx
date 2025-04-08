@@ -15,9 +15,7 @@ const HomePage = () => {
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Welcome back, John
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight">Welcome, John</h1>
         <p className="text-muted-foreground mt-2">
           Your job search toolkit is ready to help you succeed.
         </p>
