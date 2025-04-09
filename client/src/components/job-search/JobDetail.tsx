@@ -71,13 +71,43 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
                 <p className="text-sm text-muted-foreground mb-3">
                   How well your CV matches this job
                 </p>
-                <div className="relative h-5 w-full bg-muted rounded-full overflow-hidden">
+                
+                {/* Match percentage with blur effect */}
+                <div className="relative mb-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl font-bold text-primary">68%</span>
+                    <div className="filter blur-sm">
+                      <div className="flex space-x-4">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Skills</div>
+                          <div className="text-sm font-medium">72%</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Experience</div>
+                          <div className="text-sm font-medium">65%</div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground">Keywords</div>
+                          <div className="text-sm font-medium">59%</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Progress bar with lock icon */}
+                <div className="relative h-5 w-full bg-muted rounded-full overflow-hidden mb-2">
+                  <div 
+                    className="absolute h-full bg-primary/20 rounded-full" 
+                    style={{ width: '68%' }}
+                  ></div>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <LockIcon className="h-3 w-3 text-muted-foreground" />
                   </div>
                 </div>
-                <Button variant="link" size="sm" className="mt-2 h-7 px-0 text-primary">
-                  <span>Upgrade to see your detailed match score and get personalized improvement suggestions</span>
+                
+                <Button variant="link" size="sm" className="mt-1 h-7 px-0 text-primary">
+                  <span>Upgrade for detailed analysis</span>
                   <ArrowRightIcon className="h-3 w-3 ml-1" />
                 </Button>
               </CardContent>
