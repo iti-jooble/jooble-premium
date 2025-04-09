@@ -56,12 +56,19 @@
     },
     "jobDetail": {
       "applyNow": "Apply Now",
-      "saveJob": "Save Job",
+      "summarizeJob": "Summarize with AI",
+      "adaptCv": "Adapt CV for this Job",
       "aboutRole": "About The Role",
       "requirements": "Requirements",
       "benefits": "Benefits",
       "similar": "Similar Jobs",
-      "noJobSelected": "Select a job to see details"
+      "noJobSelected": "Select a job to see details",
+      "cvMatch": {
+        "title": "CV Match Score",
+        "description": "How well your CV matches this job",
+        "premium": "Premium Feature",
+        "upgradeText": "Upgrade to see your detailed match score and get personalized improvement suggestions"
+      }
     }
   },
   "cvBuilder": {

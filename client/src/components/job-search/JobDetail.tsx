@@ -1,36 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { 
   SearchIcon, 
   MapPinIcon, 
   BriefcaseIcon, 
   DollarSignIcon, 
-  StarIcon, 
   ClockIcon,
-  CheckCircleIcon 
+  CheckCircleIcon,
+  SparklesIcon,
+  FileTextIcon,
+  LockIcon,
+  LineChartIcon,
+  ArrowRightIcon
 } from "lucide-react";
 import { JobCardProps } from "./JobCard";
+import { useTranslation } from "react-i18next";
 
 interface JobDetailProps {
   selectedJob: (JobCardProps['job'] & { description: string }) | null;
 }
 
 export const JobDetail = ({ selectedJob }: JobDetailProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="lg:col-span-7">
       {selectedJob ? (
         <Card className="shadow-sm sticky top-4 border-border/40">
           <CardContent className="p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h2 className="text-xl font-semibold">{selectedJob.title}</h2>
-                <div className="text-muted-foreground">{selectedJob.company}</div>
-              </div>
-              <Button size="sm" variant="outline" className="flex items-center">
-                <StarIcon className="h-4 w-4 mr-2" />
-                Save Job
-              </Button>
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">{selectedJob.title}</h2>
+              <div className="text-muted-foreground">{selectedJob.company}</div>
             </div>
 
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground my-4">
@@ -54,6 +56,33 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
 
             <Separator className="my-4" />
 
+            {/* CV Matching Score Premium Feature */}
+            <Card className="mb-4 bg-muted/20 overflow-hidden">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center">
+                    <LineChartIcon className="h-5 w-5 mr-2 text-primary" />
+                    <h3 className="font-medium">{t("jobDetail.cvMatch.title")}</h3>
+                  </div>
+                  <Badge variant="outline" className="bg-muted/70 text-muted-foreground">
+                    {t("jobDetail.cvMatch.premium")}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-3">
+                  {t("jobDetail.cvMatch.description")}
+                </p>
+                <div className="relative h-5 w-full bg-muted rounded-full overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <LockIcon className="h-3 w-3 text-muted-foreground" />
+                  </div>
+                </div>
+                <Button variant="link" size="sm" className="mt-2 h-7 px-0 text-primary">
+                  <span>{t("jobDetail.cvMatch.upgradeText")}</span>
+                  <ArrowRightIcon className="h-3 w-3 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
+
             <div className="prose prose-neutral dark:prose-invert max-w-none">
               <div dangerouslySetInnerHTML={{ __html: selectedJob.description }} />
             </div>
@@ -61,11 +90,15 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
             <div className="mt-6 flex flex-wrap gap-3">
               <Button className="flex items-center">
                 <CheckCircleIcon className="h-4 w-4 mr-2" />
-                Apply Now
+                {t("jobDetail.applyNow")}
               </Button>
               <Button variant="outline" className="flex items-center">
-                <StarIcon className="h-4 w-4 mr-2" />
-                Save Job
+                <SparklesIcon className="h-4 w-4 mr-2" />
+                {t("jobDetail.summarizeJob")}
+              </Button>
+              <Button variant="outline" className="flex items-center">
+                <FileTextIcon className="h-4 w-4 mr-2" />
+                {t("jobDetail.adaptCv")}
               </Button>
             </div>
           </CardContent>
@@ -75,9 +108,9 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
           <div className="text-muted-foreground mb-4">
             <SearchIcon className="h-12 w-12 mx-auto opacity-20" />
           </div>
-          <h3 className="text-xl font-medium mb-2">Select a job listing</h3>
+          <h3 className="text-xl font-medium mb-2">{t("jobDetail.noJobSelected")}</h3>
           <p className="text-muted-foreground">
-            Click on a job from the list to view its details here
+            {t("jobDetail.noJobSelected")}
           </p>
         </Card>
       )}
