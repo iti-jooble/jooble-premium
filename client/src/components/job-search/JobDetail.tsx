@@ -62,14 +62,14 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
                     <LineChartIcon className="h-5 w-5 mr-2 text-primary" />
-                    <h3 className="font-medium">{t("jobDetail.cvMatch.title")}</h3>
+                    <h3 className="font-medium">CV Match Score</h3>
                   </div>
                   <Badge variant="outline" className="bg-muted/70 text-muted-foreground">
-                    {t("jobDetail.cvMatch.premium")}
+                    Premium Feature
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">
-                  {t("jobDetail.cvMatch.description")}
+                  How well your CV matches this job
                 </p>
                 <div className="relative h-5 w-full bg-muted rounded-full overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -77,7 +77,7 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
                   </div>
                 </div>
                 <Button variant="link" size="sm" className="mt-2 h-7 px-0 text-primary">
-                  <span>{t("jobDetail.cvMatch.upgradeText")}</span>
+                  <span>Upgrade to see your detailed match score and get personalized improvement suggestions</span>
                   <ArrowRightIcon className="h-3 w-3 ml-1" />
                 </Button>
               </CardContent>
@@ -90,15 +90,15 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
             <div className="mt-6 flex flex-wrap gap-3">
               <Button className="flex items-center">
                 <CheckCircleIcon className="h-4 w-4 mr-2" />
-                {t("jobDetail.applyNow")}
+                Apply Now
               </Button>
               <Button variant="outline" className="flex items-center">
                 <SparklesIcon className="h-4 w-4 mr-2" />
-                {t("jobDetail.summarizeJob")}
+                Summarize with AI
               </Button>
               <Button variant="outline" className="flex items-center">
                 <FileTextIcon className="h-4 w-4 mr-2" />
-                {t("jobDetail.adaptCv")}
+                Adapt CV for this Job
               </Button>
             </div>
           </CardContent>
@@ -108,9 +108,9 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
           <div className="text-muted-foreground mb-4">
             <SearchIcon className="h-12 w-12 mx-auto opacity-20" />
           </div>
-          <h3 className="text-xl font-medium mb-2">{t("jobDetail.noJobSelected")}</h3>
+          <h3 className="text-xl font-medium mb-2">Select a job listing</h3>
           <p className="text-muted-foreground">
-            {t("jobDetail.noJobSelected")}
+            Click on a job from the list to view its details here
           </p>
         </Card>
       )}
