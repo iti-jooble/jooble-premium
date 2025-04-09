@@ -1,13 +1,12 @@
 import { Link, useLocation } from "wouter";
-import { BriefcaseIcon, HomeIcon, FileEditIcon, FileSearchIcon, SearchIcon, LinkIcon, MailIcon, SettingsIcon, HelpCircleIcon, LogOutIcon, UserIcon, CompassIcon, MapIcon } from "lucide-react";
+import { BriefcaseIcon, FileEditIcon, FileSearchIcon, SearchIcon, LinkIcon, MailIcon, SettingsIcon, HelpCircleIcon, LogOutIcon, UserIcon, CompassIcon, MapIcon } from "lucide-react";
 import { NavItem } from "@/types";
 import { Separator } from "@/components/ui/separator";
 
 const navItems: NavItem[] = [
-  { path: "/", label: "Home", icon: <HomeIcon className="h-4 w-4" /> },
+  { path: "/job-search", label: "Job Search", icon: <SearchIcon className="h-4 w-4" /> },
   { path: "/cv-builder", label: "CV Builder", icon: <FileEditIcon className="h-4 w-4" /> },
   { path: "/cv-review", label: "CV Review", icon: <FileSearchIcon className="h-4 w-4" /> },
-  { path: "/job-search", label: "Job Search", icon: <SearchIcon className="h-4 w-4" /> },
   { path: "/cv-matching", label: "CV Matching", icon: <LinkIcon className="h-4 w-4" /> },
   { path: "/cover-letter", label: "Cover Letter", icon: <MailIcon className="h-4 w-4" /> },
 ];

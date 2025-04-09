@@ -1,11 +1,10 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import SideMenu from "@/components/layout/SideMenu";
 import Content from "@/components/layout/Content";
-import HomePage from "@/pages/HomePage";
 import CvBuilder from "@/pages/CvBuilder";
 import CvBuilderCreate from "@/pages/CvBuilderCreate";
 import CvReview from "@/pages/CvReview";
@@ -21,7 +20,7 @@ function Router() {
       <SideMenu />
       <Content>
         <Switch>
-          <Route path="/" component={HomePage} />
+          <Route path="/" component={() => <Redirect to="/job-search" />} />
           <Route path="/cv-builder" component={CvBuilder} />
           <Route path="/cv-builder/create" component={CvBuilderCreate} />
           <Route path="/cv-review" component={CvReview} />
