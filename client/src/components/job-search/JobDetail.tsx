@@ -88,9 +88,9 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
                   </div>
                 </div>
                 
-                {/* Match percentage with blur effect - made more attractive */}
+                {/* Match percentage with analyzed info */}
                 <div className="bg-muted/30 p-4 rounded-lg mb-4 relative overflow-hidden">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className="text-3xl font-bold text-primary flex items-baseline">
                         68<span className="text-lg font-medium">%</span>
@@ -100,33 +100,52 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
                       </div>
                     </div>
                     
-                    <div className="filter blur-[3px]">
-                      <div className="flex space-x-4">
-                        <div className="text-center">
-                          <div className="text-xs text-muted-foreground uppercase tracking-wide">Skills</div>
-                          <div className="text-sm font-semibold">72%</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-xs text-muted-foreground uppercase tracking-wide">Experience</div>
-                          <div className="text-sm font-semibold">65%</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-xs text-muted-foreground uppercase tracking-wide">Keywords</div>
-                          <div className="text-sm font-semibold">59%</div>
-                        </div>
+                    <div className="flex space-x-4">
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground uppercase tracking-wide">Skills</div>
+                        <div className="text-sm font-semibold">72%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground uppercase tracking-wide">Experience</div>
+                        <div className="text-sm font-semibold">65%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground uppercase tracking-wide">Keywords</div>
+                        <div className="text-sm font-semibold">59%</div>
                       </div>
                     </div>
                   </div>
                   
-                  {/* Progress bar with lock icon */}
-                  <div className="relative h-6 w-full bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className="absolute h-full bg-gradient-to-r from-primary/40 to-primary/20 rounded-full" 
-                      style={{ width: '68%' }}
-                    ></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-background/60 rounded-full p-1">
-                        <LockIcon className="h-3 w-3 text-primary" />
+                  {/* Analysis section (blurred) */}
+                  <div className="mt-4 pt-4 border-t border-border/40 relative">
+                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                      <div className="bg-background/60 rounded-full p-1.5">
+                        <LockIcon className="h-4 w-4 text-primary" />
+                      </div>
+                    </div>
+                    
+                    <div className="filter blur-[4px]">
+                      <div className="mb-3">
+                        <h4 className="text-sm font-medium mb-1">Missing Skills</h4>
+                        <div className="flex flex-wrap gap-1">
+                          <span className="text-xs py-0.5 px-2 rounded-full bg-amber-100 text-amber-800 border border-amber-200">Docker</span>
+                          <span className="text-xs py-0.5 px-2 rounded-full bg-amber-100 text-amber-800 border border-amber-200">Kubernetes</span>
+                          <span className="text-xs py-0.5 px-2 rounded-full bg-amber-100 text-amber-800 border border-amber-200">CI/CD</span>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-3">
+                        <h4 className="text-sm font-medium mb-1">Experience Gaps</h4>
+                        <p className="text-xs text-muted-foreground">Need 2+ years experience with cloud infrastructure</p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-sm font-medium mb-1">Improvement Suggestions</h4>
+                        <ul className="text-xs text-muted-foreground space-y-1 list-disc pl-4">
+                          <li>Emphasize your DevOps experience</li>
+                          <li>Add certifications related to cloud platforms</li>
+                          <li>Highlight team collaboration projects</li>
+                        </ul>
                       </div>
                     </div>
                   </div>
