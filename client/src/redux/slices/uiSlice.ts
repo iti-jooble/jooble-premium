@@ -102,7 +102,7 @@ const uiSlice = createSlice({
     },
     
     // Toggle sidebar
-    toggleSidebar: (state, action: PayloadAction<boolean | undefined> = { payload: undefined }) => {
+    toggleSidebar: (state, action: PayloadAction<boolean | undefined>) => {
       if (action.payload !== undefined) {
         state.sidebarCollapsed = action.payload;
       } else {
