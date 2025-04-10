@@ -1,41 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-// Define types for cover letter operations
-interface CoverLetter {
-  id: string;
-  title: string;
-  content: string;
-  dateCreated: string;
-  lastModified: string;
-  jobId?: string;
-  cvId?: string;
-}
-
-interface CoverLetterListResponse {
-  coverLetters: CoverLetter[];
-  total: number;
-}
-
-interface CreateCoverLetterRequest {
-  title: string;
-  content?: string;
-  jobId?: string;
-  cvId?: string;
-}
-
-interface UpdateCoverLetterRequest {
-  id: string;
-  title?: string;
-  content?: string;
-}
-
-interface GenerateCoverLetterRequest {
-  cvId: string;
-  jobId?: string;
-  jobDescription?: string;
-  companyName?: string;
-  additionalInfo?: string;
-}
+import { 
+  CoverLetter,
+  CoverLetterListResponse,
+  CreateCoverLetterRequest,
+  UpdateCoverLetterRequest,
+  GenerateCoverLetterRequest,
+  DeleteCoverLetterResponse,
+  ImproveCoverLetterRequest
+} from '../../types/api/coverLetter.types';
 
 // Define our Cover Letter API
 export const coverLetterApi = createApi({

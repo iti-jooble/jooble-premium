@@ -1,39 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { CV, PersonalInfo, Education, Skill, WorkExperience } from '../../../shared/schema';
-
-// Define types for our API endpoints
-interface GetCVsResponse {
-  cvs: CV[];
-  total: number;
-}
-
-interface GetCVResponse {
-  cv: CV;
-}
-
-interface CreateCVRequest {
-  title: string;
-  personalInfo?: Partial<PersonalInfo>;
-  summary?: string;
-  skills?: Skill[];
-  education?: Education[];
-  workExperience?: WorkExperience[];
-}
-
-interface UpdateCVRequest {
-  id: string;
-  title?: string;
-  personalInfo?: Partial<PersonalInfo>;
-  summary?: string;
-  skills?: Skill[];
-  education?: Education[];
-  workExperience?: WorkExperience[];
-}
-
-interface DeleteCVResponse {
-  success: boolean;
-  id: string;
-}
+import { CV, PersonalInfo, Education, Skill, WorkExperience } from '../../types/state/cvBuilder.types';
+import { 
+  GetCVsResponse,
+  GetCVResponse,
+  CreateCVRequest,
+  UpdateCVRequest,
+  DeleteCVResponse,
+  GradeCVResponse
+} from '../../types/api/cv.types';
 
 // Define our CV API
 export const cvApi = createApi({

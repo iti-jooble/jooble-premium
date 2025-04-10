@@ -1,45 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-// Types
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  salary: string;
-  posted: string;
-  description: string;
-  isNew?: boolean;
-  isSaved?: boolean;
-  matchScore?: number;
-}
-
-interface JobFilter {
-  jobType?: string[];
-  datePosted?: string;
-  salaryRange?: [number, number] | null;
-  experienceLevel?: string[];
-  keywords?: string;
-  location?: string;
-}
-
-interface JobSearchState {
-  jobs: Job[];
-  selectedJobId: string | null;
-  loading: boolean;
-  error: string | null;
-  searchParams: {
-    keywords: string;
-    location: string;
-  };
-  filters: JobFilter;
-  savedJobs: string[]; // Array of job IDs
-  totalResults: number;
-  currentPage: number;
-  resultsPerPage: number;
-  hasMoreResults: boolean;
-}
+import { 
+  JobSearchState,
+  Job,
+  JobFilter,
+  JobSearchParams
+} from '../../types/state/jobSearch.types';
 
 // Initial state
 const initialState: JobSearchState = {

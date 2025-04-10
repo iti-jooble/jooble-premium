@@ -1,40 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-// Define the shape of a toast notification
-export interface Toast {
-  id: string;
-  message: string;
-  type: 'success' | 'error' | 'warning' | 'info';
-  duration?: number;
-}
-
-// Define a modal configuration
-export interface Modal {
-  id: string;
-  type: string;
-  props?: Record<string, any>;
-}
-
-// Define the UI state
-interface UiState {
-  // Global UI loading states
-  loading: {
-    global: boolean;
-    [key: string]: boolean;
-  };
-  
-  // Toast notifications
-  toasts: Toast[];
-  
-  // Active modals
-  activeModals: Modal[];
-  
-  // Sidebar state (mobile/responsive view)
-  sidebarCollapsed: boolean;
-  
-  // Theme
-  colorScheme: 'light' | 'dark' | 'system';
-}
+import { 
+  UiState, 
+  Toast, 
+  Modal 
+} from '../../types/state/ui.types';
 
 // Define initial state
 const initialState: UiState = {

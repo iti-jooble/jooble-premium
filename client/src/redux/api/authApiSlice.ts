@@ -1,50 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-// Define types for auth operations
-interface User {
-  id: string;
-  username: string;
-  email?: string;
-  fullName?: string;
-  isPremium: boolean;
-}
-
-interface AuthResponse {
-  user: User;
-  token: string;
-}
-
-interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-interface RegisterRequest {
-  username: string;
-  email: string;
-  password: string;
-  fullName?: string;
-}
-
-interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
-
-interface UpdateProfileRequest {
-  fullName?: string;
-  email?: string;
-  username?: string;
-}
-
-interface ResetPasswordRequest {
-  email: string;
-}
-
-interface ResetPasswordConfirmRequest {
-  token: string;
-  newPassword: string;
-}
+import { 
+  User,
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+  ChangePasswordRequest,
+  UpdateProfileRequest,
+  ResetPasswordRequest,
+  ResetPasswordConfirmRequest
+} from '../../types/api/auth.types';
 
 // Define our Auth API
 export const authApi = createApi({

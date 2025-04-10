@@ -1,19 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-// Define the type for user state
-interface UserState {
-  id: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  email: string | null;
-  token: string | null;
-  isPremium: boolean;
-  isAuthenticated: boolean;
-  preferences: {
-    theme: 'light' | 'dark' | 'system';
-    language: string;
-  };
-}
+import { UserState } from '../../types/state/user.types';
 
 // Define initial state
 const initialState: UserState = {

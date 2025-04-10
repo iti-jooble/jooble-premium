@@ -1,77 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
-
-// Import types from our application
-interface PersonalInfo {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  postalCode?: string;
-  title?: string;
-  website?: string;
-  linkedin?: string;
-}
-
-interface Skill {
-  id: string;
-  name: string;
-  level?: 'beginner' | 'intermediate' | 'advanced' | 'expert';
-}
-
-interface Education {
-  id: string;
-  school: string;
-  degree: string;
-  field?: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
-
-interface WorkExperience {
-  id: string;
-  company: string;
-  position: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
-
-interface CV {
-  id: string;
-  title: string;
-  dateCreated: string;
-  lastModified: string;
-  templateId: string;
-  personalInfo: Partial<PersonalInfo>;
-  summary?: string;
-  skills: Skill[];
-  education: Education[];
-  workExperience: WorkExperience[];
-  score?: number;
-}
-
-// Define the CV Builder state
-interface CvBuilderState {
-  cvs: CV[];
-  activeCvId: string | null;
-  isEditing: boolean;
-  activeSectionId: string | null;
-  templates: {
-    id: string;
-    name: string;
-    thumbnail: string;
-  }[];
-  selectedTemplateId: string;
-  isSaving: boolean;
-  saveError: string | null;
-}
+import { 
+  CvBuilderState, 
+  CV, 
+  PersonalInfo, 
+  Skill, 
+  Education, 
+  WorkExperience 
+} from '../../types/state/cvBuilder.types';
 
 // Initial templates
 const initialTemplates = [

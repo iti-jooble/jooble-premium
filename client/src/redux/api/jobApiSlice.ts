@@ -1,61 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-// Define job types based on our application needs
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  salary: string;
-  posted: string;
-  description: string;
-  isNew?: boolean;
-  isSaved?: boolean;
-  matchScore?: number;
-}
-
-// Define types for our API endpoints
-interface GetJobsResponse {
-  jobs: Job[];
-  total: number;
-  page: number;
-  hasMore: boolean;
-}
-
-interface GetJobResponse {
-  job: Job;
-}
-
-interface SearchJobsRequest {
-  keywords?: string;
-  location?: string;
-  page?: number;
-  limit?: number;
-  jobType?: string[];
-  datePosted?: string;
-  minSalary?: number;
-  maxSalary?: number;
-  experienceLevel?: string[];
-}
-
-interface SavedJobResponse {
-  success: boolean;
-  jobId: string;
-}
-
-interface MatchCVResponse {
-  jobId: string;
-  cvId: string;
-  matchScore: number;
-  matchDetails: {
-    skillsMatch: number;
-    experienceMatch: number;
-    educationMatch: number;
-    overallMatch: number;
-  };
-  improvementSuggestions: string[];
-}
+import { Job } from '../../types/state/jobSearch.types';
+import { 
+  GetJobsResponse,
+  GetJobResponse,
+  SearchJobsRequest,
+  SavedJobResponse,
+  MatchCVResponse,
+  GenerateJobTipsRequest,
+  GenerateJobTipsResponse
+} from '../../types/api/job.types';
 
 // Define our Job API
 export const jobApi = createApi({
