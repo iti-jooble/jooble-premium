@@ -1,42 +1,46 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  ICVBuilderInitResponse,
-  ICreateCvRequest,
-  ICreateCvResponse,
   CvSource,
-  IPromptConfigApi,
-  IAISuggestResponse,
+  ICreateCvRequest
 } from "../../types/api/cvBuilder.types";
 
-import {
-  ICVBuilderState,
-  ICv,
-} from "../../types/state/cvBuilder.types";
+import { ICVBuilderState } from "../../types/state/cvBuilder.types";
 
-// API base URL for CV builder
-const API_BASE_URL = "/api";
+// Import the API slice for the CV Builder
+import { cvBuilderApiSlice } from "../api/cvBuilderApiSlice";
+
+// Import API hooks for use in thunks
+const {
+  initCvBuilder: initCvBuilderEndpoint,
+  createCv: createCvEndpoint,
+  getAiSuggestion: getAiSuggestionEndpoint
+} = cvBuilderApiSlice.endpoints;
+
+/**
+ * Using thunks that wrap the RTK Query API endpoints
+ * This allows us to:
+ * 1. Keep our existing reducer behavior
+ * 2. Use the API slice for data fetching
+ * 3. Add custom behavior before/after API calls
+ */
 
 /**
  * AsyncThunk for initializing the CV builder
- * Fetches initial data from the API
+ * Uses the API slice's initCvBuilder endpoint
  */
 export const initCvBuilder = createAsyncThunk(
   "cvBuilder/initCvBuilder",
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/cvbuilder/init`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to initialize CV builder");
+      const result = await dispatch(
+        initCvBuilderEndpoint.initiate()
+      );
+      
+      if (result.error) {
+        throw new Error(result.error.message || "Failed to initialize CV builder");
       }
-
-      const data: ICVBuilderInitResponse = await response.json();
-      return data;
+      
+      return result.data;
     } catch (error: any) {
       return rejectWithValue(
         error.message || "An error occurred initializing CV builder"
@@ -47,44 +51,50 @@ export const initCvBuilder = createAsyncThunk(
 
 /**
  * AsyncThunk for creating a CV
- * Sends CV data to the API
+ * Uses the API slice's createCv endpoint
  */
 export const createCv = createAsyncThunk(
   "cvBuilder/createCv",
   async (
     payload: {
-      id: string;
-      cv: ICv;
       html: string;
       css: string;
     },
-    { rejectWithValue }
+    { getState, dispatch, rejectWithValue }
   ) => {
     try {
-      const { id, cv, html, css } = payload;
-
+      const { html, css } = payload;
+      const { cvBuilder } = getState() as { cvBuilder: ICVBuilderState };
+      
+      if (!cvBuilder.currentCvId) {
+        throw new Error("No CV selected");
+      }
+      
+      const currentCv = cvBuilder.cvList.find(
+        (cv) => cv.id === cvBuilder.currentCvId
+      );
+      
+      if (!currentCv) {
+        throw new Error("Selected CV not found");
+      }
+      
       const request: ICreateCvRequest = {
-        id,
+        id: cvBuilder.currentCvId,
         source: CvSource.MANUAL,
-        json: cv,
+        json: currentCv,
         html,
         css,
       };
-
-      const response = await fetch(`${API_BASE_URL}/cvbuilder/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create CV");
+      
+      const result = await dispatch(
+        createCvEndpoint.initiate(request)
+      );
+      
+      if (result.error) {
+        throw new Error(result.error.message || "Failed to create CV");
       }
-
-      const data: ICreateCvResponse = await response.json();
-      return data;
+      
+      return result.data;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -93,7 +103,7 @@ export const createCv = createAsyncThunk(
 
 /**
  * AsyncThunk for getting AI suggestions
- * Sends prompt data to the API and receives AI-generated content
+ * Uses the API slice's getAiSuggestion endpoint
  */
 export const getAiSuggestion = createAsyncThunk(
   "cvBuilder/getAiSuggestion",
@@ -103,38 +113,20 @@ export const getAiSuggestion = createAsyncThunk(
       userContent: string;
       systemReplacements?: Record<string, string>;
     },
-    { rejectWithValue }
+    { dispatch }
   ) => {
     try {
-      const promptConfig: IPromptConfigApi = {
-        type: payload.type,
-        userReplacements: {
-          content: payload.userContent,
-        },
-        systemReplacements: payload.systemReplacements || {},
-      };
-
-      const response = await fetch(`${API_BASE_URL}/cvbuilder/suggest`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(promptConfig),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to get AI suggestion");
-      }
-
-      const data: IAISuggestResponse = await response.json();
-      return {
-        type: payload.type,
-        content: data.content,
-      };
-    } catch (error: any) {
-      return rejectWithValue(
-        error.message || "An error occurred getting AI suggestion"
+      const result = await dispatch(
+        getAiSuggestionEndpoint.initiate(payload)
       );
+      
+      if (result.error) {
+        return null;
+      }
+      
+      return result.data?.content || null;
+    } catch (error) {
+      return null;
     }
   }
 );
@@ -166,22 +158,22 @@ const cvBuilderSlice = createSlice({
     setCurrentCvId: (state, action: PayloadAction<string | null>) => {
       state.currentCvId = action.payload;
     },
-    
+
     // Set editing state
     setIsEditing: (state, action: PayloadAction<boolean>) => {
       state.isEditing = action.payload;
     },
-    
+
     // Set current section
     setCurrentSection: (state, action: PayloadAction<string>) => {
       state.currentSection = action.payload;
     },
-    
+
     // Set saving state
     setIsSaving: (state, action: PayloadAction<boolean>) => {
       state.isSaving = action.payload;
     },
-    
+
     // Reset the CV builder state
     resetCvBuilder: () => initialState,
   },
@@ -219,7 +211,7 @@ const cvBuilderSlice = createSlice({
         state.isSaving = false;
         state.error = action.payload as string;
       })
-
+      
       // Handle getAiSuggestion actions
       .addCase(getAiSuggestion.pending, (state) => {
         state.isLoading = true;
@@ -227,11 +219,11 @@ const cvBuilderSlice = createSlice({
       })
       .addCase(getAiSuggestion.fulfilled, (state) => {
         state.isLoading = false;
-        // We don't store the suggestion in state as it's not part of ICVBuilderState
+        // We don't store the suggestion in state
       })
-      .addCase(getAiSuggestion.rejected, (state, action) => {
+      .addCase(getAiSuggestion.rejected, (state) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        // No error handling needed as we return null in the thunk
       });
   },
 });
