@@ -29,11 +29,9 @@ export interface LocalesDictionary
   extends Record<string, Record<string, string>> {}
 
 export interface ICreateCvRequest {
-  buildCvId: string;
+  id: string;
   source: CvSource;
   json: ICv;
-  jdpId: number | null;
-  step: number;
   html: string;
   css: string;
 }
