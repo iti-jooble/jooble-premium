@@ -53,8 +53,8 @@ export const initCvBuilder = createAsyncThunk(
 
       const data: ICVBuilderInitResponse = await response.json();
       return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
+    } catch (error: any) {
+      return rejectWithValue(error.message || "An error occurred initializing CV builder");
     }
   },
 );
@@ -71,19 +71,44 @@ export const createCv = createAsyncThunk(
   ) => {
     try {
       const state = getState() as { cvBuilder: CvBuilderState };
-      const { cvData, buildCvId } = state.cvBuilder;
+      const { 
+        buildCvId, 
+        currentStep, 
+        templateId,
+        personalInfo, 
+        summary, 
+        skills, 
+        education, 
+        workExperience 
+      } = state.cvBuilder;
       const { html, css } = payload;
 
-      if (!cvData || !buildCvId) {
-        throw new Error("CV data or build ID not available");
+      if (!buildCvId) {
+        throw new Error("CV build ID not available");
       }
+
+      // Convert our app model to API model only when sending to API
+      const apiModel = convertToCvJsonModel({
+        buildCvId,
+        step: currentStep,
+        templateId,
+        personalInfo,
+        summary,
+        skills,
+        education,
+        workExperience,
+        // Default values for required API fields
+        source: 'web',
+        referrer: '',
+        jdpId: null,
+      });
 
       const request: ICreateCvRequest = {
         buildCvId,
-        source: cvData.source,
-        json: cvData,
-        jdpId: cvData.jdpId,
-        step: cvData.step,
+        source: apiModel.source,
+        json: apiModel,
+        jdpId: apiModel.jdpId,
+        step: apiModel.step,
         html,
         css,
       };
@@ -102,7 +127,7 @@ export const createCv = createAsyncThunk(
 
       const data: ICreateCvResponse = await response.json();
       return data;
-    } catch (error) {
+    } catch (error: any) {
       return rejectWithValue(error.message);
     }
   },
@@ -145,8 +170,8 @@ export const getAiSuggestion = createAsyncThunk(
         type: payload.type,
         content: data.content,
       };
-    } catch (error) {
-      return rejectWithValue(error.message);
+    } catch (error: any) {
+      return rejectWithValue(error.message || "An error occurred getting AI suggestion");
     }
   },
 );
