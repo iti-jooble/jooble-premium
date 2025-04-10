@@ -27,7 +27,7 @@ export const initCvBuilder = createAsyncThunk(
       );
 
       if (result.error) {
-        throw new Error(result.error.status || "Failed to initialize CV builder");
+        throw new Error(getErrorMessage(result.error));
       }
 
       return result.data;
@@ -50,7 +50,7 @@ export const createCv = createAsyncThunk(
   ) => {
     try {
       const { html, css } = payload;
-      const { cvBuilder } = getState() as { cvBuilder: ICVBuilderState };
+      const { cvBuilder } = getState() as { cvBuilder: CVBuilderState };
 
       if (!cvBuilder.currentCvId) {
         throw new Error("No CV selected");
@@ -78,7 +78,7 @@ export const createCv = createAsyncThunk(
       );
 
       if (result.error) {
-        throw new Error(result.error.message || "Failed to create CV");
+        throw new Error(getErrorMessage(result.error));
       }
 
       return result.data;
@@ -103,7 +103,7 @@ export const updateCv = createAsyncThunk(
   ) => {
     try {
       const { html, css } = payload;
-      const { cvBuilder } = getState() as { cvBuilder: ICVBuilderState };
+      const { cvBuilder } = getState() as { cvBuilder: CVBuilderState };
 
       if (!cvBuilder.currentCvId) {
         throw new Error("No CV selected");
@@ -130,7 +130,7 @@ export const updateCv = createAsyncThunk(
       );
 
       if (result.error) {
-        throw new Error(result.error.message || "Failed to update CV");
+        throw new Error(getErrorMessage(result.error));
       }
 
       return result.data;
@@ -157,7 +157,7 @@ export const deleteCv = createAsyncThunk(
       );
 
       if (result.error) {
-        throw new Error(result.error.message || "Failed to delete CV");
+        throw new Error(getErrorMessage(result.error));
       }
 
       return { id, ...result.data };
@@ -221,7 +221,7 @@ export const getAiSuggestion = createAsyncThunk(
   },
 );
 
-const initialState: ICVBuilderState = {
+const initialState: CVBuilderState = {
   currentCvId: null,
   cvList: [],
   isLoading: false,
