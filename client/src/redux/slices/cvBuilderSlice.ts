@@ -1,225 +1,12 @@
-import { createSlice, PayloadAction, createAsyncThunk, SerializedError } from "@reduxjs/toolkit";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { CvSource, ICreateCvRequest, IPromptConfigApi } from "../../types/api/cvBuilder.types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CVBuilderState } from "../../types/state/cvBuilder.types";
-import { cvBuilderApiSlice } from "../api/cvBuilderApiSlice";
-
-// Helper function for error handling
-function getErrorMessage(error: FetchBaseQueryError | SerializedError): string {
-  if ('status' in error) {
-    // We have a FetchBaseQueryError
-    return `API Error ${error.status}: ${JSON.stringify(error.data)}`;
-  } else {
-    // We have a SerializedError
-    return error.message || "Unknown error occurred";
-  }
-}
-
-// We no longer need to extract endpoints directly as we'll reference them inline
-// for better type safety and consistency
-
-export const initCvBuilder = createAsyncThunk(
-  "cvBuilder/initCvBuilder",
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      const result = await dispatch(
-        cvBuilderApiSlice.endpoints.initCvBuilder.initiate()
-      );
-
-      if (result.error) {
-        throw new Error(getErrorMessage(result.error));
-      }
-
-      return result.data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.message || "An error occurred initializing CV builder"
-      );
-    }
-  },
-);
-
-export const createCv = createAsyncThunk(
-  "cvBuilder/createCv",
-  async (
-    payload: {
-      html: string;
-      css: string;
-    },
-    { getState, dispatch, rejectWithValue },
-  ) => {
-    try {
-      const { html, css } = payload;
-      const { cvBuilder } = getState() as { cvBuilder: CVBuilderState };
-
-      if (!cvBuilder.currentCvId) {
-        throw new Error("No CV selected");
-      }
-
-      const currentCv = cvBuilder.cvList.find(
-        (cv) => cv.id === cvBuilder.currentCvId,
-      );
-
-      if (!currentCv) {
-        throw new Error("Selected CV not found");
-      }
-
-      const request: ICreateCvRequest = {
-        id: cvBuilder.currentCvId,
-        source: CvSource.MANUAL,
-        json: currentCv,
-        html,
-        css,
-      };
-
-      // Use the mutation hook directly from the API slice for consistency
-      const result = await dispatch(
-        cvBuilderApiSlice.endpoints.createCv.initiate(request)
-      );
-
-      if (result.error) {
-        throw new Error(getErrorMessage(result.error));
-      }
-
-      return result.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  },
-);
-
-/**
- * AsyncThunk for updating an existing CV
- * Uses the API slice's updateCv endpoint
- */
-export const updateCv = createAsyncThunk(
-  "cvBuilder/updateCv",
-  async (
-    payload: {
-      html: string;
-      css: string;
-    },
-    { getState, dispatch, rejectWithValue },
-  ) => {
-    try {
-      const { html, css } = payload;
-      const { cvBuilder } = getState() as { cvBuilder: CVBuilderState };
-
-      if (!cvBuilder.currentCvId) {
-        throw new Error("No CV selected");
-      }
-
-      const currentCv = cvBuilder.cvList.find(
-        (cv) => cv.id === cvBuilder.currentCvId,
-      );
-
-      if (!currentCv) {
-        throw new Error("Selected CV not found");
-      }
-
-      const request = {
-        id: cvBuilder.currentCvId,
-        json: currentCv,
-        html,
-        css,
-      };
-
-      // Use the mutation hook directly from the API slice
-      const result = await dispatch(
-        cvBuilderApiSlice.endpoints.updateCv.initiate(request)
-      );
-
-      if (result.error) {
-        throw new Error(getErrorMessage(result.error));
-      }
-
-      return result.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  },
-);
-
-/**
- * AsyncThunk for deleting a CV
- * Uses the API slice's deleteCv endpoint
- */
-export const deleteCv = createAsyncThunk(
-  "cvBuilder/deleteCv",
-  async (
-    id: string,
-    { dispatch, rejectWithValue },
-  ) => {
-    try {
-      // Use the mutation hook directly from the API slice
-      const result = await dispatch(
-        cvBuilderApiSlice.endpoints.deleteCv.initiate({ id })
-      );
-
-      if (result.error) {
-        throw new Error(getErrorMessage(result.error));
-      }
-
-      return { id, ...result.data };
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  },
-);
-
-/**
- * AsyncThunk for duplicating a CV
- * Uses the API slice's duplicateCv endpoint
- */
-export const duplicateCv = createAsyncThunk(
-  "cvBuilder/duplicateCv",
-  async (
-    payload: { id: string; newTitle?: string },
-    { dispatch, rejectWithValue },
-  ) => {
-    try {
-      // Use the mutation hook directly from the API slice
-      const result = await dispatch(
-        cvBuilderApiSlice.endpoints.duplicateCv.initiate(payload)
-      );
-
-      if (result.error) {
-        throw new Error(getErrorMessage(result.error));
-      }
-
-      return result.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  },
-);
-
-/**
- * AsyncThunk for getting AI suggestions for CV content
- * Uses the API slice's getAiSuggestion endpoint
- */
-export const getAiSuggestion = createAsyncThunk(
-  "cvBuilder/getAiSuggestion",
-  async (
-    promptConfig: IPromptConfigApi,
-    { dispatch, rejectWithValue },
-  ) => {
-    try {
-      // Use the mutation hook directly from the API slice
-      const result = await dispatch(
-        cvBuilderApiSlice.endpoints.getAiSuggestion.initiate(promptConfig)
-      );
-
-      if (result.error) {
-        throw new Error(getErrorMessage(result.error));
-      }
-
-      return result.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || "Failed to get AI suggestion");
-    }
-  },
-);
+import { 
+  initCvBuilder,
+  createCv,
+  updateCv,
+  deleteCv,
+  duplicateCv 
+} from "../thunks/cvBuilder.thunks";
 
 const initialState: CVBuilderState = {
   currentCvId: null,
@@ -293,7 +80,7 @@ const cvBuilderSlice = createSlice({
         state.isSaving = false;
         state.error = action.payload as string;
       })
-      
+
       // Handle updateCv actions
       .addCase(updateCv.pending, (state) => {
         state.isLoading = true;
@@ -303,14 +90,13 @@ const cvBuilderSlice = createSlice({
       .addCase(updateCv.fulfilled, (state) => {
         state.isLoading = false;
         state.isSaving = false;
-        // We don't need to update the state as the API slice will handle cache invalidation
       })
       .addCase(updateCv.rejected, (state, action) => {
         state.isLoading = false;
         state.isSaving = false;
         state.error = action.payload as string;
       })
-      
+
       // Handle deleteCv actions
       .addCase(deleteCv.pending, (state) => {
         state.isLoading = true;
@@ -318,18 +104,12 @@ const cvBuilderSlice = createSlice({
       })
       .addCase(deleteCv.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Remove the deleted CV from the list
-        state.cvList = state.cvList.filter(cv => cv.id !== action.payload.id);
-        // If the deleted CV was the current one, clear the current CV ID
-        if (state.currentCvId === action.payload.id) {
-          state.currentCvId = null;
-        }
       })
       .addCase(deleteCv.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      
+
       // Handle duplicateCv actions
       .addCase(duplicateCv.pending, (state) => {
         state.isLoading = true;
@@ -337,10 +117,6 @@ const cvBuilderSlice = createSlice({
       })
       .addCase(duplicateCv.fulfilled, (state, action) => {
         state.isLoading = false;
-        // If the API returned a new CV, add it to our list
-        if (action.payload.cv) {
-          state.cvList = [...state.cvList, action.payload.cv];
-        }
       })
       .addCase(duplicateCv.rejected, (state, action) => {
         state.isLoading = false;

@@ -11,6 +11,6 @@ export const apiSlice = createApi({
     // Credentials include ensures cookies are sent for authentication
     credentials: 'include',
   }),
-  tagTypes: ['CV', 'Job', 'User', 'Settings'],
+  tagTypes: ['CvBuilder', 'Job', 'User', 'Settings'],
   endpoints: () => ({}),
 });

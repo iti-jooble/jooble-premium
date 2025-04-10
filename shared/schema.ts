@@ -54,9 +54,10 @@ export const cvSchema = z.object({
   dateCreated: z.string(),
   personalInfo: personalInfoSchema.partial(),
   summary: z.string().optional(),
-  skills: z.array(skillSchema).optional(),
-  education: z.array(educationSchema).optional(),
-  workExperience: z.array(workExperienceSchema).optional(),
+  skills: z.array(skillSchema),
+  education: z.array(educationSchema),
+  workExperience: z.array(workExperienceSchema),
+  templateId: z.number(),
 });
 
 export type CV = z.infer<typeof cvSchema>;
