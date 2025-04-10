@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { CV, PersonalInfo, Education, Skill, WorkExperience } from '../../shared/schema';
+import type { CV, PersonalInfo, Education, Skill, WorkExperience } from '../../../shared/schema';
 
 // Define types for our API endpoints
 interface GetCVsResponse {

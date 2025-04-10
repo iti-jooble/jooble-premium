@@ -7,8 +7,14 @@ import cvBuilderReducer from './slices/cvBuilderSlice';
 import jobSearchReducer from './slices/jobSearchSlice';
 import uiReducer from './slices/uiSlice';
 
-// Import API slice
-import { apiSlice } from './api/apiSlice';
+// Import API slices
+import { 
+  apiSlice, 
+  cvApi, 
+  jobApi, 
+  authApi, 
+  coverLetterApi 
+} from './api/apiSlice';
 
 // Configure store
 export const store = configureStore({
@@ -18,11 +24,21 @@ export const store = configureStore({
     jobSearch: jobSearchReducer,
     ui: uiReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
+    [cvApi.reducerPath]: cvApi.reducer,
+    [jobApi.reducerPath]: jobApi.reducer,
+    [authApi.reducerPath]: authApi.reducer,
+    [coverLetterApi.reducerPath]: coverLetterApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false, // Needed for non-serializable values like functions
-    }).concat(apiSlice.middleware),
+    }).concat(
+      apiSlice.middleware,
+      cvApi.middleware,
+      jobApi.middleware,
+      authApi.middleware,
+      coverLetterApi.middleware
+    ),
 });
 
 // Export types for use in components

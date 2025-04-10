@@ -1,5 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+// Import feature-specific API slices
+import { cvApi } from './cvApiSlice';
+import { jobApi } from './jobApiSlice';
+import { authApi } from './authApiSlice';
+import { coverLetterApi } from './coverLetterApiSlice';
+
 // Create our base API slice for RTK Query
 export const apiSlice = createApi({
   reducerPath: 'api',
@@ -16,12 +22,15 @@ export const apiSlice = createApi({
     },
   }),
   // Define tag types for cache invalidation
-  tagTypes: ['Cv', 'Job', 'User'],
-  // We'll define our endpoints in separate files that extend this slice
+  tagTypes: ['CV', 'Job', 'User', 'CoverLetter', 'SavedJob'],
+  // Base endpoints that don't fit into other slices
   endpoints: () => ({}),
 });
 
-// Export hooks for usage in functional components
-export const {
-  // These will be filled automatically as we create endpoints
-} = apiSlice;
+// Export all API slices for use in store and components
+export {
+  cvApi,
+  jobApi,
+  authApi,
+  coverLetterApi
+};
