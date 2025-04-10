@@ -1,57 +1,67 @@
-import { ICv } from "../state/cvBuilder.types";
+import { CV } from "@shared/schema";
 
-// Enum to represent the source of a CV
 export enum CvSource {
-  MANUAL = "manual",
-  IMPORTED = "imported",
-  GENERATED = "generated",
-  AI_ASSISTED = "ai_assisted",
+  MANUAL = 'manual',
+  IMPORTED = 'imported',
+  AI_GENERATED = 'ai_generated',
+  TEMPLATE = 'template'
 }
 
-export interface ICvBuilderConfigModelApi {
-  experienceDurationOptions: string[];
-  educationLevelOptions: never[];
-  isLoaded: boolean;
-}
-
-export interface ICvBuilderPreCreateDataApi {
-  fullName: string;
-  city: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface ICVBuilderInitResponse {
-  cvList: ICv[];
-}
-
-export interface LocalesDictionary
-  extends Record<string, Record<string, string>> {}
-
+// CV API types
 export interface ICreateCvRequest {
   id: string;
   source: CvSource;
-  json: ICv;
+  json: any;  // CV data model
   html: string;
   css: string;
 }
 
-export interface SuggestAIRequest {
-  temperature: number;
-  systemContent: string;
-  userContent: string;
-}
-
-export interface IPromptConfigApi {
-  type: string;
-  userReplacements: Record<string, string>;
-  systemReplacements: Record<string, string>;
-}
-
 export interface ICreateCvResponse {
-  cvId: number;
+  success: boolean;
+  message?: string;
 }
 
-export interface IAISuggestResponse {
-  content: string;
+export interface IUpdateCvRequest {
+  id: string;
+  json: any;  // CV data model
+  html: string;
+  css: string;
+}
+
+export interface IUpdateCvResponse {
+  success: boolean;
+  message?: string;
+}
+
+export interface IDeleteCvRequest {
+  id: string;
+}
+
+export interface IDeleteCvResponse {
+  success: boolean;
+  message?: string;
+}
+
+export interface IDuplicateCvRequest {
+  id: string;
+  newTitle?: string;
+}
+
+export interface IDuplicateCvResponse {
+  success: boolean;
+  cv?: CV;  // The duplicated CV
+  message?: string;
+}
+
+// AI Suggestion API types
+export interface IPromptConfigApi {
+  section: string;
+  jobTitle?: string;
+  additionalContext?: string;
+}
+
+export interface IAiSuggestionResponse {
+  success: boolean;
+  suggestion?: string;
+  message?: string;
 }

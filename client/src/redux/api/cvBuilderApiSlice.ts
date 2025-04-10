@@ -1,112 +1,83 @@
-import { apiSlice } from "./apiSlice";
-import {
-  ICVBuilderInitResponse,
-  ICreateCvRequest,
+import { apiSlice } from './apiSlice';
+import { CV } from '@shared/schema';
+import { 
+  ICreateCvRequest, 
   ICreateCvResponse,
+  IUpdateCvRequest, 
+  IUpdateCvResponse,
+  IDeleteCvRequest, 
+  IDeleteCvResponse,
+  IDuplicateCvRequest, 
+  IDuplicateCvResponse,
   IPromptConfigApi,
-  IAISuggestResponse,
-} from "../../types/api/cvBuilder.types";
+  IAiSuggestionResponse
+} from '../../types/api/cvBuilder.types';
 
-// Define types for the new endpoints
-interface IUpdateCvRequest {
-  id: string;
-  json: any;  // CV data model
-  html: string;
-  css: string;
+// Define an interface for the initCvBuilder response
+interface ICVBuilderInitResponse {
+  cvList: CV[];
 }
 
-interface IUpdateCvResponse {
-  success: boolean;
-  message?: string;
-}
-
-interface IDeleteCvRequest {
-  id: string;
-}
-
-interface IDeleteCvResponse {
-  success: boolean;
-  message?: string;
-}
-
-interface IDuplicateCvRequest {
-  id: string;
-  newTitle?: string;
-}
-
-interface IDuplicateCvResponse {
-  success: boolean;
-  cv?: any;  // The duplicated CV
-  message?: string;
-}
-
+/**
+ * CV Builder API slice
+ * Extends the base API slice with endpoints specific to CV building
+ */
 export const cvBuilderApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Initialize CV builder
-    initCvBuilder: builder.mutation<ICVBuilderInitResponse, void>({
-      query: () => ({
-        url: "/premium-app/cvbuilder/init",
-        method: "POST",
-      }),
-      invalidatesTags: ["CVBuilder"],
+    // Get all CVs for the current user
+    initCvBuilder: builder.query<ICVBuilderInitResponse, void>({
+      query: () => 'cv',
+      providesTags: [{ type: 'CV' }],
     }),
 
-    // Create a CV
+    // Create a new CV
     createCv: builder.mutation<ICreateCvResponse, ICreateCvRequest>({
       query: (data) => ({
-        url: "/premium-app/cvbuilder/cv/create",
-        method: "POST",
+        url: 'cv/create',
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["CVBuilder", "CV"],
+      invalidatesTags: [{ type: 'CV' }],
     }),
 
     // Update an existing CV
     updateCv: builder.mutation<IUpdateCvResponse, IUpdateCvRequest>({
       query: (data) => ({
-        url: "/premium-app/cvbuilder/cv/update",
-        method: "PUT",
+        url: 'cv/update',
+        method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ["CVBuilder", "CV"],
+      invalidatesTags: [{ type: 'CV' }],
     }),
 
     // Delete a CV
     deleteCv: builder.mutation<IDeleteCvResponse, IDeleteCvRequest>({
       query: (data) => ({
-        url: "/premium-app/cvbuilder/cv/delete",
-        method: "DELETE",
+        url: 'cv/delete',
+        method: 'DELETE',
         body: data,
       }),
-      invalidatesTags: ["CVBuilder", "CV"],
+      invalidatesTags: [{ type: 'CV' }],
     }),
 
     // Duplicate a CV
     duplicateCv: builder.mutation<IDuplicateCvResponse, IDuplicateCvRequest>({
       query: (data) => ({
-        url: "/premium-app/cvbuilder/cv/duplicate",
-        method: "POST",
+        url: 'cv/duplicate',
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["CVBuilder", "CV"],
+      invalidatesTags: [{ type: 'CV' }],
     }),
 
     // Get AI suggestions for CV content
-    getAiSuggestion: builder.mutation<IAISuggestResponse, IPromptConfigApi>({
+    getAiSuggestion: builder.mutation<IAiSuggestionResponse, IPromptConfigApi>({
       query: (data) => ({
-        url: "/cvbuilder/suggestv2",
-        method: "POST",
+        url: 'cv/ai-suggestion',
+        method: 'POST',
         body: data,
       }),
     }),
   }),
+  overrideExisting: false,
 });
-
-export const {
-  useInitCvBuilderMutation,
-  useCreateCvMutation,
-  useUpdateCvMutation,
-  useDeleteCvMutation,
-  useDuplicateCvMutation,
-  useGetAiSuggestionMutation,
-} = cvBuilderApiSlice;

@@ -184,7 +184,7 @@ export const duplicateCv = createAsyncThunk(
       );
 
       if (result.error) {
-        throw new Error(result.error.message || "Failed to duplicate CV");
+        throw new Error(getErrorMessage(result.error));
       }
 
       return result.data;
@@ -211,7 +211,7 @@ export const getAiSuggestion = createAsyncThunk(
       );
 
       if (result.error) {
-        throw new Error(result.error.status ? `Error ${result.error.status}` : "Failed to get AI suggestion");
+        throw new Error(getErrorMessage(result.error));
       }
 
       return result.data;
