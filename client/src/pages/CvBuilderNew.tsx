@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../redux/store";
-import { 
-  initCvBuilder, 
-  createCv, 
+import {
+  initCvBuilder,
+  createCv,
   getAiSuggestion,
   updatePersonalInfo,
   updateWorkExperience,
@@ -11,9 +11,8 @@ import {
   updateSkills,
   updateSummary,
   setTemplateId,
-  updateHtmlAndCss,
-  setSuggestingSection
-} from '../redux/slices/cvBuilderSlice';
+  setSuggestingSection,
+} from "../redux/slices/cvBuilderSlice";
 import {
   PersonalInfo,
   WorkExperience,
@@ -44,8 +43,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../components/ui/accordion";
-import { Separator } from "../components/ui/separator";
-import { Badge } from "../components/ui/badge";
 import { PersonalInfoSection } from "../components/cv-builder/PersonalInfoSection";
 import { WorkExperienceSection } from "../components/cv-builder/WorkExperienceSection";
 import { EducationSection } from "../components/cv-builder/EducationSection";
@@ -57,25 +54,15 @@ export default function CvBuilderNew() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
-  
+
   // Get CV builder state from Redux
-  const { 
-    currentCV, 
-    isLoading, 
-    error, 
-    initialized,
-    lastSuggestedContent,
-    suggestingSection,
-    availableTemplates,
-    templateId,
-    html,
-    css 
-  } = useAppSelector(state => state.cvBuilder);
-  
+  const { currentCV, isLoading, error, initialized, suggestingSection } =
+    useAppSelector((state) => state.cvBuilder);
+
   // Local UI state
   const [activeTab, setActiveTab] = useState("edit");
   const [activeSection, setActiveSection] = useState<string>("personal-info");
-  
+
   // Initialize CV builder
   useEffect(() => {
     if (!initialized && !isLoading) {
@@ -87,77 +74,82 @@ export default function CvBuilderNew() {
   const handlePersonalInfoSave = (values: PersonalInfo) => {
     dispatch(updatePersonalInfo(values));
   };
-  
+
   const handleWorkExperienceSave = (experiences: WorkExperience[]) => {
     dispatch(updateWorkExperience(experiences));
   };
-  
+
   const handleEducationSave = (educations: Education[]) => {
     dispatch(updateEducation(educations));
   };
-  
+
   const handleSkillsSave = (updatedSkills: Skill[]) => {
     dispatch(updateSkills(updatedSkills));
   };
-  
+
   const handleSummarySave = (values: { summary: string }) => {
     dispatch(updateSummary(values.summary));
   };
-  
+
   const handleTemplateChange = (id: number) => {
     dispatch(setTemplateId(id));
   };
-  
+
   const handleSaveCV = async () => {
     if (!currentCV) return;
-    
+
     try {
       // For now, we'll just use placeholder HTML/CSS
       // In a real app, you would generate this based on the template and CV data
-      await dispatch(createCv({ 
-        html: '<div class="cv-container">Generated CV HTML</div>', 
-        css: '.cv-container { font-family: Arial; }' 
-      })).unwrap();
-      
+      await dispatch(
+        createCv({
+          html: '<div class="cv-container">Generated CV HTML</div>',
+          css: ".cv-container { font-family: Arial; }",
+        }),
+      ).unwrap();
+
       toast({
-        title: t('cvBuilder.saveSuccess'),
-        description: t('cvBuilder.saveSuccessDescription'),
+        title: t("cvBuilder.saveSuccess"),
+        description: t("cvBuilder.saveSuccessDescription"),
       });
-      
+
       // Redirect to CV list page or show success message
     } catch (error) {
       toast({
-        title: t('common.error'),
-        description: t('cvBuilder.saveError'),
-        variant: 'destructive',
+        title: t("common.error"),
+        description: t("cvBuilder.saveError"),
+        variant: "destructive",
       });
     }
   };
-  
+
   const handleGenerateSummary = async () => {
     if (!currentCV) return;
-    
+
     const { workExperience, skills, personalInfo } = currentCV;
-    
+
     if (workExperience.length === 0 || skills.length === 0) {
       toast({
-        title: t('common.warning'),
-        description: t('cvBuilder.needExperienceAndSkills'),
-        variant: 'destructive',
+        title: t("common.warning"),
+        description: t("cvBuilder.needExperienceAndSkills"),
+        variant: "destructive",
       });
       return;
     }
-    
+
     // Mark that we're generating a summary
-    dispatch(setSuggestingSection('summary'));
-    
-    const experienceContent = workExperience.map(exp => 
-      `Position: ${exp.position} at ${exp.company} (${exp.startYear} - ${exp.endYear || 'Present'})
-      Responsibilities: ${exp.description}`
-    ).join('\n\n');
-    
-    const skillsContent = skills.map(s => s.name).join(', ');
-    
+    dispatch(setSuggestingSection("summary"));
+
+    const experienceContent = workExperience
+      .map(
+        (exp) =>
+          `Position: ${exp.position} at ${exp.company} (${exp.startYear} - ${exp.endYear || "Present"})
+      Responsibilities: ${exp.description}`,
+      )
+      .join("\n\n");
+
+    const skillsContent = skills.map((s) => s.name).join(", ");
+
     const content = `Generate a professional summary based on my experience and skills:
       
     Experience:
@@ -166,33 +158,35 @@ export default function CvBuilderNew() {
     Skills:
     ${skillsContent}
     
-    Current job title: ${personalInfo.title || 'Not specified'}`;
-    
+    Current job title: ${personalInfo.title || "Not specified"}`;
+
     try {
-      const result = await dispatch(getAiSuggestion({
-        type: 'summary',
-        userContent: content
-      })).unwrap();
-      
+      const result = await dispatch(
+        getAiSuggestion({
+          type: "summary",
+          userContent: content,
+        }),
+      ).unwrap();
+
       if (result.content) {
         dispatch(updateSummary(result.content));
-        
+
         toast({
-          title: t('cvBuilder.summaryGenerated'),
-          description: t('cvBuilder.summaryGeneratedDescription'),
+          title: t("cvBuilder.summaryGenerated"),
+          description: t("cvBuilder.summaryGeneratedDescription"),
         });
       }
     } catch (error) {
       toast({
-        title: t('common.error'),
-        description: t('cvBuilder.aiSuggestionError'),
-        variant: 'destructive',
+        title: t("common.error"),
+        description: t("cvBuilder.aiSuggestionError"),
+        variant: "destructive",
       });
     } finally {
       dispatch(setSuggestingSection(null));
     }
   };
-  
+
   // Loading state
   if (isLoading && !initialized) {
     return (
@@ -204,7 +198,7 @@ export default function CvBuilderNew() {
       </div>
     );
   }
-  
+
   // Error state
   if (error && !initialized) {
     return (
@@ -218,13 +212,15 @@ export default function CvBuilderNew() {
             <p className="text-destructive">{error}</p>
           </CardContent>
           <CardFooter>
-            <Button onClick={() => dispatch(initCvBuilder())}>{t("common.retry")}</Button>
+            <Button onClick={() => dispatch(initCvBuilder())}>
+              {t("common.retry")}
+            </Button>
           </CardFooter>
         </Card>
       </div>
     );
   }
-  
+
   // Not initialized but not loading or error
   if (!initialized) {
     return (
@@ -235,13 +231,15 @@ export default function CvBuilderNew() {
             <CardDescription>{t("cvBuilder.clickToStart")}</CardDescription>
           </CardHeader>
           <CardFooter>
-            <Button onClick={() => dispatch(initCvBuilder())}>{t("cvBuilder.start")}</Button>
+            <Button onClick={() => dispatch(initCvBuilder())}>
+              {t("cvBuilder.start")}
+            </Button>
           </CardFooter>
         </Card>
       </div>
     );
   }
-  
+
   // No CV data
   if (!currentCV) {
     return (
@@ -249,16 +247,20 @@ export default function CvBuilderNew() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>{t("cvBuilder.noCvData")}</CardTitle>
-            <CardDescription>{t("cvBuilder.somethingWentWrong")}</CardDescription>
+            <CardDescription>
+              {t("cvBuilder.somethingWentWrong")}
+            </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Button onClick={() => dispatch(initCvBuilder())}>{t("common.retry")}</Button>
+            <Button onClick={() => dispatch(initCvBuilder())}>
+              {t("common.retry")}
+            </Button>
           </CardFooter>
         </Card>
       </div>
     );
   }
-  
+
   return (
     <div className="container mx-auto py-6 px-4 max-w-7xl">
       <div className="flex flex-col gap-6">
@@ -285,13 +287,13 @@ export default function CvBuilderNew() {
             </Button>
           </div>
         </div>
-        
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-2 w-[200px]">
             <TabsTrigger value="edit">{t("cvBuilder.edit")}</TabsTrigger>
             <TabsTrigger value="preview">{t("cvBuilder.preview")}</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="edit" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Form section */}
@@ -314,7 +316,7 @@ export default function CvBuilderNew() {
                       />
                     </AccordionContent>
                   </AccordionItem>
-                  
+
                   <AccordionItem value="work-experience">
                     <AccordionTrigger className="text-lg font-semibold">
                       {t("cvBuilder.sections.workExperience")}
@@ -326,7 +328,7 @@ export default function CvBuilderNew() {
                       />
                     </AccordionContent>
                   </AccordionItem>
-                  
+
                   <AccordionItem value="education">
                     <AccordionTrigger className="text-lg font-semibold">
                       {t("cvBuilder.sections.education")}
@@ -338,7 +340,7 @@ export default function CvBuilderNew() {
                       />
                     </AccordionContent>
                   </AccordionItem>
-                  
+
                   <AccordionItem value="skills">
                     <AccordionTrigger className="text-lg font-semibold">
                       {t("cvBuilder.sections.skills")}
@@ -350,7 +352,7 @@ export default function CvBuilderNew() {
                       />
                     </AccordionContent>
                   </AccordionItem>
-                  
+
                   <AccordionItem value="summary">
                     <AccordionTrigger className="text-lg font-semibold">
                       {t("cvBuilder.sections.summary")}
@@ -361,14 +363,16 @@ export default function CvBuilderNew() {
                           variant="outline"
                           className="w-full md:w-auto"
                           onClick={handleGenerateSummary}
-                          disabled={isLoading || suggestingSection === 'summary'}
+                          disabled={
+                            isLoading || suggestingSection === "summary"
+                          }
                         >
-                          {suggestingSection === 'summary'
+                          {suggestingSection === "summary"
                             ? t("common.generating")
                             : t("cvBuilder.generateSummary")}
                         </Button>
                         <SummarySection
-                          defaultValues={{ summary: currentCV.summary || '' }}
+                          defaultValues={{ summary: currentCV.summary || "" }}
                           onSave={handleSummarySave}
                         />
                       </div>
@@ -376,7 +380,7 @@ export default function CvBuilderNew() {
                   </AccordionItem>
                 </Accordion>
               </div>
-              
+
               {/* Preview section */}
               <div className="sticky top-6 self-start">
                 <Card>
@@ -396,7 +400,7 @@ export default function CvBuilderNew() {
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="preview" className="mt-6">
             <Card>
               <CardHeader>

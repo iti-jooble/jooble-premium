@@ -23,7 +23,7 @@ export interface PersonalInfo {
 export interface Skill {
   id: string;
   name: string;
-  level?: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  level?: "beginner" | "intermediate" | "advanced" | "expert";
 }
 
 export interface Education {
@@ -73,7 +73,6 @@ export interface CVBuilderState {
   currentCV: CV | null;
   isEditing: boolean;
   currentSection: string;
-  availableTemplates: CVTemplate[];
   isSaving: boolean;
   errors: Record<string, string>;
   isDirty: boolean;
@@ -93,7 +92,7 @@ export interface AISummaryRequest {
 }
 
 export interface AIRecommendation {
-  type: 'skill' | 'summary' | 'workExperience' | 'education';
+  type: "skill" | "summary" | "workExperience" | "education";
   content: string;
   score: number;
   reason: string;
