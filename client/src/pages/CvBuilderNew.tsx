@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../redux/store";
+// Import thunks from redux/thunks folder
 import {
   initCvBuilder,
   createCv,
-  getAiSuggestion,
-  updatePersonalInfo,
-  updateWorkExperience,
-  updateEducation,
-  updateSkills,
-  updateSummary,
-  setTemplateId,
-  setSuggestingSection,
+  getAiSuggestion
+} from "../redux/thunks";
+
+// Import regular actions from the slice
+import {
+  setCurrentCvId,
+  setIsEditing,
+  setCurrentSection,
+  setIsSaving,
+  resetCvBuilder,
 } from "../redux/slices/cvBuilderSlice";
 import {
   PersonalInfo,
