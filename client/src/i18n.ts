@@ -18,7 +18,8 @@ const initI18n = i18n
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
-    // Change backend loading path to correctly point to the locales folder
+    // IMPORTANT: Translation files are located in public/locales/[language]/translation.json
+    // When adding new translations, update files there, not in src folder
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
