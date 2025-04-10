@@ -50,7 +50,7 @@ export interface WorkExperience {
 export interface CV {
   id: string;
   title: string;
-  score?: number;
+  score: number;
   dateCreated: string;
   personalInfo: Partial<PersonalInfo>;
   summary?: string;
@@ -70,15 +70,12 @@ export interface CVTemplate {
 
 // CV builder state types
 export interface CVBuilderState {
-  currentCvId: string;
-  cvList: CV[];
+  currentCV: CV | null;
   isEditing: boolean;
   currentSection: string;
-  initialized: boolean;
-  isLoading: boolean;
   isSaving: boolean;
-  error: string | null;
-  lastSuggestedContent: string | null;
+  errors: Record<string, string>;
+  isDirty: boolean;
 }
 
 // AI feature types
