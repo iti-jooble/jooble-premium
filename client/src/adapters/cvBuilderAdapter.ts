@@ -1,7 +1,12 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 // Import our application types
-import { PersonalInfo, Education, Skill, WorkExperience } from '../types/state/cvBuilder.types';
+import {
+  PersonalInfo,
+  Education,
+  Skill,
+  WorkExperience,
+} from "../types/state/cvBuilder.types";
 
 // Import external API types
 import {
@@ -9,17 +14,18 @@ import {
   IPersonalInfoApi,
   IWorkPlaceApi,
   IEducationPlaceApi,
-  ILanguageApi,
   CvSource,
   IExperienceApi,
   IEducationApi,
-  ICareerObjectiveApi
-} from '../types/api/cvBuilder.types';
+  ICareerObjectiveApi,
+} from "../types/api/cvBuilder.types";
 
 /**
  * Converts our app's PersonalInfo type to the external API's IPersonalInfoApi type
  */
-export function convertPersonalInfoToApi(personalInfo: Partial<PersonalInfo>): IPersonalInfoApi {
+export function convertPersonalInfoToApi(
+  personalInfo: Partial<PersonalInfo>,
+): IPersonalInfoApi {
   return {
     fullName: personalInfo.fullName,
     firstName: personalInfo.firstName,
@@ -29,37 +35,41 @@ export function convertPersonalInfoToApi(personalInfo: Partial<PersonalInfo>): I
     city: personalInfo.city,
     country: personalInfo.country,
     countryIso: personalInfo.countryCode,
-    yearOfBirth: personalInfo.birthYear
+    yearOfBirth: personalInfo.birthYear,
   };
 }
 
 /**
  * Converts our app's WorkExperience type to the external API's IWorkPlaceApi type
  */
-export function convertWorkExperienceToApi(experience: WorkExperience): IWorkPlaceApi {
+export function convertWorkExperienceToApi(
+  experience: WorkExperience,
+): IWorkPlaceApi {
   return {
     id: experience.id || uuidv4(),
     position: experience.position,
     company: experience.company,
-    period: `${experience.startYear} - ${experience.endYear || 'Present'}`,
+    period: `${experience.startYear} - ${experience.endYear || "Present"}`,
     startYear: experience.startYear,
-    endYear: experience.endYear || 'Present',
+    endYear: experience.endYear || "Present",
     responsibilities: experience.description,
-    isStillWorking: experience.isCurrent
+    isStillWorking: experience.isCurrent,
   };
 }
 
 /**
  * Converts our app's Education type to the external API's IEducationPlaceApi type
  */
-export function convertEducationToApi(education: Education): IEducationPlaceApi {
+export function convertEducationToApi(
+  education: Education,
+): IEducationPlaceApi {
   return {
     id: education.id || uuidv4(),
     educationLevel: education.degree,
     admissionYear: education.startYear,
     nameOfInstitution: education.school,
     specialty: education.field,
-    graduationYear: education.endYear || 'Present'
+    graduationYear: education.endYear || "Present",
   };
 }
 
@@ -67,14 +77,14 @@ export function convertEducationToApi(education: Education): IEducationPlaceApi 
  * Converts our app's Skill type to a string for the external API
  */
 export function convertSkillsToApi(skills: Skill[]): string {
-  return skills.map(skill => skill.name).join(', ');
+  return skills.map((skill) => skill.name).join(", ");
 }
 
 /**
  * Converts our app's Skill array to a skill set array for the external API
  */
 export function convertSkillsToSkillSet(skills: Skill[]): string[] {
-  return skills.map(skill => skill.name);
+  return skills.map((skill) => skill.name);
 }
 
 /**
@@ -96,7 +106,7 @@ export function convertToCvJsonModel(data: {
     education = [],
     workExperience = [],
     buildCvId,
-    templateId = 1
+    templateId = 1,
   } = data;
 
   const skillsString = convertSkillsToApi(skills);
@@ -105,19 +115,19 @@ export function convertToCvJsonModel(data: {
   const careerObjective: ICareerObjectiveApi = {
     position: personalInfo.title || null,
     skills: skillsString || null,
-    skillSet: skillSet
+    skillSet: skillSet,
   };
 
   const experienceApi: IExperienceApi = {
     workPlaces: workExperience.map(convertWorkExperienceToApi),
     hasExperience: workExperience.length > 0,
     professionalSkills: skillsString,
-    careerObjective: careerObjective
+    careerObjective: careerObjective,
   };
 
   const educationApi: IEducationApi = {
     educationPlaces: education.map(convertEducationToApi),
-    hasEducation: education.length > 0
+    hasEducation: education.length > 0,
   };
 
   return {
@@ -134,14 +144,16 @@ export function convertToCvJsonModel(data: {
     templateId,
     summary: summary || null,
     recommendJobsByCVConsent: true,
-    sendCVImprovementTipsConsent: true
+    sendCVImprovementTipsConsent: true,
   };
 }
 
 /**
  * Converts the external API's IWorkPlaceApi to our app's WorkExperience type
  */
-export function convertApiToWorkExperience(workPlace: IWorkPlaceApi): WorkExperience {
+export function convertApiToWorkExperience(
+  workPlace: IWorkPlaceApi,
+): WorkExperience {
   return {
     id: workPlace.id || uuidv4(),
     company: workPlace.company,
@@ -149,23 +161,28 @@ export function convertApiToWorkExperience(workPlace: IWorkPlaceApi): WorkExperi
     startYear: workPlace.startYear,
     endYear: workPlace.isStillWorking ? null : workPlace.endYear,
     description: workPlace.responsibilities,
-    isCurrent: workPlace.isStillWorking
+    isCurrent: workPlace.isStillWorking,
   };
 }
 
 /**
  * Converts the external API's IEducationPlaceApi to our app's Education type
  */
-export function convertApiToEducation(educationPlace: IEducationPlaceApi): Education {
+export function convertApiToEducation(
+  educationPlace: IEducationPlaceApi,
+): Education {
   return {
     id: educationPlace.id || uuidv4(),
-    school: educationPlace.nameOfInstitution || '',
-    degree: educationPlace.educationLevel || '',
+    school: educationPlace.nameOfInstitution || "",
+    degree: educationPlace.educationLevel || "",
     field: educationPlace.specialty,
-    startYear: educationPlace.admissionYear || '',
-    endYear: educationPlace.graduationYear === 'Present' ? null : educationPlace.graduationYear,
-    description: '',
-    isCurrent: educationPlace.graduationYear === 'Present'
+    startYear: educationPlace.admissionYear || "",
+    endYear:
+      educationPlace.graduationYear === "Present"
+        ? null
+        : educationPlace.graduationYear,
+    description: "",
+    isCurrent: educationPlace.graduationYear === "Present",
   };
 }
 
@@ -174,14 +191,15 @@ export function convertApiToEducation(educationPlace: IEducationPlaceApi): Educa
  */
 export function convertApiToSkills(skillsString: string | null): Skill[] {
   if (!skillsString) return [];
-  
-  return skillsString.split(',')
-    .map(skill => skill.trim())
-    .filter(skill => skill.length > 0)
-    .map(skill => ({
+
+  return skillsString
+    .split(",")
+    .map((skill) => skill.trim())
+    .filter((skill) => skill.length > 0)
+    .map((skill) => ({
       id: uuidv4(),
       name: skill,
-      level: 'intermediate'
+      level: "intermediate",
     }));
 }
 
@@ -189,15 +207,22 @@ export function convertApiToSkills(skillsString: string | null): Skill[] {
  * Converts the external API's ICvJsonModelApi to our app's data model
  */
 export function convertFromCvJsonModel(apiModel: ICvJsonModelApi) {
-  const workExperience = apiModel.experience.workPlaces.map(convertApiToWorkExperience);
-  const education = apiModel.education.educationPlaces.map(convertApiToEducation);
-  
+  const workExperience = apiModel.experience.workPlaces.map(
+    convertApiToWorkExperience,
+  );
+  const education = apiModel.education.educationPlaces.map(
+    convertApiToEducation,
+  );
+
   let skills: Skill[] = [];
-  if (apiModel.careerObjective.skillSet && apiModel.careerObjective.skillSet.length > 0) {
-    skills = apiModel.careerObjective.skillSet.map(skill => ({
+  if (
+    apiModel.careerObjective.skillSet &&
+    apiModel.careerObjective.skillSet.length > 0
+  ) {
+    skills = apiModel.careerObjective.skillSet.map((skill) => ({
       id: uuidv4(),
       name: skill,
-      level: 'intermediate'
+      level: "intermediate",
     }));
   } else if (apiModel.careerObjective.skills) {
     skills = convertApiToSkills(apiModel.careerObjective.skills);
@@ -213,7 +238,7 @@ export function convertFromCvJsonModel(apiModel: ICvJsonModelApi) {
     country: apiModel.personalInfo.country,
     countryCode: apiModel.personalInfo.countryIso,
     birthYear: apiModel.personalInfo.yearOfBirth,
-    title: apiModel.careerObjective.position || undefined
+    title: apiModel.careerObjective.position || undefined,
   };
 
   return {
@@ -222,6 +247,6 @@ export function convertFromCvJsonModel(apiModel: ICvJsonModelApi) {
     skills,
     education,
     workExperience,
-    templateId: apiModel.templateId
+    templateId: apiModel.templateId,
   };
 }

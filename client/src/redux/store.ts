@@ -18,16 +18,21 @@ import { cvBuilderApiSlice } from './api/cvBuilderApiSlice';
 // Configure store
 export const store = configureStore({
   reducer: {
+    // Feature reducers
     user: userReducer,
     cvBuilder: cvBuilderReducer,
     jobSearch: jobSearchReducer,
     ui: uiReducer,
+    
+    // API reducers - each API slice has a unique reducerPath
     [apiSlice.reducerPath]: apiSlice.reducer,
     [cvApi.reducerPath]: cvApi.reducer,
     [jobApi.reducerPath]: jobApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [coverLetterApi.reducerPath]: coverLetterApi.reducer,
-    [cvBuilderApiSlice.reducerPath]: cvBuilderApiSlice.reducer,
+    
+    // Custom endpoints injected into apiSlice use the same reducerPath
+    // This is handled automatically by RTK Query
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
