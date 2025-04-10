@@ -112,6 +112,36 @@
     "addMore": "Add More",
     "downloadCV": "Download CV"
   },
+  "cvPreview": {
+    "preview": "Preview",
+    "changeTemplate": "Change Template",
+    "contact": "Contact",
+    "about": "About",
+    "skills": "Skills",
+    "experience": "Experience",
+    "education": "Education",
+    "present": "Present",
+    "defaultSkills": {
+      "navigation": "Navigation",
+      "timeManagement": "Time Management",
+      "customerService": "Customer Service"
+    },
+    "defaultExperience": {
+      "company1": "ABC Company",
+      "company2": "XYZ Corporation",
+      "position": "Driver",
+      "description1": "Driving vehicles and managing safe transportation. Following traffic laws and ensuring on-time deliveries. Maintaining client communication and vehicle maintenance.",
+      "description2": "Driving vehicles and delivering goods."
+    },
+    "defaultEducation": {
+      "driving": "Driving",
+      "driversLicense": "Driver's License",
+      "dmv": "Department of Motor Vehicles",
+      "generalEducation": "General Education",
+      "highSchoolDiploma": "High School Diploma",
+      "highSchool": "ABC High School"
+    }
+  },
   "cvReview": {
     "title": "CV Review",
     "subtitle": "Get expert feedback on your CV",
