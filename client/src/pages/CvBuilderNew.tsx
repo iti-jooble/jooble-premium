@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../redux/store";
-// Import thunks from redux/thunks folder
+
+// Import API-related thunks from the thunks folder
 import {
   initCvBuilder,
   createCv,
-  getAiSuggestion
+  getAiSuggestion,
+  updatePersonalInfo,
+  updateWorkExperience,
+  updateEducation,
+  updateSkills,
+  updateSummary,
+  setTemplateId,
+  setSuggestingSection,
 } from "../redux/thunks";
 
 // Import regular actions from the slice
@@ -16,12 +24,53 @@ import {
   setIsSaving,
   resetCvBuilder,
 } from "../redux/slices/cvBuilderSlice";
-import {
-  PersonalInfo,
-  WorkExperience,
-  Education,
-  Skill,
-} from "../types/state/cvBuilder.types";
+
+// Type imports
+import { CV } from "@shared/schema";
+
+// Define interfaces used in this component
+interface PersonalInfo {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  title?: string;
+  website?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  summary?: string;
+}
+
+interface WorkExperience {
+  id: string;
+  company: string;
+  position: string;
+  startYear: string;
+  endYear: string | null;
+  description: string;
+  isCurrent: boolean;
+}
+
+interface Education {
+  id: string;
+  school: string;
+  degree: string;
+  field?: string;
+  startYear: string;
+  endYear: string | null;
+  description: string;
+  isCurrent: boolean;
+}
+
+interface Skill {
+  id: string;
+  name: string;
+  level?: "beginner" | "intermediate" | "advanced" | "expert";
+}
+
 import { useToast } from "../hooks/use-toast";
 
 // UI components
@@ -171,13 +220,13 @@ export default function CvBuilderNew() {
     try {
       const result = await dispatch(
         getAiSuggestion({
-          type: "summary",
-          userContent: content,
+          section: "summary",
+          additionalContext: content,
         }),
       ).unwrap();
 
-      if (result.content) {
-        dispatch(updateSummary(result.content));
+      if (result.suggestion) {
+        dispatch(updateSummary(result.suggestion));
 
         toast({
           title: t("cvBuilder.summaryGenerated"),

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CvSource, ICreateCvRequest } from "../../types/api/cvBuilder.types";
-import { CVBuilderState } from "../../types/state/cvBuilder.types";
+import { ICVBuilderState } from "../../types/state/cvBuilder.types";
 import { cvBuilderApiSlice } from "../api/cvBuilderApiSlice";
 import { getErrorMessage } from "../helpers";
 
@@ -44,7 +44,7 @@ export const createCv = createAsyncThunk(
   ) => {
     try {
       const { html, css } = payload;
-      const { cvBuilder } = getState() as { cvBuilder: CVBuilderState };
+      const { cvBuilder } = getState() as { cvBuilder: ICVBuilderState };
 
       if (!cvBuilder.currentCvId) {
         throw new Error("No CV selected");
@@ -96,7 +96,7 @@ export const updateCv = createAsyncThunk(
   ) => {
     try {
       const { html, css } = payload;
-      const { cvBuilder } = getState() as { cvBuilder: CVBuilderState };
+      const { cvBuilder } = getState() as { cvBuilder: ICVBuilderState };
 
       if (!cvBuilder.currentCvId) {
         throw new Error("No CV selected");
@@ -182,35 +182,4 @@ export const duplicateCv = createAsyncThunk(
       return rejectWithValue(error.message);
     }
   },
-);
-
-/**
- * AsyncThunk for getting AI-generated content suggestions
- * Uses the API slice's getAiSuggestion endpoint
- */
-export const getAiSuggestion = createAsyncThunk(
-  "cvBuilder/getAiSuggestion",
-  async (
-    payload: {
-      section: string;
-      jobTitle?: string;
-      additionalContext?: string;
-    },
-    { dispatch, rejectWithValue }
-  ) => {
-    try {
-      // Use the mutation hook directly from the API slice
-      const result = await dispatch(
-        cvBuilderApiSlice.endpoints.getAiSuggestion.initiate(payload)
-      );
-
-      if (result.error) {
-        throw new Error(getErrorMessage(result.error));
-      }
-
-      return result.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  }
 );

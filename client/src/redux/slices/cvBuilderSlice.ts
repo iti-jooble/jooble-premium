@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CVBuilderState } from "../../types/state/cvBuilder.types";
-import { 
+import { ICVBuilderState } from "../../types/state/cvBuilder.types";
+import {
   initCvBuilder,
   createCv,
   updateCv,
   deleteCv,
-  duplicateCv 
+  duplicateCv,
 } from "../thunks/cvBuilder.thunks";
 
-const initialState: CVBuilderState = {
+const initialState: ICVBuilderState = {
   currentCvId: null,
   cvList: [],
   isLoading: false,
@@ -115,7 +115,7 @@ const cvBuilderSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(duplicateCv.fulfilled, (state, action) => {
+      .addCase(duplicateCv.fulfilled, (state) => {
         state.isLoading = false;
       })
       .addCase(duplicateCv.rejected, (state, action) => {
