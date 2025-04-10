@@ -1,5 +1,4 @@
-// Basic types for our CV builder
-export interface PersonalInfo {
+export interface IPersonalInfo {
   id?: string;
   fullName?: string;
   firstName?: string;
@@ -20,24 +19,23 @@ export interface PersonalInfo {
   twitter?: string;
 }
 
-export interface Skill {
+export interface ISkill {
   id: string;
   name: string;
   level?: "beginner" | "intermediate" | "advanced" | "expert";
 }
 
-export interface Education {
+export interface IEducation {
   id: string;
   school: string;
   degree: string;
   field?: string;
   startYear: string;
   endYear: string | null;
-  description: string;
   isCurrent: boolean;
 }
 
-export interface WorkExperience {
+export interface IWorkExperience {
   id: string;
   company: string;
   position: string;
@@ -47,51 +45,50 @@ export interface WorkExperience {
   isCurrent: boolean;
 }
 
-export interface CV {
+export interface ICv {
   id: string;
   title: string;
-  score: number;
+  score?: number;
   dateCreated: string;
-  personalInfo: Partial<PersonalInfo>;
+  personalInfo: Partial<IPersonalInfo>;
   summary?: string;
-  skills: Skill[];
-  education: Education[];
-  workExperience: WorkExperience[];
+  skills: ISkill[];
+  education: IEducation[];
+  workExperience: IWorkExperience[];
   templateId: number;
 }
 
-// CV template types
-export interface CVTemplate {
+export interface ICVTemplate {
   id: number;
   name: string;
   previewImage: string;
   isPremium: boolean;
 }
 
-// CV builder state types
-export interface CVBuilderState {
-  currentCV: CV | null;
+export interface ICVBuilderState {
+  currentCvId: string | null;
+  cvList: ICv[];
+  isLoading: boolean;
+  isInitialized: boolean;
   isEditing: boolean;
   currentSection: string;
   isSaving: boolean;
-  errors: Record<string, string>;
-  isDirty: boolean;
+  error: string | null;
 }
 
-// AI feature types
-export interface AISkillSuggestion {
+export interface IAISkillSuggestion {
   skill: string;
   relevance: number;
   description: string;
 }
 
-export interface AISummaryRequest {
-  experience: WorkExperience[];
-  skills: Skill[];
+export interface IAISummaryRequest {
+  experience: IWorkExperience[];
+  skills: ISkill[];
   targetPosition?: string;
 }
 
-export interface AIRecommendation {
+export interface IAIRecommendation {
   type: "skill" | "summary" | "workExperience" | "education";
   content: string;
   score: number;

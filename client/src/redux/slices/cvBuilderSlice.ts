@@ -1,13 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
 import {
   ICVBuilderInitResponse,
-  ICvJsonModelApi,
-  IPersonalInfoApi,
-  IWorkPlaceApi,
-  IEducationPlaceApi,
-  ILanguageApi,
-  ICareerObjectiveApi,
   CvSource,
   ICreateCvRequest,
   ICreateCvResponse,
@@ -20,17 +13,8 @@ import {
   WorkExperience,
   Education,
   Skill,
-  CV,
-  CVTemplate,
+  ICVBuilderState,
 } from "../../types/state/cvBuilder.types";
-
-import {
-  convertFromCvJsonModel,
-  convertToCvJsonModel,
-  convertWorkExperienceToApi,
-  convertEducationToApi,
-  convertPersonalInfoToApi,
-} from "../../adapters/cvBuilderAdapter";
 
 // API base URL for CV builder
 const API_BASE_URL = "/api";
@@ -54,7 +38,9 @@ export const initCvBuilder = createAsyncThunk(
       const data: ICVBuilderInitResponse = await response.json();
       return data;
     } catch (error: any) {
-      return rejectWithValue(error.message || "An error occurred initializing CV builder");
+      return rejectWithValue(
+        error.message || "An error occurred initializing CV builder",
+      );
     }
   },
 );
@@ -70,16 +56,16 @@ export const createCv = createAsyncThunk(
     { getState, rejectWithValue },
   ) => {
     try {
-      const state = getState() as { cvBuilder: CvBuilderState };
-      const { 
-        buildCvId, 
-        currentStep, 
+      const state = getState() as { cvBuilder: ICVBuilderState };
+      const {
+        buildCvId,
+        currentStep,
         templateId,
-        personalInfo, 
-        summary, 
-        skills, 
-        education, 
-        workExperience 
+        personalInfo,
+        summary,
+        skills,
+        education,
+        workExperience,
       } = state.cvBuilder;
       const { html, css } = payload;
 
@@ -99,7 +85,7 @@ export const createCv = createAsyncThunk(
         workExperience,
         // Default values for required API fields
         source: CvSource.MANUAL,
-        referrer: '',
+        referrer: "",
         jdpId: null,
       });
 
@@ -171,56 +157,48 @@ export const getAiSuggestion = createAsyncThunk(
         content: data.content,
       };
     } catch (error: any) {
-      return rejectWithValue(error.message || "An error occurred getting AI suggestion");
+      return rejectWithValue(
+        error.message || "An error occurred getting AI suggestion",
+      );
     }
   },
 );
 
-// Define our state interface
-interface CvBuilderState {
-  // Minimal API reference data (just the ID needed to make API calls)
-  buildCvId: string | null;
-  
-  // UI state data
-  initialized: boolean;
-  currentStep: number;
-  isLoading: boolean;
-  error: string | null;
-  templateId: number;
-  
-  // Our main app model (the source of truth for the UI)
+const initialState: ICVBuilderState & {
+  buildCvId?: string;
+  currentStep?: number;
+  templateId?: number;
+  initialized?: boolean;
   personalInfo: Partial<PersonalInfo>;
-  summary: string;
+  summary?: string;
   skills: Skill[];
   education: Education[];
   workExperience: WorkExperience[];
-  
-  // UI related
-  lastSuggestedContent: string | null;
-  suggestingSection: string | null;
-}
-
-const initialState: CvBuilderState = {
-  // Minimal API reference data
-  buildCvId: null,
-  
-  // UI state
-  initialized: false,
-  currentStep: 1,
+  suggestingSection?: string | null;
+  lastSuggestedContent?: string;
+} = {
+  // Original ICVBuilderState properties
+  currentCvId: null,
+  cvList: [],
   isLoading: false,
+  isInitialized: false,
+  isEditing: false,
+  currentSection: "",
+  isSaving: false,
   error: null,
-  templateId: 1,
   
-  // App model - initialized with empty values
+  // Extended properties for the flattened structure
+  buildCvId: undefined,
+  currentStep: 1,
+  initialized: false,
+  templateId: 1,
   personalInfo: {},
-  summary: '',
+  summary: "",
   skills: [],
   education: [],
   workExperience: [],
-  
-  // UI related
-  lastSuggestedContent: null,
-  suggestingSection: null
+  suggestingSection: null,
+  lastSuggestedContent: undefined,
 };
 
 const cvBuilderSlice = createSlice({
@@ -235,7 +213,7 @@ const cvBuilderSlice = createSlice({
     // Update personal information
     updatePersonalInfo: (
       state,
-      action: PayloadAction<Partial<PersonalInfo>>,
+      action: PayloadAction<Partial<IPersonalInfo>>,
     ) => {
       // Update only the app model
       state.personalInfo = {
@@ -245,19 +223,19 @@ const cvBuilderSlice = createSlice({
     },
 
     // Update work experience
-    updateWorkExperience: (state, action: PayloadAction<WorkExperience[]>) => {
+    updateWorkExperience: (state, action: PayloadAction<IWorkExperience[]>) => {
       // Update only the app model
       state.workExperience = action.payload;
     },
 
     // Update education
-    updateEducation: (state, action: PayloadAction<Education[]>) => {
+    updateEducation: (state, action: PayloadAction<IEducation[]>) => {
       // Update only the app model
       state.education = action.payload;
     },
 
     // Update skills
-    updateSkills: (state, action: PayloadAction<Skill[]>) => {
+    updateSkills: (state, action: PayloadAction<ISkill[]>) => {
       // Update only the app model
       state.skills = action.payload;
     },
@@ -277,7 +255,7 @@ const cvBuilderSlice = createSlice({
       }>,
     ) => {
       // These would be stored with other CV metadata if needed
-      // For now, we're not storing this in the state 
+      // For now, we're not storing this in the state
       // as we only use it when sending data to API
     },
 
@@ -302,10 +280,10 @@ const cvBuilderSlice = createSlice({
         state.error = null;
       })
       .addCase(initCvBuilder.fulfilled, (state, action) => {
-        const { initial, buildCvId } = action.payload;
+        const { cvList } = action.payload;
 
         // Store only the minimal API reference data needed for future API calls
-        state.buildCvId = buildCvId;
+        state.cv = buildCvId;
         state.currentStep = initial.step;
         state.templateId = initial.templateId;
         state.initialized = true;

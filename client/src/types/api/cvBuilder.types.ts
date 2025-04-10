@@ -1,95 +1,11 @@
-// Interface for request data
-export interface IRequestData {
-  url: string;
-  method: string;
-  data?: any;
-  headers?: Record<string, string>;
-}
+import { ICv } from "../state/cvBuilder.types";
 
 // Enum to represent the source of a CV
 export enum CvSource {
-  MANUAL = 'manual',
-  IMPORTED = 'imported',
-  GENERATED = 'generated',
-  AI_ASSISTED = 'ai_assisted'
-}
-
-export type TCVBuilderInitGet = Omit<IRequestData, 'url' | 'method' | 'data'>;
-
-export interface IExperienceApi {
-  workPlaces: IWorkPlaceApi[];
-  hasExperience: boolean;
-  professionalSkills: string;
-  careerObjective: ICareerObjectiveApi;
-}
-
-export interface IPersonalInfoApi {
-  fullName?: string;
-  yearOfBirth?: string | null;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  email?: string;
-  city?: string;
-  country?: string;
-  countryIso?: string;
-}
-
-export interface ICareerObjectiveApi {
-  position: string | null;
-  skills: string | null;
-  skillSet: string[];
-}
-
-export interface IWorkPlaceApi {
-  id?: string;
-  position: string;
-  company: string;
-  period: string;
-  startYear: string;
-  endYear: string;
-  responsibilities: string;
-  isStillWorking: boolean;
-}
-
-export interface IEducationPlaceApi {
-  id?: string;
-  educationLevel?: string;
-  admissionYear?: string;
-  nameOfInstitution?: string;
-  specialty?: string;
-  graduationYear?: string;
-}
-
-export interface IEducationApi {
-  educationPlaces: IEducationPlaceApi[];
-  hasEducation: boolean;
-}
-
-export interface ILanguageApi {
-  name: string;
-  level: string;
-}
-
-export interface ISummaryApi {
-  summary: string | null;
-  recommendJobsByCVConsent: boolean;
-  sendCVImprovementTipsConsent: boolean;
-}
-
-export interface ICvJsonModelApi extends ISummaryApi {
-  jdpId: number | null;
-  buildCvId: string;
-  step: number;
-  source: CvSource;
-  referrer: string;
-
-  personalInfo: IPersonalInfoApi;
-  careerObjective: ICareerObjectiveApi;
-  experience: IExperienceApi;
-  education: IEducationApi;
-  languages?: ILanguageApi[];
-  templateId: number;
+  MANUAL = "manual",
+  IMPORTED = "imported",
+  GENERATED = "generated",
+  AI_ASSISTED = "ai_assisted",
 }
 
 export interface ICvBuilderConfigModelApi {
@@ -106,19 +22,16 @@ export interface ICvBuilderPreCreateDataApi {
 }
 
 export interface ICVBuilderInitResponse {
-  config: ICvBuilderConfigModelApi;
-  initial: ICvJsonModelApi;
-  buildCvId: string;
-  preCreateData: ICvBuilderPreCreateDataApi;
-  locales: LocalesDictionary;
+  cvList: ICv[];
 }
 
-export interface LocalesDictionary extends Record<string, Record<string, string>> {}
+export interface LocalesDictionary
+  extends Record<string, Record<string, string>> {}
 
 export interface ICreateCvRequest {
   buildCvId: string;
   source: CvSource;
-  json: ICvJsonModelApi;
+  json: ICv;
   jdpId: number | null;
   step: number;
   html: string;
@@ -143,14 +56,4 @@ export interface ICreateCvResponse {
 
 export interface IAISuggestResponse {
   content: string;
-}
-
-export interface ICVBuilderStatisticsData {
-  type: number;
-  flags: number;
-  buildCvId?: string;
-  jdpId: number | null;
-  step: number;
-  json?: object;
-  additionalData?: object | string | null;
 }
