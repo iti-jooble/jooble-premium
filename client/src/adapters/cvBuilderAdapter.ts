@@ -98,6 +98,10 @@ export function convertToCvJsonModel(data: {
   workExperience?: WorkExperience[];
   buildCvId: string;
   templateId?: number;
+  step?: number;
+  source?: CvSource;
+  referrer?: string;
+  jdpId?: number | null;
 }): ICvJsonModelApi {
   const {
     personalInfo,
@@ -107,6 +111,10 @@ export function convertToCvJsonModel(data: {
     workExperience = [],
     buildCvId,
     templateId = 1,
+    step = 4, // Assuming 4 is the "complete" step if not specified
+    source = CvSource.MANUAL,
+    referrer = window.location.href,
+    jdpId = null,
   } = data;
 
   const skillsString = convertSkillsToApi(skills);
@@ -131,11 +139,11 @@ export function convertToCvJsonModel(data: {
   };
 
   return {
-    jdpId: null,
+    jdpId,
     buildCvId,
-    step: 4, // Assuming 4 is the "complete" step
-    source: CvSource.MANUAL,
-    referrer: window.location.href,
+    step,
+    source,
+    referrer,
     personalInfo: convertPersonalInfoToApi(personalInfo),
     careerObjective,
     experience: experienceApi,

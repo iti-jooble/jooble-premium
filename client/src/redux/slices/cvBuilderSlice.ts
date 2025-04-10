@@ -98,7 +98,7 @@ export const createCv = createAsyncThunk(
         education,
         workExperience,
         // Default values for required API fields
-        source: 'web',
+        source: CvSource.MANUAL,
         referrer: '',
         jdpId: null,
       });

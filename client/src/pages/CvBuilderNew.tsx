@@ -56,8 +56,17 @@ export default function CvBuilderNew() {
   const { toast } = useToast();
 
   // Get CV builder state from Redux
-  const { currentCV, isLoading, error, initialized, suggestingSection } =
-    useAppSelector((state) => state.cvBuilder);
+  const { 
+    personalInfo,
+    summary,
+    skills,
+    education,
+    workExperience,
+    isLoading, 
+    error, 
+    initialized, 
+    suggestingSection 
+  } = useAppSelector((state) => state.cvBuilder);
 
   // Local UI state
   const [activeTab, setActiveTab] = useState("edit");
@@ -96,8 +105,6 @@ export default function CvBuilderNew() {
   };
 
   const handleSaveCV = async () => {
-    if (!currentCV) return;
-
     try {
       // For now, we'll just use placeholder HTML/CSS
       // In a real app, you would generate this based on the template and CV data
@@ -124,10 +131,6 @@ export default function CvBuilderNew() {
   };
 
   const handleGenerateSummary = async () => {
-    if (!currentCV) return;
-
-    const { workExperience, skills, personalInfo } = currentCV;
-
     if (workExperience.length === 0 || skills.length === 0) {
       toast({
         title: t("common.warning"),
@@ -240,26 +243,7 @@ export default function CvBuilderNew() {
     );
   }
 
-  // No CV data
-  if (!currentCV) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>{t("cvBuilder.noCvData")}</CardTitle>
-            <CardDescription>
-              {t("cvBuilder.somethingWentWrong")}
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Button onClick={() => dispatch(initCvBuilder())}>
-              {t("common.retry")}
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
+  // The data model in the store is initialized now
 
   return (
     <div className="container mx-auto py-6 px-4 max-w-7xl">
@@ -392,7 +376,13 @@ export default function CvBuilderNew() {
                   </CardHeader>
                   <CardContent>
                     <CvPreview
-                      data={currentCV}
+                      data={{
+                        personalInfo,
+                        summary,
+                        skills,
+                        education,
+                        workExperience
+                      }}
                       onChangeTemplate={handleTemplateChange}
                     />
                   </CardContent>
