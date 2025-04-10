@@ -30,78 +30,27 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
       {selectedJob ? (
         <Card className="shadow-sm sticky top-4 border-border/40">
           <CardContent className="p-6">
-            {/* Company header with logo and posted time */}
-            <div className="flex items-center mb-3">
-              <div className="bg-blue-900 w-12 h-12 rounded-md flex items-center justify-center mr-3">
-                <div className="text-white text-xs">Logo</div>
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center">
-                  <span className="font-medium">{selectedJob.company}</span>
-                  <span className="mx-2">•</span>
-                  <span className="text-sm text-muted-foreground">{selectedJob.posted}</span>
-                </div>
-              </div>
-              
-              {/* Match score circle in top right */}
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full border-4 border-green-200 flex flex-col items-center justify-center">
-                  <div className="text-xl font-bold text-slate-800">43<span className="text-sm">%</span></div>
-                </div>
-                <div className="text-xs font-semibold text-center mt-1">FAIR MATCH</div>
-              </div>
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">{selectedJob.title}</h2>
+              <div className="text-muted-foreground">{selectedJob.company}</div>
             </div>
-            
-            {/* Job title */}
-            <h2 className="text-2xl font-bold mb-5">{selectedJob.title}</h2>
-            
-            {/* Job details in two columns */}
-            <div className="grid grid-cols-2 gap-y-3 gap-x-4 mb-4">
-              <div className="flex items-center text-sm">
-                <MapPinIcon className="h-4 w-4 mr-2" />
+
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground my-4">
+              <div className="flex items-center">
+                <MapPinIcon className="h-4 w-4 mr-1" />
                 <span>{selectedJob.location}</span>
               </div>
-              <div className="flex items-center text-sm">
-                <BriefcaseIcon className="h-4 w-4 mr-2" />
-                <span>Full-time</span>
+              <div className="flex items-center">
+                <BriefcaseIcon className="h-4 w-4 mr-1" />
+                <span>{selectedJob.type}</span>
               </div>
-              <div className="flex items-center text-sm">
-                <MapPinIcon className="h-4 w-4 mr-2 opacity-0" />
-                <span>Remote</span>
-              </div>
-              <div className="flex items-center text-sm">
-                <span className="h-4 w-4 mr-2 flex items-center justify-center font-semibold">☰</span>
-                <span>Entry, Mid, Senior Level, Lead/Staff</span>
-              </div>
-              <div className="flex items-center text-sm">
-                <DollarSignIcon className="h-4 w-4 mr-2" />
+              <div className="flex items-center">
+                <DollarSignIcon className="h-4 w-4 mr-1" />
                 <span>{selectedJob.salary}</span>
               </div>
-              <div className="flex items-center text-sm">
-                <ClockIcon className="h-4 w-4 mr-2" />
-                <span>10+ years exp</span>
-              </div>
-            </div>
-            
-            {/* Match score metrics */}
-            <div className="flex items-center justify-start gap-8 mb-4">
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full border-2 border-green-300 flex items-center justify-center mb-1">
-                  <span className="font-semibold">83%</span>
-                </div>
-                <div className="text-xs">Exp. Level</div>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full border-2 border-green-300 flex items-center justify-center mb-1">
-                  <span className="font-semibold">30%</span>
-                </div>
-                <div className="text-xs">Skill</div>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full border-2 border-green-300 flex items-center justify-center mb-1">
-                  <span className="font-semibold">14%</span>
-                </div>
-                <div className="text-xs">Industry Exp.</div>
+              <div className="flex items-center">
+                <ClockIcon className="h-4 w-4 mr-1" />
+                <span>Posted {selectedJob.posted}</span>
               </div>
             </div>
 
