@@ -1,32 +1,39 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { CvSource, ICreateCvRequest } from "../../types/api/cvBuilder.types";
-
-import { ICVBuilderState } from "../../types/state/cvBuilder.types";
+import { createSlice, PayloadAction, createAsyncThunk, SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { CvSource, ICreateCvRequest, IPromptConfigApi } from "../../types/api/cvBuilder.types";
+import { CVBuilderState } from "../../types/state/cvBuilder.types";
 import { cvBuilderApiSlice } from "../api/cvBuilderApiSlice";
 
-// Extract endpoint references for use in our thunks
-const { 
-  initCvBuilder: initCvBuilderApi, 
-  createCv: createCvApi,
-  updateCv: updateCvApi,
-  deleteCv: deleteCvApi,
-  duplicateCv: duplicateCvApi
-} = cvBuilderApiSlice.endpoints;
+// Helper function for error handling
+function getErrorMessage(error: FetchBaseQueryError | SerializedError): string {
+  if ('status' in error) {
+    // We have a FetchBaseQueryError
+    return `API Error ${error.status}: ${JSON.stringify(error.data)}`;
+  } else {
+    // We have a SerializedError
+    return error.message || "Unknown error occurred";
+  }
+}
+
+// We no longer need to extract endpoints directly as we'll reference them inline
+// for better type safety and consistency
 
 export const initCvBuilder = createAsyncThunk(
   "cvBuilder/initCvBuilder",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const result = await dispatch(initCvBuilderApi.initiate());
+      const result = await dispatch(
+        cvBuilderApiSlice.endpoints.initCvBuilder.initiate()
+      );
 
       if (result.error) {
-        throw result.error;
+        throw new Error(result.error.status || "Failed to initialize CV builder");
       }
 
       return result.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.message || "An error occurred initializing CV builder",
+        error.message || "An error occurred initializing CV builder"
       );
     }
   },
@@ -65,10 +72,13 @@ export const createCv = createAsyncThunk(
         css,
       };
 
-      const result = await dispatch(createCvApi.initiate(request));
+      // Use the mutation hook directly from the API slice for consistency
+      const result = await dispatch(
+        cvBuilderApiSlice.endpoints.createCv.initiate(request)
+      );
 
       if (result.error) {
-        throw result.error;
+        throw new Error(result.error.message || "Failed to create CV");
       }
 
       return result.data;
@@ -114,10 +124,13 @@ export const updateCv = createAsyncThunk(
         css,
       };
 
-      const result = await dispatch(updateCvApi.initiate(request));
+      // Use the mutation hook directly from the API slice
+      const result = await dispatch(
+        cvBuilderApiSlice.endpoints.updateCv.initiate(request)
+      );
 
       if (result.error) {
-        throw result.error;
+        throw new Error(result.error.message || "Failed to update CV");
       }
 
       return result.data;
@@ -138,12 +151,13 @@ export const deleteCv = createAsyncThunk(
     { dispatch, rejectWithValue },
   ) => {
     try {
+      // Use the mutation hook directly from the API slice
       const result = await dispatch(
-        deleteCvApi.initiate({ id })
+        cvBuilderApiSlice.endpoints.deleteCv.initiate({ id })
       );
 
       if (result.error) {
-        throw result.error;
+        throw new Error(result.error.message || "Failed to delete CV");
       }
 
       return { id, ...result.data };
@@ -164,17 +178,45 @@ export const duplicateCv = createAsyncThunk(
     { dispatch, rejectWithValue },
   ) => {
     try {
+      // Use the mutation hook directly from the API slice
       const result = await dispatch(
-        duplicateCvApi.initiate(payload)
+        cvBuilderApiSlice.endpoints.duplicateCv.initiate(payload)
       );
 
       if (result.error) {
-        throw result.error;
+        throw new Error(result.error.message || "Failed to duplicate CV");
       }
 
       return result.data;
     } catch (error: any) {
       return rejectWithValue(error.message);
+    }
+  },
+);
+
+/**
+ * AsyncThunk for getting AI suggestions for CV content
+ * Uses the API slice's getAiSuggestion endpoint
+ */
+export const getAiSuggestion = createAsyncThunk(
+  "cvBuilder/getAiSuggestion",
+  async (
+    promptConfig: IPromptConfigApi,
+    { dispatch, rejectWithValue },
+  ) => {
+    try {
+      // Use the mutation hook directly from the API slice
+      const result = await dispatch(
+        cvBuilderApiSlice.endpoints.getAiSuggestion.initiate(promptConfig)
+      );
+
+      if (result.error) {
+        throw new Error(result.error.status ? `Error ${result.error.status}` : "Failed to get AI suggestion");
+      }
+
+      return result.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Failed to get AI suggestion");
     }
   },
 );
