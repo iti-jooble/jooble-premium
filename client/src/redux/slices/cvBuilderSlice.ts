@@ -9,42 +9,13 @@ import {
 } from "../../types/api/cvBuilder.types";
 
 import {
-  PersonalInfo,
-  WorkExperience,
-  Education,
-  Skill,
-  CV,
+  IPersonalInfo,
+  IWorkExperience,
+  IEducation,
+  ISkill,
+  ICv,
+  ICVBuilderState,
 } from "../../types/state/cvBuilder.types";
-
-// Define our own state interface to match the flat structure
-interface CVBuilderState {
-  // Basic state properties
-  isLoading: boolean;
-  error: string | null;
-
-  // CV list management
-  currentCvId: string | null;
-  cvList: CV[];
-  
-  // UI state
-  isInitialized: boolean;
-  isEditing: boolean;
-  currentSection: string;
-  isSaving: boolean;
-
-  // CV data properties (flattened from nested structure)
-  buildCvId?: string;
-  currentStep: number;
-  templateId: number;
-  initialized: boolean;
-  personalInfo: Partial<PersonalInfo>;
-  summary: string;
-  skills: Skill[];
-  education: Education[];
-  workExperience: WorkExperience[];
-  suggestingSection: string | null;
-  lastSuggestedContent?: string;
-}
 
 // API base URL for CV builder
 const API_BASE_URL = "/api";
@@ -86,7 +57,7 @@ export const createCv = createAsyncThunk(
     { getState, rejectWithValue },
   ) => {
     try {
-      const state = getState() as { cvBuilder: CVBuilderState };
+      const state = getState() as { cvBuilder: ExtendedCVBuilderState };
       const {
         buildCvId,
         currentStep,
@@ -104,7 +75,6 @@ export const createCv = createAsyncThunk(
       }
 
       // Create the API model directly here (no adapter needed)
-      // This would typically have more conversion logic, but we're keeping it simple
       const apiModel = {
         jdpId: null,
         buildCvId,
@@ -123,11 +93,11 @@ export const createCv = createAsyncThunk(
         },
         careerObjective: {
           position: personalInfo.title || null,
-          skills: skills.map(s => s.name).join(', ') || null,
-          skillSet: skills.map(s => s.name),
+          skills: skills.map((s: ISkill) => s.name).join(', ') || null,
+          skillSet: skills.map((s: ISkill) => s.name),
         },
         experience: {
-          workPlaces: workExperience.map(w => ({
+          workPlaces: workExperience.map((w: IWorkExperience) => ({
             id: w.id,
             position: w.position,
             company: w.company,
@@ -138,15 +108,15 @@ export const createCv = createAsyncThunk(
             period: `${w.startYear} - ${w.isCurrent ? 'Present' : w.endYear || ''}`,
           })),
           hasExperience: workExperience.length > 0,
-          professionalSkills: skills.map(s => s.name).join(', '),
+          professionalSkills: skills.map((s: ISkill) => s.name).join(', '),
           careerObjective: {
             position: personalInfo.title || null,
-            skills: skills.map(s => s.name).join(', ') || null,
-            skillSet: skills.map(s => s.name),
+            skills: skills.map((s: ISkill) => s.name).join(', ') || null,
+            skillSet: skills.map((s: ISkill) => s.name),
           }
         },
         education: {
-          educationPlaces: education.map(e => ({
+          educationPlaces: education.map((e: IEducation) => ({
             id: e.id,
             educationLevel: e.degree,
             admissionYear: e.startYear,
@@ -239,22 +209,37 @@ export const getAiSuggestion = createAsyncThunk(
   },
 );
 
-const initialState: CVBuilderState = {
-  // Basic state properties
-  isLoading: false,
-  error: null,
+// Extended state interface with properties not in ICVBuilderState
+interface ExtendedState {
+  buildCvId?: string;
+  currentStep: number;
+  templateId: number;
+  initialized: boolean;
+  personalInfo: Partial<IPersonalInfo>;
+  summary: string;
+  skills: ISkill[];
+  education: IEducation[];
+  workExperience: IWorkExperience[];
+  suggestingSection: string | null;
+  lastSuggestedContent?: string;
+}
 
-  // CV list management
+// Combined interface for the full state
+type ExtendedCVBuilderState = ICVBuilderState & ExtendedState;
+
+// Define the initial state
+const initialState: ExtendedCVBuilderState = {
+  // ICVBuilderState properties
   currentCvId: null,
   cvList: [],
-  
-  // UI state
+  isLoading: false,
   isInitialized: false,
   isEditing: false,
   currentSection: "",
   isSaving: false,
-
-  // CV data properties (flattened from nested structure)
+  error: null,
+  
+  // Extended state properties
   buildCvId: undefined,
   currentStep: 1,
   templateId: 1,
@@ -268,6 +253,7 @@ const initialState: CVBuilderState = {
   lastSuggestedContent: undefined,
 };
 
+// Create the cvBuilderSlice
 const cvBuilderSlice = createSlice({
   name: "cvBuilder",
   initialState,
@@ -280,9 +266,8 @@ const cvBuilderSlice = createSlice({
     // Update personal information
     updatePersonalInfo: (
       state,
-      action: PayloadAction<Partial<PersonalInfo>>,
+      action: PayloadAction<Partial<IPersonalInfo>>,
     ) => {
-      // Update only the app model
       state.personalInfo = {
         ...state.personalInfo,
         ...action.payload,
@@ -290,26 +275,22 @@ const cvBuilderSlice = createSlice({
     },
 
     // Update work experience
-    updateWorkExperience: (state, action: PayloadAction<WorkExperience[]>) => {
-      // Update only the app model
+    updateWorkExperience: (state, action: PayloadAction<IWorkExperience[]>) => {
       state.workExperience = action.payload;
     },
 
     // Update education
-    updateEducation: (state, action: PayloadAction<Education[]>) => {
-      // Update only the app model
+    updateEducation: (state, action: PayloadAction<IEducation[]>) => {
       state.education = action.payload;
     },
 
     // Update skills
-    updateSkills: (state, action: PayloadAction<Skill[]>) => {
-      // Update only the app model
+    updateSkills: (state, action: PayloadAction<ISkill[]>) => {
       state.skills = action.payload;
     },
 
     // Update summary
     updateSummary: (state, action: PayloadAction<string>) => {
-      // Update only the app model
       state.summary = action.payload;
     },
 
@@ -347,19 +328,27 @@ const cvBuilderSlice = createSlice({
         state.error = null;
       })
       .addCase(initCvBuilder.fulfilled, (state, action) => {
-        const { buildCvId, initial } = action.payload;
+        // Extract buildCvId and initial data from response
+        // Note: These might need to be adjusted based on actual response structure
+        const buildCvId = action.payload.buildCvId;
+        const initial = action.payload.initial;
 
-        // Store minimal API reference data
-        state.buildCvId = buildCvId;
-        state.currentStep = initial?.step || 1;
-        state.templateId = initial?.templateId || 1;
-        state.initialized = true;
-        state.isLoading = false;
+        if (buildCvId) {
+          state.buildCvId = buildCvId;
+        }
 
-        // Directly adapt from the API model to our app model (no adapter needed)
         if (initial) {
-          // Personal Info
-          const personalInfo: Partial<PersonalInfo> = {
+          // Set step and template ID
+          state.currentStep = initial.step || 1;
+          state.templateId = initial.templateId || 1;
+          
+          // Set status flags
+          state.initialized = true;
+          state.isInitialized = true;
+          state.isLoading = false;
+
+          // Map personal info from API response
+          const personalInfo: Partial<IPersonalInfo> = {
             firstName: initial.personalInfo?.firstName || '',
             lastName: initial.personalInfo?.lastName || '',
             email: initial.personalInfo?.email || '',
@@ -369,15 +358,15 @@ const cvBuilderSlice = createSlice({
             title: initial.careerObjective?.position || '',
           };
           
-          // Skills
-          const skills: Skill[] = (initial.careerObjective?.skillSet || []).map((skill, index) => ({
+          // Map skills from API response
+          const skills: ISkill[] = (initial.careerObjective?.skillSet || []).map((skill: string, index: number) => ({
             id: `skill-${index}`,
             name: skill,
             level: 'intermediate',
           }));
           
-          // Work Experience
-          const workExperience: WorkExperience[] = (initial.experience?.workPlaces || []).map(wp => ({
+          // Map work experience from API response
+          const workExperience: IWorkExperience[] = (initial.experience?.workPlaces || []).map((wp: any) => ({
             id: wp.id || `exp-${Math.random().toString(36).substring(2, 9)}`,
             company: wp.company || '',
             position: wp.position || '',
@@ -387,8 +376,8 @@ const cvBuilderSlice = createSlice({
             isCurrent: wp.isStillWorking || false,
           }));
           
-          // Education
-          const education: Education[] = (initial.education?.educationPlaces || []).map(edu => ({
+          // Map education from API response
+          const education: IEducation[] = (initial.education?.educationPlaces || []).map((edu: any) => ({
             id: edu.id || `edu-${Math.random().toString(36).substring(2, 9)}`,
             school: edu.nameOfInstitution || '',
             degree: edu.educationLevel || '',
@@ -398,7 +387,7 @@ const cvBuilderSlice = createSlice({
             isCurrent: false,
           }));
           
-          // Update state with adapted data
+          // Update state with mapped data
           state.personalInfo = personalInfo;
           state.summary = initial.summary?.summary || '';
           state.skills = skills;
@@ -418,7 +407,7 @@ const cvBuilderSlice = createSlice({
       })
       .addCase(createCv.fulfilled, (state) => {
         state.isLoading = false;
-        // No need to store anything here as we're just confirming the CV was created
+        // No need to update state here as we're just confirming the CV was created
       })
       .addCase(createCv.rejected, (state, action) => {
         state.isLoading = false;
