@@ -8,13 +8,12 @@ import jobSearchReducer from './slices/jobSearchSlice';
 import uiReducer from './slices/uiSlice';
 
 // Import API slices
-import { 
-  apiSlice, 
-  cvApi, 
-  jobApi, 
-  authApi, 
-  coverLetterApi 
-} from './api/apiSlice';
+import { apiSlice } from './api/apiSlice';
+import { cvApi } from './api/cvApiSlice';
+import { jobApi } from './api/jobApiSlice';
+import { authApi } from './api/authApiSlice';
+import { coverLetterApi } from './api/coverLetterApiSlice';
+import { cvBuilderApiSlice } from './api/cvBuilderApiSlice';
 
 // Configure store
 export const store = configureStore({
@@ -28,6 +27,7 @@ export const store = configureStore({
     [jobApi.reducerPath]: jobApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [coverLetterApi.reducerPath]: coverLetterApi.reducer,
+    [cvBuilderApiSlice.reducerPath]: cvBuilderApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -37,7 +37,8 @@ export const store = configureStore({
       cvApi.middleware,
       jobApi.middleware,
       authApi.middleware,
-      coverLetterApi.middleware
+      coverLetterApi.middleware,
+      cvBuilderApiSlice.middleware
     ),
 });
 

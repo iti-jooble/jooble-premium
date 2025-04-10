@@ -1,36 +1,31 @@
-/**
- * Types for the CV Builder state slice
- */
-
-/**
- * Interface defining a user's personal information
- */
+// Basic types for our CV builder
 export interface PersonalInfo {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
+  id?: string;
+  fullName?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
   address?: string;
   city?: string;
   country?: string;
-  postalCode?: string;
+  countryCode?: string;
+  zipCode?: string;
+  birthYear?: string;
   title?: string;
+  profileImage?: string;
   website?: string;
   linkedin?: string;
+  github?: string;
+  twitter?: string;
 }
 
-/**
- * Interface defining a skill
- */
 export interface Skill {
   id: string;
   name: string;
   level?: 'beginner' | 'intermediate' | 'advanced' | 'expert';
 }
 
-/**
- * Interface defining an education entry
- */
 export interface Education {
   id: string;
   school: string;
@@ -42,9 +37,6 @@ export interface Education {
   isCurrent: boolean;
 }
 
-/**
- * Interface defining a work experience entry
- */
 export interface WorkExperience {
   id: string;
   company: string;
@@ -55,42 +47,54 @@ export interface WorkExperience {
   isCurrent: boolean;
 }
 
-/**
- * Interface defining a CV
- */
 export interface CV {
   id: string;
   title: string;
+  score: number;
   dateCreated: string;
-  lastModified: string;
-  templateId: string;
   personalInfo: Partial<PersonalInfo>;
   summary?: string;
   skills: Skill[];
   education: Education[];
   workExperience: WorkExperience[];
-  score?: number;
+  templateId: number;
 }
 
-/**
- * Interface defining a CV template
- */
-export interface CvTemplate {
-  id: string;
+// CV template types
+export interface CVTemplate {
+  id: number;
   name: string;
-  thumbnail: string;
+  previewImage: string;
+  isPremium: boolean;
 }
 
-/**
- * Interface defining the CV Builder state in Redux
- */
-export interface CvBuilderState {
-  cvs: CV[];
-  activeCvId: string | null;
+// CV builder state types
+export interface CVBuilderState {
+  currentCV: CV | null;
   isEditing: boolean;
-  activeSectionId: string | null;
-  templates: CvTemplate[];
-  selectedTemplateId: string;
+  currentSection: string;
+  availableTemplates: CVTemplate[];
   isSaving: boolean;
-  saveError: string | null;
+  errors: Record<string, string>;
+  isDirty: boolean;
+}
+
+// AI feature types
+export interface AISkillSuggestion {
+  skill: string;
+  relevance: number;
+  description: string;
+}
+
+export interface AISummaryRequest {
+  experience: WorkExperience[];
+  skills: Skill[];
+  targetPosition?: string;
+}
+
+export interface AIRecommendation {
+  type: 'skill' | 'summary' | 'workExperience' | 'education';
+  content: string;
+  score: number;
+  reason: string;
 }
