@@ -13,8 +13,38 @@ import {
   WorkExperience,
   Education,
   Skill,
-  ICVBuilderState,
+  CV,
 } from "../../types/state/cvBuilder.types";
+
+// Define our own state interface to match the flat structure
+interface CVBuilderState {
+  // Basic state properties
+  isLoading: boolean;
+  error: string | null;
+
+  // CV list management
+  currentCvId: string | null;
+  cvList: CV[];
+  
+  // UI state
+  isInitialized: boolean;
+  isEditing: boolean;
+  currentSection: string;
+  isSaving: boolean;
+
+  // CV data properties (flattened from nested structure)
+  buildCvId?: string;
+  currentStep: number;
+  templateId: number;
+  initialized: boolean;
+  personalInfo: Partial<PersonalInfo>;
+  summary: string;
+  skills: Skill[];
+  education: Education[];
+  workExperience: WorkExperience[];
+  suggestingSection: string | null;
+  lastSuggestedContent?: string;
+}
 
 // API base URL for CV builder
 const API_BASE_URL = "/api";
@@ -56,7 +86,7 @@ export const createCv = createAsyncThunk(
     { getState, rejectWithValue },
   ) => {
     try {
-      const state = getState() as { cvBuilder: ICVBuilderState };
+      const state = getState() as { cvBuilder: CVBuilderState };
       const {
         buildCvId,
         currentStep,
@@ -73,28 +103,73 @@ export const createCv = createAsyncThunk(
         throw new Error("CV build ID not available");
       }
 
-      // Convert our app model to API model only when sending to API
-      const apiModel = convertToCvJsonModel({
+      // Create the API model directly here (no adapter needed)
+      // This would typically have more conversion logic, but we're keeping it simple
+      const apiModel = {
+        jdpId: null,
         buildCvId,
-        step: currentStep,
-        templateId,
-        personalInfo,
-        summary,
-        skills,
-        education,
-        workExperience,
-        // Default values for required API fields
+        step: currentStep || 1,
         source: CvSource.MANUAL,
         referrer: "",
-        jdpId: null,
-      });
+        templateId: templateId || 1,
+        personalInfo: {
+          fullName: `${personalInfo.firstName || ''} ${personalInfo.lastName || ''}`.trim(),
+          firstName: personalInfo.firstName || '',
+          lastName: personalInfo.lastName || '',
+          email: personalInfo.email || '',
+          phone: personalInfo.phone || '',
+          city: personalInfo.city || '',
+          country: personalInfo.country || '',
+        },
+        careerObjective: {
+          position: personalInfo.title || null,
+          skills: skills.map(s => s.name).join(', ') || null,
+          skillSet: skills.map(s => s.name),
+        },
+        experience: {
+          workPlaces: workExperience.map(w => ({
+            id: w.id,
+            position: w.position,
+            company: w.company,
+            startYear: w.startYear,
+            endYear: w.endYear || '',
+            responsibilities: w.description,
+            isStillWorking: w.isCurrent,
+            period: `${w.startYear} - ${w.isCurrent ? 'Present' : w.endYear || ''}`,
+          })),
+          hasExperience: workExperience.length > 0,
+          professionalSkills: skills.map(s => s.name).join(', '),
+          careerObjective: {
+            position: personalInfo.title || null,
+            skills: skills.map(s => s.name).join(', ') || null,
+            skillSet: skills.map(s => s.name),
+          }
+        },
+        education: {
+          educationPlaces: education.map(e => ({
+            id: e.id,
+            educationLevel: e.degree,
+            admissionYear: e.startYear,
+            nameOfInstitution: e.school,
+            specialty: e.field || '',
+            graduationYear: e.endYear || '',
+          })),
+          hasEducation: education.length > 0,
+        },
+        languages: [],
+        summary: {
+          summary: summary || null,
+          recommendJobsByCVConsent: false,
+          sendCVImprovementTipsConsent: false,
+        },
+      };
 
       const request: ICreateCvRequest = {
         buildCvId,
-        source: apiModel.source,
+        source: CvSource.MANUAL,
         json: apiModel,
-        jdpId: apiModel.jdpId,
-        step: apiModel.step,
+        jdpId: null,
+        step: currentStep || 1,
         html,
         css,
       };
@@ -164,34 +239,26 @@ export const getAiSuggestion = createAsyncThunk(
   },
 );
 
-const initialState: ICVBuilderState & {
-  buildCvId?: string;
-  currentStep?: number;
-  templateId?: number;
-  initialized?: boolean;
-  personalInfo: Partial<PersonalInfo>;
-  summary?: string;
-  skills: Skill[];
-  education: Education[];
-  workExperience: WorkExperience[];
-  suggestingSection?: string | null;
-  lastSuggestedContent?: string;
-} = {
-  // Original ICVBuilderState properties
+const initialState: CVBuilderState = {
+  // Basic state properties
+  isLoading: false,
+  error: null,
+
+  // CV list management
   currentCvId: null,
   cvList: [],
-  isLoading: false,
+  
+  // UI state
   isInitialized: false,
   isEditing: false,
   currentSection: "",
   isSaving: false,
-  error: null,
-  
-  // Extended properties for the flattened structure
+
+  // CV data properties (flattened from nested structure)
   buildCvId: undefined,
   currentStep: 1,
-  initialized: false,
   templateId: 1,
+  initialized: false,
   personalInfo: {},
   summary: "",
   skills: [],
@@ -213,7 +280,7 @@ const cvBuilderSlice = createSlice({
     // Update personal information
     updatePersonalInfo: (
       state,
-      action: PayloadAction<Partial<IPersonalInfo>>,
+      action: PayloadAction<Partial<PersonalInfo>>,
     ) => {
       // Update only the app model
       state.personalInfo = {
@@ -223,19 +290,19 @@ const cvBuilderSlice = createSlice({
     },
 
     // Update work experience
-    updateWorkExperience: (state, action: PayloadAction<IWorkExperience[]>) => {
+    updateWorkExperience: (state, action: PayloadAction<WorkExperience[]>) => {
       // Update only the app model
       state.workExperience = action.payload;
     },
 
     // Update education
-    updateEducation: (state, action: PayloadAction<IEducation[]>) => {
+    updateEducation: (state, action: PayloadAction<Education[]>) => {
       // Update only the app model
       state.education = action.payload;
     },
 
     // Update skills
-    updateSkills: (state, action: PayloadAction<ISkill[]>) => {
+    updateSkills: (state, action: PayloadAction<Skill[]>) => {
       // Update only the app model
       state.skills = action.payload;
     },
@@ -280,24 +347,64 @@ const cvBuilderSlice = createSlice({
         state.error = null;
       })
       .addCase(initCvBuilder.fulfilled, (state, action) => {
-        const { cvList } = action.payload;
+        const { buildCvId, initial } = action.payload;
 
-        // Store only the minimal API reference data needed for future API calls
-        state.cv = buildCvId;
-        state.currentStep = initial.step;
-        state.templateId = initial.templateId;
+        // Store minimal API reference data
+        state.buildCvId = buildCvId;
+        state.currentStep = initial?.step || 1;
+        state.templateId = initial?.templateId || 1;
         state.initialized = true;
         state.isLoading = false;
 
-        // Adapt API model to our app model
-        const adaptedData = convertFromCvJsonModel(initial);
-
-        // Update app model properties directly
-        state.personalInfo = adaptedData.personalInfo || {};
-        state.summary = adaptedData.summary || "";
-        state.skills = adaptedData.skills || [];
-        state.education = adaptedData.education || [];
-        state.workExperience = adaptedData.workExperience || [];
+        // Directly adapt from the API model to our app model (no adapter needed)
+        if (initial) {
+          // Personal Info
+          const personalInfo: Partial<PersonalInfo> = {
+            firstName: initial.personalInfo?.firstName || '',
+            lastName: initial.personalInfo?.lastName || '',
+            email: initial.personalInfo?.email || '',
+            phone: initial.personalInfo?.phone || '',
+            city: initial.personalInfo?.city || '',
+            country: initial.personalInfo?.country || '',
+            title: initial.careerObjective?.position || '',
+          };
+          
+          // Skills
+          const skills: Skill[] = (initial.careerObjective?.skillSet || []).map((skill, index) => ({
+            id: `skill-${index}`,
+            name: skill,
+            level: 'intermediate',
+          }));
+          
+          // Work Experience
+          const workExperience: WorkExperience[] = (initial.experience?.workPlaces || []).map(wp => ({
+            id: wp.id || `exp-${Math.random().toString(36).substring(2, 9)}`,
+            company: wp.company || '',
+            position: wp.position || '',
+            startYear: wp.startYear || '',
+            endYear: wp.isStillWorking ? null : (wp.endYear || ''),
+            description: wp.responsibilities || '',
+            isCurrent: wp.isStillWorking || false,
+          }));
+          
+          // Education
+          const education: Education[] = (initial.education?.educationPlaces || []).map(edu => ({
+            id: edu.id || `edu-${Math.random().toString(36).substring(2, 9)}`,
+            school: edu.nameOfInstitution || '',
+            degree: edu.educationLevel || '',
+            field: edu.specialty || '',
+            startYear: edu.admissionYear || '',
+            endYear: edu.graduationYear || null,
+            isCurrent: false,
+          }));
+          
+          // Update state with adapted data
+          state.personalInfo = personalInfo;
+          state.summary = initial.summary?.summary || '';
+          state.skills = skills;
+          state.education = education;
+          state.workExperience = workExperience;
+        }
       })
       .addCase(initCvBuilder.rejected, (state, action) => {
         state.isLoading = false;
