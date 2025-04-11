@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/hooks/use-toast";
+import { Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   SearchForm,
   FilterBar,
   JobListings,
   JobDetail,
 } from "@/components/job-search";
+import { CvBuilderPromoModal } from "@/components/modals/CvBuilderPromoModal";
 
 // Mock job data
 const jobListings = [
@@ -311,6 +314,7 @@ const JobSearch = () => {
     (typeof jobListings)[0] | null
   >(null);
   const [filteredJobs, setFilteredJobs] = useState(jobListings);
+  const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
 
   const handleJobSelect = (job: (typeof jobListings)[0]) => {
     setSelectedJob(job);
@@ -357,12 +361,27 @@ const JobSearch = () => {
 
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20 min-h-screen">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">
-          {t("jobSearch.title")}
-        </h1>
-        <p className="text-muted-foreground mt-2">{t("jobSearch.subtitle")}</p>
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t("jobSearch.title")}
+          </h1>
+          <p className="text-muted-foreground mt-2">{t("jobSearch.subtitle")}</p>
+        </div>
+        <Button 
+          onClick={() => setIsPromoModalOpen(true)} 
+          className="bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90"
+        >
+          <Sparkles className="mr-2 h-4 w-4" />
+          {t("jobSearch.promoButton", "Enhance Your CV")}
+        </Button>
       </div>
+      
+      {/* CV Builder Promo Modal */}
+      <CvBuilderPromoModal 
+        isOpen={isPromoModalOpen} 
+        onClose={() => setIsPromoModalOpen(false)} 
+      />
 
       {/* Search Form */}
       <SearchForm onSearch={handleSearch} />

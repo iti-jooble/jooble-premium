@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,9 +22,15 @@ const CvBuilder = () => {
   const { toast } = useToast();
 
   const dispatch = useAppDispatch();
-  const { isLoading, isInitialized } = useAppSelector(
+  const { isLoading, isInitialized, cvList } = useAppSelector(
     (state) => state.cvBuilder,
   );
+
+  useEffect(() => {
+    if (cvList) {
+      setCvs(cvList);
+    }
+  }, [cvList.length]);
 
   useLayoutEffect(() => {
     console.log("Initializing CV builder...");
