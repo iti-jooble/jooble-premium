@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,43 +9,29 @@ import {
   PlusIcon,
   ChevronRightIcon,
 } from "lucide-react";
+import { initCvBuilder } from "@/redux/thunks";
 import { CvTable } from "@/components/cv-builder/CvTable";
-import { CV } from "@/components/cv-builder/types";
 import { useToast } from "@/hooks/use-toast";
-
-// Mock data for CVs
-const mockCvs: CV[] = [
-  {
-    id: "1",
-    title: "Software Developer CV",
-    score: 85,
-    dateCreated: "2023-11-15T10:30:00Z",
-  },
-  {
-    id: "2",
-    title: "Product Manager Resume",
-    score: 72,
-    dateCreated: "2023-10-05T14:20:00Z",
-  },
-  {
-    id: "3",
-    title: "UX Designer Portfolio",
-    score: 94,
-    dateCreated: "2024-01-20T09:15:00Z",
-  },
-  {
-    id: "4",
-    title: "Marketing Specialist CV",
-    score: 63,
-    dateCreated: "2023-12-12T16:45:00Z",
-  },
-];
+import { CV } from "@shared/schema";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 
 const CvBuilder = () => {
   const { t } = useTranslation();
-  const [cvs, setCvs] = useState<CV[]>(mockCvs);
+  const [cvs, setCvs] = useState<CV[]>([]);
   const [, navigate] = useLocation();
   const { toast } = useToast();
+
+  const dispatch = useAppDispatch();
+  const { isLoading, isInitialized } = useAppSelector(
+    (state) => state.cvBuilder,
+  );
+
+  useLayoutEffect(() => {
+    console.log("Initializing CV builder...");
+    if (!isInitialized && !isLoading) {
+      dispatch(initCvBuilder());
+    }
+  }, [dispatch, isInitialized, isLoading]);
 
   const handleEdit = (cv: CV) => {
     // In a real application, we would navigate to the edit page with the CV ID
@@ -94,7 +80,9 @@ const CvBuilder = () => {
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t("cvBuilder.title")}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t("cvBuilder.title")}
+          </h1>
           <p className="text-muted-foreground mt-2">
             {t("cvBuilder.subtitle")}
           </p>

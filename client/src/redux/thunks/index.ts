@@ -1,3 +1,2 @@
 // Re-export all thunks for easier importing
-export * from './cvBuilder.thunks';
-export * from './cvContent.thunks';
+export * from "./cvBuilder.thunks";

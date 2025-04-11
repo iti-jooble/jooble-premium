@@ -13,8 +13,6 @@ const initialState: ICVBuilderState = {
   cvList: [],
   isLoading: false,
   isInitialized: false,
-  isEditing: false,
-  currentSection: "",
   isSaving: false,
   error: null,
 };
@@ -30,16 +28,6 @@ const cvBuilderSlice = createSlice({
     // Set the current CV ID
     setCurrentCvId: (state, action: PayloadAction<string | null>) => {
       state.currentCvId = action.payload;
-    },
-
-    // Set editing state
-    setIsEditing: (state, action: PayloadAction<boolean>) => {
-      state.isEditing = action.payload;
-    },
-
-    // Set current section
-    setCurrentSection: (state, action: PayloadAction<string>) => {
-      state.currentSection = action.payload;
     },
 
     // Set saving state

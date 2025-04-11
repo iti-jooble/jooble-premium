@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   GraduationCap,
@@ -21,30 +20,24 @@ import { SummarySection } from "@/components/cv-builder/SummarySection";
 import { CvPreview } from "@/components/cv-builder/CvPreview";
 import { useToast } from "@/hooks/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { initCvBuilder, updateCv } from "@/redux/thunks";
+import { updateCv } from "@/redux/thunks";
 import { getCurrentCvSelector } from "@/redux/slices/cvBuilderSlice";
-import { ICv } from "@/types/state/cvBuilder.types";
-import { PersonalInfo, WorkExperience, Education, Skill } from "@shared/schema";
+import {
+  PersonalInfo,
+  WorkExperience,
+  Education,
+  Skill,
+  CV,
+} from "@shared/schema";
 
 const CvBuilderCreate = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
-  const { isLoading, isInitialized } = useAppSelector(
-    (state) => state.cvBuilder,
-  );
-
   const currentCv = useAppSelector(getCurrentCvSelector)!;
 
-  // Initialize CV builder
-  useEffect(() => {
-    if (!isInitialized && !isLoading) {
-      dispatch(initCvBuilder());
-    }
-  }, [dispatch, isInitialized, isLoading]);
-
-  const handleUpdateCv = async (partialCv: Partial<ICv>) => {
+  const handleUpdateCv = async (partialCv: Partial<CV>) => {
     try {
       await dispatch(
         updateCv({
@@ -93,6 +86,10 @@ const CvBuilderCreate = () => {
       description: "Template selection will be available in a future update.",
     });
   };
+
+  if (!currentCv) {
+    return redirect("/cv-builder");
+  }
 
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
