@@ -3,6 +3,7 @@ import { CvSource, ICreateCvRequest } from "../../types/api/cvBuilder.types";
 import { ICv, ICVBuilderState } from "../../types/state/cvBuilder.types";
 import { cvBuilderApiSlice } from "../api/cvBuilderApiSlice";
 import { getErrorMessage } from "../helpers";
+import { cvApiSlice } from "../api/cvApiSlice";
 
 /**
  * AsyncThunk for initializing the CV builder
@@ -12,9 +13,7 @@ export const initCvBuilder = createAsyncThunk(
   "cvBuilder/initCvBuilder",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const result = await dispatch(
-        cvBuilderApiSlice.endpoints.initCvBuilder.initiate(),
-      );
+      const result = await dispatch(cvApiSlice.endpoints.getCVs.initiate());
 
       if (result.error) {
         throw new Error(getErrorMessage(result.error));

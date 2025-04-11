@@ -1,32 +1,16 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 /**
- * Base API slice for extending with specific endpoints
- * This provides consistent error handling and other common functionality
+ * Base API slice for all API endpoints
+ * This serves as the foundation for all feature-specific API slices
  */
 export const apiSlice = createApi({
-  reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: '/api',
-    // Customize error handling if needed
-    validateStatus: (response, result) => {
-      // Return true (success) or false (error) based on response status
-      return response.status >= 200 && response.status < 300;
-    }
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "/api/",
+    // Credentials include ensures cookies are sent for authentication
+    credentials: "include",
   }),
-  tagTypes: ['Auth', 'User', 'Setting'],
-  endpoints: () => ({})
+  tagTypes: ["CvBuilder", "CV", "Job", "User", "Settings"],
+  endpoints: () => ({}),
 });
-
-/**
- * Helper function to extract error messages from RTK Query responses
- */
-export const extractErrorMessage = (error: any): string => {
-  // Extract error message from various error formats
-  if (typeof error === 'string') return error;
-  if (error?.data?.message) return error.data.message;
-  if (error?.error) return error.error;
-  if (error?.data?.error) return error.data.error;
-  if (error?.message) return error.message;
-  return 'An unknown error occurred';
-};

@@ -9,7 +9,7 @@ import {
 } from "../thunks/cvBuilder.thunks";
 
 const initialState: ICVBuilderState = {
-  currentCvId: null,
+  currentCvId: "1",
   cvList: [],
   isLoading: false,
   isInitialized: false,
@@ -58,7 +58,7 @@ const cvBuilderSlice = createSlice({
         state.error = null;
       })
       .addCase(initCvBuilder.fulfilled, (state, action) => {
-        state.cvList = action.payload?.cvList || [];
+        state.cvList = action.payload || [];
         state.isInitialized = true;
         state.isLoading = false;
       })

@@ -10,11 +10,11 @@ import { storage } from "./storage";
  */
 const createApiProxy = (targetUrl: string) => {
   return async (req: Request, res: Response) => {
-    const url = `${targetUrl}${req.url.replace(/^\/api/, '')}`;
-    
+    const url = `${targetUrl}${req.url.replace(/^\/api/, "")}`;
+
     try {
-      log(`Proxying request to: ${url}`, 'proxy');
-      
+      log(`Proxying request to: ${url}`, "proxy");
+
       // Forward the request to the external API
       const response = await axios({
         method: req.method,
@@ -23,38 +23,42 @@ const createApiProxy = (targetUrl: string) => {
         headers: {
           // Forward relevant headers, but exclude ones related to the Express server
           ...Object.entries(req.headers)
-            .filter(([key]) => !['host', 'connection'].includes(key.toLowerCase()))
+            .filter(
+              ([key]) => !["host", "connection"].includes(key.toLowerCase()),
+            )
             .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
           // Add API key if needed
-          ...(process.env.EXTERNAL_API_KEY && { 'x-api-key': process.env.EXTERNAL_API_KEY })
+          ...(process.env.EXTERNAL_API_KEY && {
+            "x-api-key": process.env.EXTERNAL_API_KEY,
+          }),
         },
         // Forward query parameters
         params: req.query,
         // Support for binary responses
-        responseType: 'arraybuffer'
+        responseType: "arraybuffer",
       });
-      
+
       // Set response headers
       Object.entries(response.headers).forEach(([key, value]) => {
         if (value !== undefined) {
           res.set(key, value as string);
         }
       });
-      
+
       // Send response
       res.status(response.status).send(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // Handle API error
         const status = error.response?.status || 500;
-        const data = error.response?.data || { message: 'External API error' };
-        
-        log(`API Proxy error: ${status} - ${JSON.stringify(data)}`, 'proxy');
+        const data = error.response?.data || { message: "External API error" };
+
+        log(`API Proxy error: ${status} - ${JSON.stringify(data)}`, "proxy");
         res.status(status).json(data);
       } else {
         // Handle general error
-        log(`Proxy error: ${error}`, 'proxy');
-        res.status(500).json({ message: 'Internal server error' });
+        log(`Proxy error: ${error}`, "proxy");
+        res.status(500).json({ message: "Internal server error" });
       }
     }
   };
@@ -62,22 +66,24 @@ const createApiProxy = (targetUrl: string) => {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // === API Routes ===
-  
+
   // Health check endpoint
-  app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  app.get("/api/health", (_, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
-  
+
   // === CV API Routes ===
-  
+
   // Get all CVs
-  app.get("/api/cvs", async (req: Request, res: Response) => {
+  app.get("/api/cvs", async (_, res: Response) => {
     try {
       const cvs = await storage.getAllCVs();
       res.json(cvs);
     } catch (error: any) {
-      log(`Error fetching CVs: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to retrieve CVs", message: error.message });
+      log(`Error fetching CVs: ${error.message}`, "api");
+      res
+        .status(500)
+        .json({ error: "Failed to retrieve CVs", message: error.message });
     }
   });
 
@@ -90,19 +96,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(cv);
     } catch (error: any) {
-      log(`Error fetching CV ${req.params.id}: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to retrieve CV", message: error.message });
+      log(`Error fetching CV ${req.params.id}: ${error.message}`, "api");
+      res
+        .status(500)
+        .json({ error: "Failed to retrieve CV", message: error.message });
     }
   });
 
   // Create new CV
-  app.post("/api/cvs", async (req: Request, res: Response) => {
+  app.post("/api/cvs", async (_, res: Response) => {
     try {
-      const newCV = await storage.createCV(req.body);
+      const newCV = await storage.createCV();
       res.status(201).json(newCV);
     } catch (error: any) {
-      log(`Error creating CV: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to create CV", message: error.message });
+      log(`Error creating CV: ${error.message}`, "api");
+      res
+        .status(500)
+        .json({ error: "Failed to create CV", message: error.message });
     }
   });
 
@@ -113,11 +123,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!updatedCV) {
         return res.status(404).json({ error: "CV not found" });
       }
-      
+
       res.json(updatedCV);
     } catch (error: any) {
-      log(`Error updating CV ${req.params.id}: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to update CV", message: error.message });
+      log(`Error updating CV ${req.params.id}: ${error.message}`, "api");
+      res
+        .status(500)
+        .json({ error: "Failed to update CV", message: error.message });
     }
   });
 
@@ -128,11 +140,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!success) {
         return res.status(404).json({ error: "CV not found" });
       }
-      
+
       res.status(204).send();
     } catch (error: any) {
-      log(`Error deleting CV ${req.params.id}: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to delete CV", message: error.message });
+      log(`Error deleting CV ${req.params.id}: ${error.message}`, "api");
+      res
+        .status(500)
+        .json({ error: "Failed to delete CV", message: error.message });
     }
   });
 
@@ -141,70 +155,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { title } = req.body;
       const duplicatedCV = await storage.duplicateCV(req.params.id, title);
-      
+
       if (!duplicatedCV) {
         return res.status(404).json({ error: "Original CV not found" });
       }
-      
+
       res.status(201).json(duplicatedCV);
     } catch (error: any) {
-      log(`Error duplicating CV ${req.params.id}: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to duplicate CV", message: error.message });
-    }
-  });
-
-  // === CV Content API Routes ===
-  
-  // Get CV content
-  app.get("/api/cvs/:id/content", async (req: Request, res: Response) => {
-    try {
-      const content = await storage.getCVContent(req.params.id);
-      res.json(content);
-    } catch (error: any) {
-      log(`Error fetching CV content for ${req.params.id}: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to retrieve CV content", message: error.message });
-    }
-  });
-
-  // Update CV section content (personalInfo, workExperience, etc.)
-  app.put("/api/cvs/:id/content/:section", async (req: Request, res: Response) => {
-    try {
-      const { id, section } = req.params;
-      const data = req.body;
-      
-      // Validate section
-      const validSections = ['personalInfo', 'workExperience', 'education', 'skills', 'summary'];
-      if (!validSections.includes(section)) {
-        return res.status(400).json({ error: "Invalid section name" });
-      }
-      
-      const updatedContent = await storage.updateCVContent(id, section, data);
-      res.json(updatedContent);
-    } catch (error: any) {
-      log(`Error updating CV ${req.params.id} section ${req.params.section}: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to update CV content", message: error.message });
+      log(`Error duplicating CV ${req.params.id}: ${error.message}`, "api");
+      res
+        .status(500)
+        .json({ error: "Failed to duplicate CV", message: error.message });
     }
   });
 
   // === AI Suggestion API Route ===
-  
+
   // Get AI suggestion
   app.post("/api/ai-suggestions", async (req: Request, res: Response) => {
     try {
       const { section, additionalContext } = req.body;
-      
+
       if (!section) {
         return res.status(400).json({ error: "Section is required" });
       }
-      
-      const suggestion = await storage.getAISuggestion(section, additionalContext);
+
+      const suggestion = await storage.getAISuggestion(
+        section,
+        additionalContext,
+      );
       res.json(suggestion);
     } catch (error: any) {
-      log(`Error generating AI suggestion for ${req.body.section}: ${error.message}`, 'api');
-      res.status(500).json({ error: "Failed to generate AI suggestion", message: error.message });
+      log(
+        `Error generating AI suggestion for ${req.body.section}: ${error.message}`,
+        "api",
+      );
+      res.status(500).json({
+        error: "Failed to generate AI suggestion",
+        message: error.message,
+      });
     }
   });
-  
+
   // Example of how to set up an API proxy route
   // Uncomment and configure when you have the external API URL
   /*

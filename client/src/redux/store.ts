@@ -1,19 +1,19 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 // Import reducers
-import userReducer from './slices/userSlice';
-import cvBuilderReducer from './slices/cvBuilderSlice';
-import jobSearchReducer from './slices/jobSearchSlice';
-import uiReducer from './slices/uiSlice';
+import userReducer from "./slices/userSlice";
+import cvBuilderReducer from "./slices/cvBuilderSlice";
+import jobSearchReducer from "./slices/jobSearchSlice";
+import uiReducer from "./slices/uiSlice";
 
 // Import API slices
-import { apiSlice } from './api/apiSlice';
-import { cvApi } from './api/cvApiSlice';
-import { jobApi } from './api/jobApiSlice';
-import { authApi } from './api/authApiSlice';
-import { coverLetterApi } from './api/coverLetterApiSlice';
-import { cvBuilderApiSlice } from './api/cvBuilderApiSlice';
+import { apiSlice } from "./api/apiSlice";
+import { cvApiSlice } from "./api/cvApiSlice";
+import { jobApi } from "./api/jobApiSlice";
+import { authApi } from "./api/authApiSlice";
+import { coverLetterApi } from "./api/coverLetterApiSlice";
+import { cvBuilderApiSlice } from "./api/cvBuilderApiSlice";
 
 // Configure store
 export const store = configureStore({
@@ -23,14 +23,14 @@ export const store = configureStore({
     cvBuilder: cvBuilderReducer,
     jobSearch: jobSearchReducer,
     ui: uiReducer,
-    
+
     // API reducers - each API slice has a unique reducerPath
     [apiSlice.reducerPath]: apiSlice.reducer,
-    [cvApi.reducerPath]: cvApi.reducer,
+    [cvApiSlice.reducerPath]: cvApiSlice.reducer,
     [jobApi.reducerPath]: jobApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [coverLetterApi.reducerPath]: coverLetterApi.reducer,
-    
+
     // Custom endpoints injected into apiSlice use the same reducerPath
     // This is handled automatically by RTK Query
   },
@@ -39,11 +39,11 @@ export const store = configureStore({
       serializableCheck: false, // Needed for non-serializable values like functions
     }).concat(
       apiSlice.middleware,
-      cvApi.middleware,
+      cvApiSlice.middleware,
       jobApi.middleware,
       authApi.middleware,
       coverLetterApi.middleware,
-      cvBuilderApiSlice.middleware
+      cvBuilderApiSlice.middleware,
     ),
 });
 
