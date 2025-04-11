@@ -10,6 +10,25 @@ import {
   JobDetail,
 } from "@/components/job-search";
 import { CvBuilderPromoModal } from "@/components/modals/CvBuilderPromoModal";
+import { JobCardProps } from "@/components/job-search/JobCard";
+
+// Define job types for our page
+type JobWithDescription = {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  salary: string;
+  posted: string;
+  isNew: boolean;
+  description: string;
+};
+
+// Function to get jobs without description for compatibility with JobListings
+const stripDescriptions = (jobs: JobWithDescription[]) => {
+  return jobs.map(({ description, ...rest }) => rest);
+};
 
 // Mock job data
 const jobListings = [
@@ -316,8 +335,12 @@ const JobSearch = () => {
   const [filteredJobs, setFilteredJobs] = useState(jobListings);
   const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
 
-  const handleJobSelect = (job: (typeof jobListings)[0]) => {
-    setSelectedJob(job);
+  const handleJobSelect = (job: Omit<(typeof jobListings)[0], 'description'>) => {
+    // Find the full job data including description
+    const fullJobData = jobListings.find(j => j.id === job.id);
+    if (fullJobData) {
+      setSelectedJob(fullJobData);
+    }
   };
 
   const handleSearch = (searchParams: JobSearchParams) => {
@@ -392,7 +415,7 @@ const JobSearch = () => {
       {/* Job Listings and Detail View */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <JobListings
-          jobs={filteredJobs}
+          jobs={stripDescriptions(filteredJobs)}
           selectedJobId={selectedJob?.id || null}
           onSelectJob={handleJobSelect}
         />
