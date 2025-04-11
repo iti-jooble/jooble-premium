@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
   FormLabel,
-  FormMessage  
+  FormMessage,
 } from "@/components/ui/form";
 import { useState } from "react";
 import { PlusCircle, Pencil, Trash2 } from "lucide-react";
@@ -22,28 +22,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { educationSchema, Education } from "@shared/schema";
 
 // Generate years from 1970 to current year
 const currentYear = new Date().getFullYear();
-const years = Array.from({ length: currentYear - 1969 }, (_, i) => (currentYear - i).toString());
-
-interface Education {
-  id: string;
-  school: string;
-  degree: string;
-  field?: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
+const years = Array.from({ length: currentYear - 1969 }, (_, i) =>
+  (currentYear - i).toString(),
+);
 
 interface EducationSectionProps {
   educations?: Education[];
   onSave: (educations: Education[]) => void;
 }
 
-const educationSchema = z.object({
+const enhancedSchema = educationSchema.extend({
   school: z.string().min(1, { message: "School name is required" }),
   degree: z.string().min(1, { message: "Degree is required" }),
   field: z.string().optional(),
@@ -53,25 +45,26 @@ const educationSchema = z.object({
   isCurrent: z.boolean().default(false),
 });
 
-type EducationFormValues = z.infer<typeof educationSchema>;
-
-export function EducationSection({ educations = [], onSave }: EducationSectionProps) {
+export function EducationSection({
+  educations = [],
+  onSave,
+}: EducationSectionProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [localEducations, setLocalEducations] = useState<Education[]>(educations);
+  const [localEducations, setLocalEducations] =
+    useState<Education[]>(educations);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const form = useForm<EducationFormValues>({
-    resolver: zodResolver(educationSchema),
+  const form = useForm<Education>({
+    resolver: zodResolver(enhancedSchema),
     defaultValues: {
       school: "",
       degree: "",
       field: "",
       startYear: currentYear.toString(),
       endYear: "",
-      description: "",
       isCurrent: false,
-    }
+    },
   });
 
   const handleAddEducation = () => {
@@ -82,7 +75,6 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
       field: "",
       startYear: currentYear.toString(),
       endYear: "",
-      description: "",
       isCurrent: false,
     });
   };
@@ -95,27 +87,25 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
       field: edu.field,
       startYear: edu.startYear,
       endYear: edu.endYear || "",
-      description: edu.description,
       isCurrent: edu.isCurrent,
     });
   };
 
-  const handleSaveForm = (values: EducationFormValues) => {
+  const handleSaveForm = (values: Education) => {
     if (editingId) {
       // Update existing education
-      const updatedEducations = localEducations.map(edu => 
-        edu.id === editingId 
-          ? { 
-              ...edu, 
+      const updatedEducations = localEducations.map((edu) =>
+        edu.id === editingId
+          ? {
+              ...edu,
               school: values.school,
               degree: values.degree,
               field: values.field,
               startYear: values.startYear,
               endYear: values.endYear || null,
-              description: values.description,
               isCurrent: values.isCurrent,
-            } 
-          : edu
+            }
+          : edu,
       );
       setLocalEducations(updatedEducations);
       setEditingId(null);
@@ -128,27 +118,26 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
         field: values.field,
         startYear: values.startYear,
         endYear: values.endYear || null,
-        description: values.description,
         isCurrent: values.isCurrent,
       };
       setLocalEducations([...localEducations, newEducation]);
     }
-    
+
     setIsAddingNew(false);
     form.reset();
-    
+
     // Show success message
     toast({
       title: editingId ? "Education updated" : "Education added",
-      description: editingId 
-        ? "Your education has been updated." 
+      description: editingId
+        ? "Your education has been updated."
         : "Your education has been added.",
     });
   };
 
   const handleSaveAll = async () => {
     setIsSaving(true);
-    
+
     try {
       onSave(localEducations);
       toast({
@@ -171,12 +160,17 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
       {!isAddingNew && editingId === null && (
         <>
           {localEducations.length === 0 ? (
-            <p className="text-sm text-gray-600">Add your educational background here.</p>
+            <p className="text-sm text-gray-600">
+              Add your educational background here.
+            </p>
           ) : (
             <div className="space-y-3">
               {/* Map through educations and display them */}
               {localEducations.map((edu) => (
-                <div key={edu.id} className="border p-3 rounded-md hover:border-gray-400 transition-colors">
+                <div
+                  key={edu.id}
+                  className="border p-3 rounded-md hover:border-gray-400 transition-colors"
+                >
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-medium">{edu.degree}</h3>
@@ -187,19 +181,21 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                       </p>
                     </div>
                     <div className="flex space-x-1">
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         onClick={() => handleEditEducation(edu)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         className="text-red-500 hover:text-red-700"
                         onClick={() => {
-                          const updatedEducations = localEducations.filter(e => e.id !== edu.id);
+                          const updatedEducations = localEducations.filter(
+                            (e) => e.id !== edu.id,
+                          );
                           setLocalEducations(updatedEducations);
                           // Auto-save when removing
                           handleSaveAll();
@@ -213,23 +209,19 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
               ))}
             </div>
           )}
-          
-          <Button 
-            variant="ghost" 
-            className="mt-4 text-blue-600 pl-0" 
+
+          <Button
+            variant="ghost"
+            className="mt-4 text-blue-600 pl-0"
             onClick={handleAddEducation}
           >
             <PlusCircle className="h-4 w-4 mr-2" />
             Add another education
           </Button>
-            
+
           {localEducations.length > 0 && (
             <div className="flex justify-end mt-3">
-              <Button 
-                size="sm"
-                onClick={handleSaveAll}
-                disabled={isSaving}
-              >
+              <Button size="sm" onClick={handleSaveAll} disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save"}
               </Button>
             </div>
@@ -239,15 +231,23 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
 
       {(isAddingNew || editingId !== null) && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSaveForm)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSaveForm)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="degree"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium">Degree <span className="text-red-500">*</span></FormLabel>
+                  <FormLabel className="font-medium">
+                    Degree <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Bachelor, Master, PhD..." {...field} />
+                    <Input
+                      placeholder="Ex: Bachelor, Master, PhD..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -261,21 +261,29 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                 <FormItem>
                   <FormLabel className="font-medium">Field of Study</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Computer Science, Business, Law..." {...field} />
+                    <Input
+                      placeholder="Ex: Computer Science, Business, Law..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="school"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium">School Name <span className="text-red-500">*</span></FormLabel>
+                  <FormLabel className="font-medium">
+                    School Name <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Harvard University, MIT..." {...field} />
+                    <Input
+                      placeholder="Ex: Harvard University, MIT..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -299,8 +307,10 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {years.map(year => (
-                          <SelectItem key={year} value={year}>{year}</SelectItem>
+                        {years.map((year) => (
+                          <SelectItem key={year} value={year}>
+                            {year}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -314,7 +324,9 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                 name="endYear"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-medium">End Year (or Expected)</FormLabel>
+                    <FormLabel className="font-medium">
+                      End Year (or Expected)
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value || ""}
@@ -325,8 +337,10 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {years.map(year => (
-                          <SelectItem key={year} value={year}>{year}</SelectItem>
+                        {years.map((year) => (
+                          <SelectItem key={year} value={year}>
+                            {year}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -337,8 +351,8 @@ export function EducationSection({ educations = [], onSave }: EducationSectionPr
             </div>
 
             <div className="flex justify-end space-x-2 pt-4">
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 variant="outline"
                 onClick={() => {
                   setIsAddingNew(false);

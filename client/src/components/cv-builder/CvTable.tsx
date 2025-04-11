@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CV } from "./types";
 import {
   Table,
   TableBody,
@@ -10,15 +9,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { 
-  Edit2Icon, 
-  Trash2Icon, 
-  FileTextIcon, 
-  BarChart3Icon, 
-  CalendarIcon, 
+import {
+  Edit2Icon,
+  Trash2Icon,
+  FileTextIcon,
+  BarChart3Icon,
+  CalendarIcon,
   DownloadIcon,
   CopyIcon,
-  MoreHorizontalIcon
+  MoreHorizontalIcon,
 } from "lucide-react";
 import ConfirmationModal from "@/components/cv-builder/ConfirmationModal";
 import { useToast } from "@/hooks/use-toast";
@@ -36,6 +35,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CV } from "@shared/schema";
 
 interface CvTableProps {
   cvs: CV[];
@@ -45,12 +45,12 @@ interface CvTableProps {
   onDownload?: (cv: CV) => void;
 }
 
-export const CvTable = ({ 
-  cvs, 
-  onEdit, 
-  onDelete, 
-  onDuplicate = () => {}, 
-  onDownload = () => {} 
+export const CvTable = ({
+  cvs,
+  onEdit,
+  onDelete,
+  onDuplicate = () => {},
+  onDownload = () => {},
 }: CvTableProps) => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -143,13 +143,18 @@ export const CvTable = ({
                   {t("cvBuilder.table.created")}
                 </div>
               </TableHead>
-              <TableHead className="text-right py-4 text-sm font-semibold">{t("cvBuilder.table.actions")}</TableHead>
+              <TableHead className="text-right py-4 text-sm font-semibold">
+                {t("cvBuilder.table.actions")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {cvs.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">
+                <TableCell
+                  colSpan={4}
+                  className="text-center py-10 text-muted-foreground"
+                >
                   <div className="flex flex-col items-center">
                     <FileTextIcon className="h-10 w-10 mb-2 text-muted-foreground/50" />
                     No CVs found. Create a new one to get started.
@@ -158,8 +163,8 @@ export const CvTable = ({
               </TableRow>
             ) : (
               cvs.map((cv) => (
-                <TableRow 
-                  key={cv.id} 
+                <TableRow
+                  key={cv.id}
                   className="hover:bg-muted/30 transition-colors group cursor-pointer border-b border-dashed"
                   onClick={() => onEdit(cv)}
                 >
@@ -168,21 +173,26 @@ export const CvTable = ({
                       <div className="w-10 h-10 bg-primary/10 rounded-md flex items-center justify-center mr-3 group-hover:bg-primary/20 transition-colors">
                         <FileTextIcon className="h-5 w-5 text-primary" />
                       </div>
-                      <span className="group-hover:text-primary transition-colors">{cv.title}</span>
+                      <span className="group-hover:text-primary transition-colors">
+                        {cv.title}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell className="py-4">
                     <div className="flex items-center gap-2">
-                      <Badge 
-                        variant="outline" 
+                      <Badge
+                        variant="outline"
                         className={`${getScoreColor(cv.score)} px-2.5 py-1 rounded-full font-medium border`}
                       >
                         {cv.score}%
                       </Badge>
                       <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className={`h-full ${getScoreClass(cv.score)}`}
-                          style={{ width: `${cv.score}%`, backgroundColor: 'currentColor' }}
+                          style={{
+                            width: `${cv.score}%`,
+                            backgroundColor: "currentColor",
+                          }}
                         />
                       </div>
                     </div>
@@ -217,22 +227,32 @@ export const CvTable = ({
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem 
-                              onClick={(e) => handleDownload(cv, e as unknown as React.MouseEvent)}
+                            <DropdownMenuItem
+                              onClick={(e) =>
+                                handleDownload(
+                                  cv,
+                                  e as unknown as React.MouseEvent,
+                                )
+                              }
                               className="cursor-pointer"
                             >
                               <DownloadIcon className="h-4 w-4 mr-2" />
                               <span>{t("common.buttons.download")}</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onClick={(e) => handleDuplicate(cv, e as unknown as React.MouseEvent)}
+                            <DropdownMenuItem
+                              onClick={(e) =>
+                                handleDuplicate(
+                                  cv,
+                                  e as unknown as React.MouseEvent,
+                                )
+                              }
                               className="cursor-pointer"
                             >
                               <CopyIcon className="h-4 w-4 mr-2" />
                               <span>{t("common.buttons.duplicate")}</span>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem 
+                            <DropdownMenuItem
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleDeleteClick(cv.id);
@@ -245,7 +265,7 @@ export const CvTable = ({
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
-                      
+
                       {/* Medium/large screens: Show all action buttons */}
                       <div className="hidden sm:flex gap-2">
                         <TooltipProvider delayDuration={200}>
@@ -265,7 +285,7 @@ export const CvTable = ({
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                        
+
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -283,7 +303,7 @@ export const CvTable = ({
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                        
+
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -304,7 +324,7 @@ export const CvTable = ({
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                        
+
                         <TooltipProvider delayDuration={200}>
                           <Tooltip>
                             <TooltipTrigger asChild>

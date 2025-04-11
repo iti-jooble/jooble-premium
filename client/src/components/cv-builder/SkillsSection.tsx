@@ -4,12 +4,7 @@ import { useState, KeyboardEvent } from "react";
 import { PlusCircle, Trash2, Sparkles, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
-
-interface Skill {
-  id: string;
-  name: string;
-  level?: "beginner" | "intermediate" | "advanced" | "expert";
-}
+import { Skill } from "@shared/schema";
 
 interface SkillsSectionProps {
   skills?: Skill[];
@@ -27,7 +22,7 @@ const frontendSkillSuggestions = [
   "User Experience",
   "Team Work",
   "Web Development Training",
-  "HTML CSS JavaScript Certification"
+  "HTML CSS JavaScript Certification",
 ];
 
 export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
@@ -41,25 +36,25 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       setIsAddingSkill(false);
       return;
     }
-    
+
     const skill: Skill = {
       id: uuidv4(),
-      name: newSkill.trim()
+      name: newSkill.trim(),
     };
-    
+
     setLocalSkills([...localSkills, skill]);
     setNewSkill("");
     setIsAddingSkill(false);
-    
+
     // Auto-save as we add skills
     handleSaveSkills([...localSkills, skill]);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleAddSkill();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       e.preventDefault();
       setIsAddingSkill(false);
       setNewSkill("");
@@ -67,9 +62,9 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
   };
 
   const handleRemoveSkill = (id: string) => {
-    const updatedSkills = localSkills.filter(skill => skill.id !== id);
+    const updatedSkills = localSkills.filter((skill) => skill.id !== id);
     setLocalSkills(updatedSkills);
-    
+
     // Auto-save as we remove skills
     handleSaveSkills(updatedSkills);
   };
@@ -77,11 +72,13 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
   const handleAddSuggestion = (suggestion: string) => {
     const skill: Skill = {
       id: uuidv4(),
-      name: suggestion
+      name: suggestion,
     };
-    
+
     // Check if the skill already exists
-    if (localSkills.some(s => s.name.toLowerCase() === suggestion.toLowerCase())) {
+    if (
+      localSkills.some((s) => s.name.toLowerCase() === suggestion.toLowerCase())
+    ) {
       toast({
         title: "Skill already added",
         description: `The skill '${suggestion}' is already in your list.`,
@@ -89,12 +86,12 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       });
       return;
     }
-    
+
     setLocalSkills([...localSkills, skill]);
-    
+
     // Auto-save as we add skills
     handleSaveSkills([...localSkills, skill]);
-    
+
     toast({
       title: "Skill added",
       description: `The skill '${suggestion}' has been added.`,
@@ -103,7 +100,7 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
 
   const handleSaveSkills = async (skillsToSave: Skill[]) => {
     setIsSaving(true);
-    
+
     try {
       onSave(skillsToSave);
     } catch (error) {
@@ -122,17 +119,14 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       {/* Skills list */}
       <div className="flex flex-wrap gap-2">
         {localSkills.map((skill) => (
-          <div 
-            key={skill.id}
-            className="relative group"
-          >
+          <div key={skill.id} className="relative group">
             <Button
               variant="outline"
               size="sm"
               className="bg-white pr-7 text-gray-700 hover:bg-gray-50"
             >
               {skill.name}
-              <span 
+              <span
                 className="absolute right-2 hover:text-red-500 cursor-pointer"
                 onClick={() => handleRemoveSkill(skill.id)}
               >
@@ -142,7 +136,7 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
           </div>
         ))}
       </div>
-      
+
       {/* Add new skill */}
       {isAddingSkill ? (
         <div className="flex gap-2 items-center mt-2">
@@ -154,16 +148,12 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
             className="max-w-xs"
             autoFocus
           />
-          <Button 
-            variant="secondary" 
-            size="sm" 
-            onClick={handleAddSkill}
-          >
+          <Button variant="secondary" size="sm" onClick={handleAddSkill}>
             Add
           </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => {
               setIsAddingSkill(false);
               setNewSkill("");
@@ -173,9 +163,9 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
           </Button>
         </div>
       ) : (
-        <Button 
-          variant="ghost" 
-          className="text-blue-600 pl-0" 
+        <Button
+          variant="ghost"
+          className="text-blue-600 pl-0"
           onClick={() => {
             setIsAddingSkill(true);
             setNewSkill("");
@@ -185,14 +175,16 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
           Add another skill
         </Button>
       )}
-      
+
       {/* AI suggestion box */}
       <div className="bg-blue-50 rounded-lg p-5 mt-6">
         <div className="flex items-center mb-3">
           <Sparkles className="text-blue-500 h-5 w-5 mr-2" />
-          <h3 className="text-blue-800 font-medium">Skills index for Front-end Developer</h3>
+          <h3 className="text-blue-800 font-medium">
+            Skills index for Front-end Developer
+          </h3>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           {frontendSkillSuggestions.map((suggestion) => (
             <Button
@@ -208,10 +200,10 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
           ))}
         </div>
       </div>
-      
+
       {/* Hidden save button - now auto-saves */}
       <div className="hidden">
-        <Button 
+        <Button
           size="sm"
           onClick={() => handleSaveSkills(localSkills)}
           disabled={isSaving}

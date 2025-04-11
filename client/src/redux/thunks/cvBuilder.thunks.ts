@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CvSource, ICreateCvRequest } from "../../types/api/cvBuilder.types";
-import { ICVBuilderState } from "../../types/state/cvBuilder.types";
+import { ICv, ICVBuilderState } from "../../types/state/cvBuilder.types";
 import { cvBuilderApiSlice } from "../api/cvBuilderApiSlice";
 import { getErrorMessage } from "../helpers";
 
@@ -89,13 +89,14 @@ export const updateCv = createAsyncThunk(
   "cvBuilder/updateCv",
   async (
     payload: {
+      partialCv: Partial<ICv>;
       html: string;
       css: string;
     },
     { getState, dispatch, rejectWithValue },
   ) => {
     try {
-      const { html, css } = payload;
+      const { html, css, partialCv } = payload;
       const { cvBuilder } = getState() as { cvBuilder: ICVBuilderState };
 
       if (!cvBuilder.currentCvId) {
@@ -112,7 +113,7 @@ export const updateCv = createAsyncThunk(
 
       const request = {
         id: cvBuilder.currentCvId,
-        json: currentCv,
+        json: { ...currentCv, ...partialCv },
         html,
         css,
       };

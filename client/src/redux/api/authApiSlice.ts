@@ -1,130 +1,111 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { 
-  User,
-  AuthResponse,
-  LoginRequest,
-  RegisterRequest,
-  ChangePasswordRequest,
-  UpdateProfileRequest,
-  ResetPasswordRequest,
-  ResetPasswordConfirmRequest
-} from '../../types/api/auth.types';
 
-// Define our Auth API
+// User interfaces for authentication
+interface User {
+  id: string;
+  username: string;
+  email?: string;
+  fullName?: string;
+}
+
+interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+interface RegisterData {
+  username: string;
+  password: string;
+  email: string;
+  fullName?: string;
+}
+
+interface AuthResponse {
+  user: User;
+  token: string;
+}
+
+/**
+ * API slice for authentication operations
+ */
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: '/api/auth',
-    prepareHeaders: (headers, { getState }) => {
-      // Get the token from the user state
-      const token = (getState() as any).user?.token;
-      
-      // If we have a token, include it in the headers
+    baseUrl: '/api',
+    // Include credentials for authentication cookies
+    credentials: 'include',
+    // Add authorization header if token exists
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
       if (token) {
         headers.set('authorization', `Bearer ${token}`);
       }
-      
       return headers;
-    },
+    }
   }),
-  tagTypes: ['User'],
+  tagTypes: ['Auth'],
   endpoints: (builder) => ({
-    // Register a new user
-    register: builder.mutation<AuthResponse, RegisterRequest>({
+    // Login endpoint
+    login: builder.mutation<AuthResponse, LoginCredentials>({
       query: (credentials) => ({
-        url: '/register',
+        url: '/auth/login',
         method: 'POST',
-        body: credentials,
+        body: credentials
       }),
+      invalidatesTags: ['Auth']
     }),
     
-    // Login a user
-    login: builder.mutation<AuthResponse, LoginRequest>({
-      query: (credentials) => ({
-        url: '/login',
+    // Register endpoint
+    register: builder.mutation<AuthResponse, RegisterData>({
+      query: (data) => ({
+        url: '/auth/register',
         method: 'POST',
-        body: credentials,
+        body: data
       }),
+      invalidatesTags: ['Auth']
     }),
     
-    // Logout a user
-    logout: builder.mutation<{ success: boolean }, void>({
+    // Logout endpoint
+    logout: builder.mutation<void, void>({
       query: () => ({
-        url: '/logout',
-        method: 'POST',
+        url: '/auth/logout',
+        method: 'POST'
       }),
+      invalidatesTags: ['Auth']
     }),
     
-    // Get current user profile
-    getMe: builder.query<User, void>({
-      query: () => '/me',
-      providesTags: ['User'],
-    }),
-    
-    // Update user profile
-    updateProfile: builder.mutation<User, UpdateProfileRequest>({
-      query: (updates) => ({
-        url: '/profile',
-        method: 'PATCH',
-        body: updates,
-      }),
-      invalidatesTags: ['User'],
-    }),
-    
-    // Change password
-    changePassword: builder.mutation<{ success: boolean }, ChangePasswordRequest>({
-      query: (passwords) => ({
-        url: '/change-password',
-        method: 'POST',
-        body: passwords,
-      }),
+    // Get current user info
+    getCurrentUser: builder.query<User, void>({
+      query: () => '/auth/me',
+      providesTags: ['Auth']
     }),
     
     // Request password reset
-    requestPasswordReset: builder.mutation<{ success: boolean }, ResetPasswordRequest>({
-      query: (body) => ({
-        url: '/reset-password',
+    requestPasswordReset: builder.mutation<{ message: string }, { email: string }>({
+      query: (data) => ({
+        url: '/auth/forgot-password',
         method: 'POST',
-        body,
-      }),
+        body: data
+      })
     }),
     
-    // Confirm password reset
-    confirmPasswordReset: builder.mutation<{ success: boolean }, ResetPasswordConfirmRequest>({
-      query: (body) => ({
-        url: '/reset-password-confirm',
+    // Reset password with token
+    resetPassword: builder.mutation<{ message: string }, { token: string, password: string }>({
+      query: (data) => ({
+        url: '/auth/reset-password',
         method: 'POST',
-        body,
-      }),
-    }),
-    
-    // Get premium status
-    getPremiumStatus: builder.query<{ isPremium: boolean }, void>({
-      query: () => '/premium-status',
-      providesTags: ['User'],
-    }),
-    
-    // Upgrade to premium
-    upgradeToPremium: builder.mutation<{ success: boolean; isPremium: boolean }, void>({
-      query: () => ({
-        url: '/upgrade-premium',
-        method: 'POST',
-      }),
-      invalidatesTags: ['User'],
-    }),
-  }),
+        body: data
+      })
+    })
+  })
 });
 
 // Export hooks for use in components
 export const {
-  useRegisterMutation,
   useLoginMutation,
+  useRegisterMutation,
   useLogoutMutation,
-  useGetMeQuery,
-  useUpdateProfileMutation,
-  useChangePasswordMutation,
+  useGetCurrentUserQuery,
   useRequestPasswordResetMutation,
-  useConfirmPasswordResetMutation,
-  useGetPremiumStatusQuery,
-  useUpgradeToPremiumMutation,
+  useResetPasswordMutation
 } = authApi;

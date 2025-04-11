@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -13,30 +13,41 @@ import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PlusCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PersonalInfo, personalInfoSchema } from "@shared/schema";
 
-const personalInfoSchema = z.object({
-  firstName: z.string().min(2, { message: "First name must be at least 2 characters" }),
-  lastName: z.string().min(2, { message: "Last name must be at least 2 characters" }),
+const enhancedSchema = personalInfoSchema.extend({
+  firstName: z
+    .string()
+    .min(2, { message: "First name must be at least 2 characters" }),
+  lastName: z
+    .string()
+    .min(2, { message: "Last name must be at least 2 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
   phone: z.string().min(6, { message: "Phone number is required" }),
   city: z.string().min(2, { message: "City is required" }),
   country: z.string().min(2, { message: "Country is required" }),
 });
 
-export type PersonalInfoValues = z.infer<typeof personalInfoSchema>;
-
 interface PersonalInfoSectionProps {
-  defaultValues?: Partial<PersonalInfoValues>;
-  onSave: (values: PersonalInfoValues) => void;
+  defaultValues?: Partial<PersonalInfo>;
+  onSave: (values: PersonalInfo) => void;
 }
 
-export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSectionProps) {
+export function PersonalInfoSection({
+  defaultValues,
+  onSave,
+}: PersonalInfoSectionProps) {
   const [isSaving, setIsSaving] = useState(false);
 
-  const form = useForm<PersonalInfoValues>({
-    resolver: zodResolver(personalInfoSchema),
+  const form = useForm<PersonalInfo>({
+    resolver: zodResolver(enhancedSchema),
     defaultValues: {
       firstName: defaultValues?.firstName || "",
       lastName: defaultValues?.lastName || "",
@@ -47,9 +58,9 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
     },
   });
 
-  const handleSave = async (values: PersonalInfoValues) => {
+  const handleSave = async (values: PersonalInfo) => {
     setIsSaving(true);
-    
+
     try {
       onSave(values);
       toast({
@@ -76,7 +87,9 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">First Name</FormLabel>
+                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">
+                  First Name
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="John" {...field} className="h-9" />
                 </FormControl>
@@ -90,7 +103,9 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Last Name</FormLabel>
+                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">
+                  Last Name
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Doe" {...field} className="h-9" />
                 </FormControl>
@@ -105,12 +120,14 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Email</FormLabel>
+              <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">
+                Email
+              </FormLabel>
               <FormControl>
-                <Input 
+                <Input
                   type="email"
-                  placeholder="john.doe@example.com" 
-                  {...field} 
+                  placeholder="john.doe@example.com"
+                  {...field}
                   className="h-9"
                 />
               </FormControl>
@@ -124,16 +141,18 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Phone Number</FormLabel>
+              <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">
+                Phone Number
+              </FormLabel>
               <FormControl>
                 <div className="flex">
                   <div className="flex items-center justify-center bg-gray-100 border border-gray-300 rounded-l-md px-3">
                     <span className="text-gray-500 text-sm">+33</span>
                   </div>
-                  <Input 
-                    className="rounded-l-none h-9" 
-                    placeholder="612345678" 
-                    {...field} 
+                  <Input
+                    className="rounded-l-none h-9"
+                    placeholder="612345678"
+                    {...field}
                   />
                 </div>
               </FormControl>
@@ -148,7 +167,9 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">City</FormLabel>
+                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">
+                  City
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Paris" {...field} className="h-9" />
                 </FormControl>
@@ -162,8 +183,13 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">Country</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormLabel className="text-sm after:content-['*'] after:text-red-500 after:ml-0.5">
+                  Country
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger className="h-9">
                       <SelectValue placeholder="Select a country" />
@@ -183,11 +209,7 @@ export function PersonalInfoSection({ defaultValues, onSave }: PersonalInfoSecti
         </div>
 
         <div className="flex justify-end mt-4">
-          <Button 
-            type="submit"
-            size="sm"
-            disabled={isSaving}
-          >
+          <Button type="submit" size="sm" disabled={isSaving}>
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </div>

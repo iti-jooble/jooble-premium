@@ -1,101 +1,106 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CV, PersonalInfo, Education, Skill, WorkExperience } from '../../types/state/cvBuilder.types';
-import { 
-  GetCVsResponse,
-  GetCVResponse,
-  CreateCVRequest,
-  UpdateCVRequest,
-  DeleteCVResponse,
-  GradeCVResponse
-} from '../../types/api/cv.types';
+import type { CV } from '@shared/schema';
 
-// Define our CV API
+/**
+ * API slice for CV-related operations
+ */
 export const cvApi = createApi({
   reducerPath: 'cvApi',
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: '/api',
-    prepareHeaders: (headers, { getState }) => {
-      // Get the token from the user state
-      const token = (getState() as any).user?.token;
-      
-      // If we have a token, include it in the headers
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      
-      return headers;
-    },
-  }),
-  tagTypes: ['CV'],
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  tagTypes: ['CV', 'CVContent'],
   endpoints: (builder) => ({
-    // Get all CVs for the current user
-    getCVs: builder.query<GetCVsResponse, void>({
+    // Get all CVs
+    getCVs: builder.query<CV[], void>({
       query: () => '/cvs',
       providesTags: (result) => 
-        result
+        result 
           ? [
-              ...result.cvs.map(({ id }) => ({ type: 'CV' as const, id })),
-              { type: 'CV' as const, id: 'LIST' },
+              ...result.map(({ id }) => ({ type: 'CV' as const, id })),
+              { type: 'CV', id: 'LIST' }
             ]
-          : [{ type: 'CV' as const, id: 'LIST' }],
+          : [{ type: 'CV', id: 'LIST' }]
     }),
     
     // Get a single CV by ID
     getCVById: builder.query<CV, string>({
       query: (id) => `/cvs/${id}`,
-      providesTags: (result, error, id) => [{ type: 'CV' as const, id }],
+      providesTags: (result, error, id) => [{ type: 'CV', id }]
     }),
     
     // Create a new CV
-    createCV: builder.mutation<CV, CreateCVRequest>({
-      query: (cv) => ({
+    createCV: builder.mutation<CV, Omit<CV, 'id' | 'dateCreated'>>({
+      query: (data) => ({
         url: '/cvs',
         method: 'POST',
-        body: cv,
+        body: data
       }),
-      invalidatesTags: [{ type: 'CV', id: 'LIST' }],
+      invalidatesTags: [{ type: 'CV', id: 'LIST' }]
     }),
     
-    // Update an existing CV
-    updateCV: builder.mutation<CV, UpdateCVRequest>({
-      query: ({ id, ...updates }) => ({
+    // Update a CV
+    updateCV: builder.mutation<CV, { id: string, data: Partial<CV> }>({
+      query: ({ id, data }) => ({
         url: `/cvs/${id}`,
-        method: 'PATCH',
-        body: updates,
+        method: 'PUT',
+        body: data
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'CV', id }],
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'CV', id },
+        { type: 'CV', id: 'LIST' }
+      ]
     }),
     
     // Delete a CV
-    deleteCV: builder.mutation<DeleteCVResponse, string>({
+    deleteCV: builder.mutation<void, string>({
       query: (id) => ({
         url: `/cvs/${id}`,
-        method: 'DELETE',
+        method: 'DELETE'
       }),
       invalidatesTags: (result, error, id) => [
         { type: 'CV', id },
         { type: 'CV', id: 'LIST' },
-      ],
+        { type: 'CVContent', id }
+      ]
     }),
     
-    // Generate CV
-    generateCV: builder.mutation<CV, { jobDescription: string }>({
-      query: (body) => ({
-        url: '/cvs/generate',
+    // Duplicate a CV
+    duplicateCV: builder.mutation<CV, { id: string, title?: string }>({
+      query: ({ id, title }) => ({
+        url: `/cvs/${id}/duplicate`,
         method: 'POST',
-        body,
+        body: { title }
       }),
+      invalidatesTags: [{ type: 'CV', id: 'LIST' }]
     }),
     
-    // Grade CV against job description
-    gradeCV: builder.mutation<{ score: number; feedback: string }, { cvId: string; jobDescription: string }>({
-      query: (body) => ({
-        url: '/cvs/grade',
-        method: 'POST',
-        body,
-      }),
+    // Get CV content
+    getCVContent: builder.query<any, string>({
+      query: (id) => `/cvs/${id}/content`,
+      providesTags: (result, error, id) => [{ type: 'CVContent', id }]
     }),
-  }),
+    
+    // Update a section of CV content
+    updateCVContent: builder.mutation<any, { id: string, section: string, data: any }>({
+      query: ({ id, section, data }) => ({
+        url: `/cvs/${id}/content/${section}`,
+        method: 'PUT',
+        body: data
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'CVContent', id },
+        { type: 'CV', id }
+      ]
+    }),
+    
+    // Get AI suggestions
+    getAISuggestion: builder.mutation<{ suggestion: string }, { section: string, additionalContext?: string }>({
+      query: (data) => ({
+        url: '/ai-suggestions',
+        method: 'POST',
+        body: data
+      })
+    })
+  })
 });
 
 // Export hooks for use in components
@@ -105,6 +110,8 @@ export const {
   useCreateCVMutation,
   useUpdateCVMutation,
   useDeleteCVMutation,
-  useGenerateCVMutation,
-  useGradeCVMutation,
+  useDuplicateCVMutation,
+  useGetCVContentQuery,
+  useUpdateCVContentMutation,
+  useGetAISuggestionMutation
 } = cvApi;

@@ -22,6 +22,10 @@ const initialState: ICVBuilderState = {
 const cvBuilderSlice = createSlice({
   name: "cvBuilder",
   initialState,
+  selectors: {
+    getCurrentCvSelector: (state) =>
+      state.cvList.find((cv) => cv.id === state.currentCvId),
+  },
   reducers: {
     // Set the current CV ID
     setCurrentCvId: (state, action: PayloadAction<string | null>) => {
@@ -132,5 +136,7 @@ export const {
   setIsSaving,
   resetCvBuilder,
 } = cvBuilderSlice.actions;
+
+export const { getCurrentCvSelector } = cvBuilderSlice.selectors;
 
 export default cvBuilderSlice.reducer;

@@ -12,10 +12,12 @@ export type User = z.infer<typeof userSchema>;
 
 // CV types
 export const personalInfoSchema = z.object({
-  fullName: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   email: z.string().email(),
   phone: z.string().optional(),
-  location: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
   website: z.string().url().optional(),
   linkedin: z.string().url().optional(),
 });
@@ -33,7 +35,6 @@ export const educationSchema = z.object({
   field: z.string().optional(),
   startYear: z.string(),
   endYear: z.string().nullable(),
-  description: z.string(),
   isCurrent: z.boolean(),
 });
 

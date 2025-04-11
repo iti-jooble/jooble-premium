@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   GraduationCap,
@@ -14,102 +13,78 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  PersonalInfoSection,
-  PersonalInfoValues,
-} from "@/components/cv-builder/PersonalInfoSection";
+import { PersonalInfoSection } from "@/components/cv-builder/PersonalInfoSection";
 import { WorkExperienceSection } from "@/components/cv-builder/WorkExperienceSection";
 import { EducationSection } from "@/components/cv-builder/EducationSection";
 import { SkillsSection } from "@/components/cv-builder/SkillsSection";
-import {
-  SummarySection,
-  SummaryValues,
-} from "@/components/cv-builder/SummarySection";
+import { SummarySection } from "@/components/cv-builder/SummarySection";
 import { CvPreview } from "@/components/cv-builder/CvPreview";
-import { toast } from "@/hooks/use-toast";
-
-interface WorkExperience {
-  id: string;
-  company: string;
-  position: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
-
-interface Education {
-  id: string;
-  school: string;
-  degree: string;
-  field?: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
-
-interface Skill {
-  id: string;
-  name: string;
-  level?: "beginner" | "intermediate" | "advanced" | "expert";
-}
-
-interface CvData {
-  personalInfo: Partial<PersonalInfoValues>;
-  summary?: string;
-  skills: Skill[];
-  education: Education[];
-  workExperience: WorkExperience[];
-}
+import { useToast } from "@/hooks/use-toast";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { initCvBuilder, updateCv } from "@/redux/thunks";
+import { getCurrentCvSelector } from "@/redux/slices/cvBuilderSlice";
+import { ICv } from "@/types/state/cvBuilder.types";
+import { PersonalInfo, WorkExperience, Education, Skill } from "@shared/schema";
 
 const CvBuilderCreate = () => {
   const { t } = useTranslation();
-  const [, navigate] = useLocation();
+  const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
-  // State to track CV data
-  const [cvData, setCvData] = useState<CvData>({
-    personalInfo: {},
-    summary: "",
-    skills: [],
-    education: [],
-    workExperience: [],
-  });
+  const { isLoading, isInitialized } = useAppSelector(
+    (state) => state.cvBuilder,
+  );
 
-  // Handlers for each section
-  const handlePersonalInfoSave = (values: PersonalInfoValues) => {
-    setCvData((prev) => ({
-      ...prev,
-      personalInfo: values,
-    }));
+  const currentCv = useAppSelector(getCurrentCvSelector)!;
+
+  // Initialize CV builder
+  useEffect(() => {
+    if (!isInitialized && !isLoading) {
+      dispatch(initCvBuilder());
+    }
+  }, [dispatch, isInitialized, isLoading]);
+
+  const handleUpdateCv = async (partialCv: Partial<ICv>) => {
+    try {
+      await dispatch(
+        updateCv({
+          partialCv,
+          html: '<div class="cv-container">Generated CV HTML</div>',
+          css: ".cv-container { font-family: Arial; }",
+        }),
+      ).unwrap();
+
+      toast({
+        title: t("cvBuilder.saveSuccess"),
+        description: t("cvBuilder.saveSuccessDescription"),
+      });
+    } catch (error) {
+      toast({
+        title: t("common.error"),
+        description: t("cvBuilder.saveError"),
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleSummarySave = (values: SummaryValues) => {
-    setCvData((prev) => ({
-      ...prev,
-      summary: values.summary,
-    }));
+  const handlePersonalInfoSave = (values: PersonalInfo) => {
+    handleUpdateCv({ personalInfo: values });
   };
 
   const handleWorkExperienceSave = (experiences: WorkExperience[]) => {
-    setCvData((prev) => ({
-      ...prev,
-      workExperience: experiences,
-    }));
+    handleUpdateCv({ workExperience: experiences });
   };
 
   const handleEducationSave = (educations: Education[]) => {
-    setCvData((prev) => ({
-      ...prev,
-      education: educations,
-    }));
+    handleUpdateCv({ education: educations });
   };
 
   const handleSkillsSave = (skills: Skill[]) => {
-    setCvData((prev) => ({
-      ...prev,
-      skills: skills,
-    }));
+    handleUpdateCv({ skills });
+  };
+
+  const handleSummarySave = (values: { summary: string }) => {
+    handleUpdateCv({ summary: values.summary });
   };
 
   const handleChangeTemplate = () => {
@@ -122,7 +97,9 @@ const CvBuilderCreate = () => {
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 max-w-3xl">
-        <h1 className="text-3xl font-bold tracking-tight">{t("cvBuilderCreate.title")}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {t("cvBuilderCreate.title")}
+        </h1>
         <p className="text-muted-foreground mt-2">
           {t("cvBuilderCreate.subtitle")}
         </p>
@@ -159,7 +136,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <PersonalInfoSection
-                  defaultValues={cvData.personalInfo}
+                  defaultValues={currentCv.personalInfo}
                   onSave={handlePersonalInfoSave}
                 />
               </AccordionContent>
@@ -176,7 +153,9 @@ const CvBuilderCreate = () => {
                     <BriefcaseBusiness className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-base font-medium">{t("cvBuilderCreate.sections.experience")}</h3>
+                    <h3 className="text-base font-medium">
+                      {t("cvBuilderCreate.sections.experience")}
+                    </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Work history, internships
                     </p>
@@ -185,7 +164,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <WorkExperienceSection
-                  experiences={cvData.workExperience}
+                  experiences={currentCv.workExperience}
                   onSave={handleWorkExperienceSave}
                 />
               </AccordionContent>
@@ -202,7 +181,9 @@ const CvBuilderCreate = () => {
                     <GraduationCap className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-base font-medium">{t("cvBuilderCreate.sections.education")}</h3>
+                    <h3 className="text-base font-medium">
+                      {t("cvBuilderCreate.sections.education")}
+                    </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Academic background, courses
                     </p>
@@ -211,7 +192,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <EducationSection
-                  educations={cvData.education}
+                  educations={currentCv.education}
                   onSave={handleEducationSave}
                 />
               </AccordionContent>
@@ -228,7 +209,9 @@ const CvBuilderCreate = () => {
                     <Sparkles className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-base font-medium">{t("cvBuilderCreate.sections.skills")}</h3>
+                    <h3 className="text-base font-medium">
+                      {t("cvBuilderCreate.sections.skills")}
+                    </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Technical and soft skills
                     </p>
@@ -237,7 +220,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <SkillsSection
-                  skills={cvData.skills}
+                  skills={currentCv.skills}
                   onSave={handleSkillsSave}
                 />
               </AccordionContent>
@@ -265,7 +248,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <SummarySection
-                  defaultValues={{ summary: cvData.summary || "" }}
+                  defaultValues={{ summary: currentCv.summary || "" }}
                   onSave={handleSummarySave}
                 />
               </AccordionContent>
@@ -274,7 +257,7 @@ const CvBuilderCreate = () => {
         </div>
 
         {/* Right side - Preview */}
-        <CvPreview data={cvData} onChangeTemplate={handleChangeTemplate} />
+        <CvPreview data={currentCv} onChangeTemplate={handleChangeTemplate} />
       </div>
     </div>
   );

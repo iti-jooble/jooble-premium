@@ -1,120 +1,81 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Job } from '../../types/state/jobSearch.types';
-import { 
-  GetJobsResponse,
-  GetJobResponse,
-  SearchJobsRequest,
-  SavedJobResponse,
-  MatchCVResponse,
-  GenerateJobTipsRequest,
-  GenerateJobTipsResponse
-} from '../../types/api/job.types';
 
-// Define our Job API
+// Job interface
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  salary: string;
+  posted: string;
+  description: string;
+  isNew?: boolean;
+}
+
+// Search parameters interface
+interface JobSearchParams {
+  keywords?: string;
+  location?: string;
+  type?: string;
+  salary?: string;
+  page?: number;
+  limit?: number;
+}
+
+/**
+ * API slice for job-related operations
+ */
 export const jobApi = createApi({
   reducerPath: 'jobApi',
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: '/api',
-    prepareHeaders: (headers, { getState }) => {
-      // Get the token from the user state
-      const token = (getState() as any).user?.token;
-      
-      // If we have a token, include it in the headers
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      
-      return headers;
-    },
-  }),
-  tagTypes: ['Job', 'SavedJob'],
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  tagTypes: ['Job'],
   endpoints: (builder) => ({
-    // Search jobs with filters
-    searchJobs: builder.query<GetJobsResponse, SearchJobsRequest>({
+    // Search for jobs with filters
+    searchJobs: builder.query<Job[], JobSearchParams>({
       query: (params) => ({
         url: '/jobs/search',
         method: 'GET',
-        params,
+        params
       }),
-      providesTags: (result) => 
-        result
-          ? [
-              ...result.jobs.map(({ id }) => ({ type: 'Job' as const, id })),
-              { type: 'Job' as const, id: 'LIST' },
-            ]
-          : [{ type: 'Job' as const, id: 'LIST' }],
+      providesTags: ['Job']
     }),
     
     // Get a single job by ID
     getJobById: builder.query<Job, string>({
       query: (id) => `/jobs/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Job' as const, id }],
+      providesTags: (result, error, id) => [{ type: 'Job', id }]
     }),
     
-    // Get recommended jobs based on user's profile or CV
-    getRecommendedJobs: builder.query<Job[], { cvId?: string; limit?: number }>({
-      query: (params) => ({
-        url: '/jobs/recommended',
-        method: 'GET',
-        params,
-      }),
-      providesTags: ['Job'],
+    // Get recommended jobs based on CV
+    getRecommendedJobs: builder.query<Job[], string>({
+      query: (cvId) => `/jobs/recommended/${cvId}`,
+      providesTags: ['Job']
     }),
     
-    // Get saved jobs
-    getSavedJobs: builder.query<Job[], void>({
-      query: () => '/jobs/saved',
-      providesTags: (result) => 
-        result
-          ? [
-              ...result.map(({ id }) => ({ type: 'SavedJob' as const, id })),
-              { type: 'SavedJob' as const, id: 'LIST' },
-            ]
-          : [{ type: 'SavedJob' as const, id: 'LIST' }],
-    }),
-    
-    // Save a job
-    saveJob: builder.mutation<SavedJobResponse, string>({
-      query: (jobId) => ({
-        url: `/jobs/${jobId}/save`,
+    // Save/bookmark a job
+    saveJob: builder.mutation<void, { userId: string, jobId: string }>({
+      query: ({ userId, jobId }) => ({
+        url: `/users/${userId}/saved-jobs`,
         method: 'POST',
-      }),
-      invalidatesTags: (result, error, id) => [
-        { type: 'SavedJob', id },
-        { type: 'SavedJob', id: 'LIST' },
-      ],
+        body: { jobId }
+      })
     }),
     
-    // Unsave a job
-    unsaveJob: builder.mutation<SavedJobResponse, string>({
-      query: (jobId) => ({
-        url: `/jobs/${jobId}/unsave`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: (result, error, id) => [
-        { type: 'SavedJob', id },
-        { type: 'SavedJob', id: 'LIST' },
-      ],
+    // Remove a saved/bookmarked job
+    unsaveJob: builder.mutation<void, { userId: string, jobId: string }>({
+      query: ({ userId, jobId }) => ({
+        url: `/users/${userId}/saved-jobs/${jobId}`,
+        method: 'DELETE'
+      })
     }),
     
-    // Match CV to a job
-    matchCV: builder.mutation<MatchCVResponse, { cvId: string; jobId: string }>({
-      query: (body) => ({
-        url: '/jobs/match',
-        method: 'POST',
-        body,
-      }),
-    }),
-    
-    // Generate job application tips
-    generateJobTips: builder.mutation<{ tips: string[] }, { cvId: string; jobId: string }>({
-      query: (body) => ({
-        url: '/jobs/tips',
-        method: 'POST',
-        body,
-      }),
-    }),
-  }),
+    // Get saved/bookmarked jobs for a user
+    getSavedJobs: builder.query<Job[], string>({
+      query: (userId) => `/users/${userId}/saved-jobs`,
+      providesTags: ['Job']
+    })
+  })
 });
 
 // Export hooks for use in components
@@ -122,9 +83,7 @@ export const {
   useSearchJobsQuery,
   useGetJobByIdQuery,
   useGetRecommendedJobsQuery,
-  useGetSavedJobsQuery,
   useSaveJobMutation,
   useUnsaveJobMutation,
-  useMatchCVMutation,
-  useGenerateJobTipsMutation,
+  useGetSavedJobsQuery
 } = jobApi;

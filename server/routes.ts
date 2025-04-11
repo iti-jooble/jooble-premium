@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import axios from "axios";
 import { log } from "./vite";
+import { storage } from "./storage";
 
 /**
  * Creates a proxy middleware to forward requests to an external API
@@ -67,6 +68,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
   
+  // === CV API Routes ===
+  
+  // Get all CVs
+  app.get("/api/cvs", async (req: Request, res: Response) => {
+    try {
+      const cvs = await storage.getAllCVs();
+      res.json(cvs);
+    } catch (error: any) {
+      log(`Error fetching CVs: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to retrieve CVs", message: error.message });
+    }
+  });
+
+  // Get CV by ID
+  app.get("/api/cvs/:id", async (req: Request, res: Response) => {
+    try {
+      const cv = await storage.getCVById(req.params.id);
+      if (!cv) {
+        return res.status(404).json({ error: "CV not found" });
+      }
+      res.json(cv);
+    } catch (error: any) {
+      log(`Error fetching CV ${req.params.id}: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to retrieve CV", message: error.message });
+    }
+  });
+
+  // Create new CV
+  app.post("/api/cvs", async (req: Request, res: Response) => {
+    try {
+      const newCV = await storage.createCV(req.body);
+      res.status(201).json(newCV);
+    } catch (error: any) {
+      log(`Error creating CV: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to create CV", message: error.message });
+    }
+  });
+
+  // Update CV
+  app.put("/api/cvs/:id", async (req: Request, res: Response) => {
+    try {
+      const updatedCV = await storage.updateCV(req.params.id, req.body);
+      if (!updatedCV) {
+        return res.status(404).json({ error: "CV not found" });
+      }
+      
+      res.json(updatedCV);
+    } catch (error: any) {
+      log(`Error updating CV ${req.params.id}: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to update CV", message: error.message });
+    }
+  });
+
+  // Delete CV
+  app.delete("/api/cvs/:id", async (req: Request, res: Response) => {
+    try {
+      const success = await storage.deleteCV(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "CV not found" });
+      }
+      
+      res.status(204).send();
+    } catch (error: any) {
+      log(`Error deleting CV ${req.params.id}: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to delete CV", message: error.message });
+    }
+  });
+
+  // Duplicate CV
+  app.post("/api/cvs/:id/duplicate", async (req: Request, res: Response) => {
+    try {
+      const { title } = req.body;
+      const duplicatedCV = await storage.duplicateCV(req.params.id, title);
+      
+      if (!duplicatedCV) {
+        return res.status(404).json({ error: "Original CV not found" });
+      }
+      
+      res.status(201).json(duplicatedCV);
+    } catch (error: any) {
+      log(`Error duplicating CV ${req.params.id}: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to duplicate CV", message: error.message });
+    }
+  });
+
+  // === CV Content API Routes ===
+  
+  // Get CV content
+  app.get("/api/cvs/:id/content", async (req: Request, res: Response) => {
+    try {
+      const content = await storage.getCVContent(req.params.id);
+      res.json(content);
+    } catch (error: any) {
+      log(`Error fetching CV content for ${req.params.id}: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to retrieve CV content", message: error.message });
+    }
+  });
+
+  // Update CV section content (personalInfo, workExperience, etc.)
+  app.put("/api/cvs/:id/content/:section", async (req: Request, res: Response) => {
+    try {
+      const { id, section } = req.params;
+      const data = req.body;
+      
+      // Validate section
+      const validSections = ['personalInfo', 'workExperience', 'education', 'skills', 'summary'];
+      if (!validSections.includes(section)) {
+        return res.status(400).json({ error: "Invalid section name" });
+      }
+      
+      const updatedContent = await storage.updateCVContent(id, section, data);
+      res.json(updatedContent);
+    } catch (error: any) {
+      log(`Error updating CV ${req.params.id} section ${req.params.section}: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to update CV content", message: error.message });
+    }
+  });
+
+  // === AI Suggestion API Route ===
+  
+  // Get AI suggestion
+  app.post("/api/ai-suggestions", async (req: Request, res: Response) => {
+    try {
+      const { section, additionalContext } = req.body;
+      
+      if (!section) {
+        return res.status(400).json({ error: "Section is required" });
+      }
+      
+      const suggestion = await storage.getAISuggestion(section, additionalContext);
+      res.json(suggestion);
+    } catch (error: any) {
+      log(`Error generating AI suggestion for ${req.body.section}: ${error.message}`, 'api');
+      res.status(500).json({ error: "Failed to generate AI suggestion", message: error.message });
+    }
+  });
+  
   // Example of how to set up an API proxy route
   // Uncomment and configure when you have the external API URL
   /*
@@ -74,9 +212,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Jobs API - forward all requests to external API
   app.use('/api/jobs', createApiProxy(`${EXTERNAL_API_URL}/jobs`));
-  
-  // CVs API
-  app.use('/api/cvs', createApiProxy(`${EXTERNAL_API_URL}/cvs`));
   
   // Authentication API
   app.use('/api/auth', createApiProxy(`${EXTERNAL_API_URL}/auth`));

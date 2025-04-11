@@ -1,51 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { MapPinIcon, PhoneIcon, MailIcon, FileText } from "lucide-react";
-import { PersonalInfoValues } from "./PersonalInfoSection";
 import { useTranslation } from "react-i18next";
-
-interface Skill {
-  id: string;
-  name: string;
-  level?: "beginner" | "intermediate" | "advanced" | "expert";
-}
-
-interface Education {
-  id: string;
-  school: string;
-  degree: string;
-  field?: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
-
-interface WorkExperience {
-  id: string;
-  company: string;
-  position: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
-
-interface CvData {
-  personalInfo: Partial<PersonalInfoValues>;
-  summary?: string;
-  skills?: Skill[];
-  education?: Education[];
-  workExperience?: WorkExperience[];
-}
+import { CV } from "@shared/schema";
 
 interface CvPreviewProps {
-  data: CvData;
+  data: CV;
   onChangeTemplate: () => void;
 }
 
 export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
   const { t } = useTranslation();
-  
+
   return (
     <div className="w-full lg:w-1/2 flex-shrink-0 rounded-lg flex flex-col items-center h-[calc(100vh-150px)]">
       <div className="flex justify-between items-center mb-4 flex-shrink-0 w-full max-w-[492px]">
@@ -70,7 +35,9 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
           {/* Left sidebar in preview */}
           <div className="w-full md:w-1/3 bg-blue-50 p-4">
             <div className="mb-6">
-              <h3 className="text-blue-800 font-medium mb-2">{t("cvPreview.contact")}</h3>
+              <h3 className="text-blue-800 font-medium mb-2">
+                {t("cvPreview.contact")}
+              </h3>
               <div className="text-sm space-y-1.5">
                 <div className="flex items-center text-gray-600">
                   <MailIcon className="h-3.5 w-3.5 mr-2" />
@@ -93,7 +60,9 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
             </div>
 
             <div className="mb-6">
-              <h3 className="text-blue-800 font-medium mb-2">{t("cvPreview.about")}</h3>
+              <h3 className="text-blue-800 font-medium mb-2">
+                {t("cvPreview.about")}
+              </h3>
               <p className="text-xs text-gray-600 leading-relaxed">
                 {data.summary ||
                   "Experienced driver with excellent navigation skills. Committed to providing safe and efficient transportation services. Strong attention to detail and ability to handle various driving conditions."}
@@ -101,7 +70,9 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
             </div>
 
             <div>
-              <h3 className="text-blue-800 font-medium mb-2">{t("cvPreview.skills")}</h3>
+              <h3 className="text-blue-800 font-medium mb-2">
+                {t("cvPreview.skills")}
+              </h3>
               <ul className="text-xs text-gray-600 space-y-1">
                 {data.skills && data.skills.length > 0 ? (
                   data.skills.map((skill) => (
@@ -128,7 +99,9 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
             </div>
 
             <div className="mb-6">
-              <h2 className="text-blue-700 font-medium mb-2">{t("cvPreview.experience")}</h2>
+              <h2 className="text-blue-700 font-medium mb-2">
+                {t("cvPreview.experience")}
+              </h2>
 
               {data.workExperience && data.workExperience.length > 0 ? (
                 data.workExperience.map((exp) => (
@@ -153,8 +126,12 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                   <div className="mb-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-sm font-medium">{t("cvPreview.defaultExperience.company1")}</h3>
-                        <h4 className="text-xs">{t("cvPreview.defaultExperience.position")}</h4>
+                        <h3 className="text-sm font-medium">
+                          {t("cvPreview.defaultExperience.company1")}
+                        </h3>
+                        <h4 className="text-xs">
+                          {t("cvPreview.defaultExperience.position")}
+                        </h4>
                       </div>
                       <div className="text-xs text-gray-500">
                         2018 - {t("cvPreview.present")}
@@ -168,8 +145,12 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                   <div>
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-sm font-medium">{t("cvPreview.defaultExperience.company2")}</h3>
-                        <h4 className="text-xs">{t("cvPreview.defaultExperience.position")}</h4>
+                        <h3 className="text-sm font-medium">
+                          {t("cvPreview.defaultExperience.company2")}
+                        </h3>
+                        <h4 className="text-xs">
+                          {t("cvPreview.defaultExperience.position")}
+                        </h4>
                       </div>
                       <div className="text-xs text-gray-500">2016 - 2017</div>
                     </div>
@@ -182,7 +163,9 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
             </div>
 
             <div>
-              <h2 className="text-blue-700 font-medium mb-2">{t("cvPreview.education")}</h2>
+              <h2 className="text-blue-700 font-medium mb-2">
+                {t("cvPreview.education")}
+              </h2>
 
               {data.education && data.education.length > 0 ? (
                 data.education.map((edu) => (
@@ -209,8 +192,12 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                   <div className="mb-3">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-sm font-medium">{t("cvPreview.defaultEducation.driving")}</h3>
-                        <h4 className="text-xs">{t("cvPreview.defaultEducation.driversLicense")}</h4>
+                        <h3 className="text-sm font-medium">
+                          {t("cvPreview.defaultEducation.driving")}
+                        </h3>
+                        <h4 className="text-xs">
+                          {t("cvPreview.defaultEducation.driversLicense")}
+                        </h4>
                       </div>
                     </div>
                   </div>
@@ -232,12 +219,16 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                         <h3 className="text-sm font-medium">
                           {t("cvPreview.defaultEducation.generalEducation")}
                         </h3>
-                        <h4 className="text-xs">{t("cvPreview.defaultEducation.highSchoolDiploma")}</h4>
+                        <h4 className="text-xs">
+                          {t("cvPreview.defaultEducation.highSchoolDiploma")}
+                        </h4>
                       </div>
                     </div>
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-sm font-medium">{t("cvPreview.defaultEducation.highSchool")}</h3>
+                        <h3 className="text-sm font-medium">
+                          {t("cvPreview.defaultEducation.highSchool")}
+                        </h3>
                       </div>
                       <div className="text-xs text-gray-500">2005 - 2009</div>
                     </div>
