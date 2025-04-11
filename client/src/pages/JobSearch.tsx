@@ -26,8 +26,17 @@ type JobWithDescription = {
 };
 
 // Function to get jobs without description for compatibility with JobListings
-const stripDescriptions = (jobs: JobWithDescription[]) => {
-  return jobs.map(({ description, ...rest }) => rest);
+const stripDescriptions = (jobs: JobWithDescription[]): JobCardProps['job'][] => {
+  return jobs.map(({ description, ...rest }) => ({
+    id: rest.id,
+    title: rest.title,
+    company: rest.company,
+    location: rest.location,
+    type: rest.type,
+    salary: rest.salary,
+    posted: rest.posted,
+    isNew: rest.isNew
+  }));
 };
 
 // Mock job data
@@ -335,7 +344,7 @@ const JobSearch = () => {
   const [filteredJobs, setFilteredJobs] = useState(jobListings);
   const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
 
-  const handleJobSelect = (job: Omit<(typeof jobListings)[0], 'description'>) => {
+  const handleJobSelect = (job: JobCardProps['job']) => {
     // Find the full job data including description
     const fullJobData = jobListings.find(j => j.id === job.id);
     if (fullJobData) {
