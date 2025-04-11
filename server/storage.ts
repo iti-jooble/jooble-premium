@@ -225,6 +225,11 @@ export const storage: IStorage = {
       cvContent[id] = {};
     }
     
+    // Handle the case where the summary is sent as {summary: "text"}
+    if (section === 'summary' && data.summary) {
+      data = data.summary;
+    }
+    
     // Update the specific section
     cvContent[id] = {
       ...cvContent[id],
