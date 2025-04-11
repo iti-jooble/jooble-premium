@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Redirect } from "wouter";
 import {
   GraduationCap,
   BriefcaseBusiness,
@@ -88,7 +89,7 @@ const CvBuilderCreate = () => {
   };
 
   if (!currentCv) {
-    return redirect("/cv-builder");
+    return <Redirect to="/cv-builder" />;
   }
 
   return (
