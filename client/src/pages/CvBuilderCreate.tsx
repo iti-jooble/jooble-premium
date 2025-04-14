@@ -164,9 +164,35 @@ const CvBuilderCreate = () => {
             )}
           </div>
         </div>
-        <p className="text-muted-foreground mt-2">
-          {t("cvBuilderCreate.subtitle")}
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
+          <p className="text-muted-foreground">
+            {t("cvBuilderCreate.subtitle")}
+          </p>
+          <div className="flex items-center">
+            <div className="h-5 mx-2 w-px bg-border hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <div className="text-xs font-medium">
+                {t("cvBuilderCreate.cvScore", "CV Score")}:
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="relative w-24 h-2 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className={`absolute inset-y-0 left-0 ${
+                      currentCv.score >= 80 ? 'bg-success' : 
+                      currentCv.score >= 60 ? 'bg-primary' : 
+                      currentCv.score >= 40 ? 'bg-warning' : 
+                      'bg-destructive'
+                    } rounded-full`}
+                    style={{ width: `${currentCv.score}%` }}
+                  />
+                </div>
+                <span className="text-xs font-medium">
+                  {currentCv.score}% - {getCvScoreDescription(currentCv.score)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
