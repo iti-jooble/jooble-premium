@@ -79,7 +79,18 @@ const CvBuilderCreate = () => {
   };
 
   const handleWorkExperienceSave = (experiences: WorkExperience[]) => {
-    handleUpdateCv({ workExperience: experiences });
+    const cvData: Partial<CV> = {
+      workExperience: experiences,
+    };
+
+    if (currentCv.workExperience.length === 0 && currentCv.title === "New CV") {
+      cvData.title =
+        `${currentCv?.personalInfo?.firstName ?? ""} ${currentCv?.personalInfo?.lastName ?? ""} - ${experiences[0].position}`
+          .trim()
+          .replace(/^-\s*/, "");
+    }
+
+    return handleUpdateCv(cvData);
   };
 
   const handleEducationSave = (educations: Education[]) => {
@@ -92,6 +103,14 @@ const CvBuilderCreate = () => {
 
   const handleSummarySave = (values: { summary: string }) => {
     handleUpdateCv({ summary: values.summary });
+  };
+
+  const handleSaveTitle = () => {
+    setIsTitleFocused(false);
+
+    if (titleValue !== currentCv.title) {
+      handleUpdateCv({ title: titleValue });
+    }
   };
 
   const handleChangeTemplate = () => {
@@ -107,7 +126,7 @@ const CvBuilderCreate = () => {
 
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
-      <div className="mb-8 max-w-3xl">
+      <div className="mb-8 max-w-xl min-w-[380px]">
         {/* Editable CV title */}
         <div className="group relative mb-2">
           <input
@@ -115,15 +134,10 @@ const CvBuilderCreate = () => {
             value={titleValue}
             onChange={(e) => setTitleValue(e.target.value)}
             onFocus={() => setIsTitleFocused(true)}
-            onBlur={() => {
-              setIsTitleFocused(false);
-              if (titleValue !== currentCv.title) {
-                handleUpdateCv({ title: titleValue });
-              }
-            }}
+            onBlur={handleSaveTitle}
             className={`text-3xl font-bold tracking-tight bg-transparent border-b 
-              ${isTitleFocused ? "border-primary/50" : "border-transparent"} 
-              outline-none w-full pr-16 group-hover:border-primary/30 transition-all`}
+              ${isTitleFocused ? "border-primary/50" : "border-gray/30"} 
+              outline-none w-full pr-16 group-hover:border-primary/50 transition-all`}
             aria-label={t("cvBuilderCreate.titleInputLabel", "CV Title")}
           />
           <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
@@ -159,7 +173,7 @@ const CvBuilderCreate = () => {
             ) : (
               <button
                 onClick={() => setIsTitleFocused(true)}
-                className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-primary transition-opacity"
+                className="group-hover:opacity-100 text-muted-foreground hover:text-primary"
                 aria-label={t("cvBuilderCreate.editTitleButton", "Edit title")}
               >
                 <svg
@@ -196,14 +210,12 @@ const CvBuilderCreate = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-muted/40 border border-border/50 rounded-lg">
             <div className="flex items-center gap-2">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                className={`w-16 h-12 rounded-full flex items-center justify-center ${
                   currentCv.score >= 80
                     ? "bg-green-100 text-green-700"
                     : currentCv.score >= 60
-                      ? "bg-blue-100 text-blue-700"
-                      : currentCv.score >= 40
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-red-100 text-red-700"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-red-100 text-red-700"
                 }`}
               >
                 <span className="text-sm font-bold">{currentCv.score}%</span>
@@ -230,16 +242,17 @@ const CvBuilderCreate = () => {
             <div className="w-full sm:w-1/2 flex items-center gap-2">
               <div className="relative w-full h-2.5 bg-muted rounded-full overflow-hidden">
                 <div
-                  className={`absolute inset-y-0 left-0 ${
+                  className={`absolute inset-y-0 left-0 rounded-full transition-all duration-500 ${
                     currentCv.score >= 80
-                      ? "bg-green-500"
+                      ? "text-green-700"
                       : currentCv.score >= 60
-                        ? "bg-blue-500"
-                        : currentCv.score >= 40
-                          ? "bg-amber-500"
-                          : "bg-red-500"
-                  } rounded-full transition-all duration-500`}
-                  style={{ width: `${currentCv.score}%` }}
+                        ? "text-yellow-500"
+                        : "text-red-700"
+                  }`}
+                  style={{
+                    width: `${currentCv.score}%`,
+                    backgroundColor: "currentColor",
+                  }}
                 />
               </div>
             </div>

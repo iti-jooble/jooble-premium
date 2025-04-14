@@ -50,8 +50,6 @@ export function EducationSection({
   onSave,
 }: EducationSectionProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [localEducations, setLocalEducations] =
-    useState<Education[]>(educations);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -91,63 +89,56 @@ export function EducationSection({
     });
   };
 
-  const handleSaveForm = (values: Education) => {
-    if (editingId) {
-      // Update existing education
-      const updatedEducations = localEducations.map((edu) =>
-        edu.id === editingId
-          ? {
-              ...edu,
-              school: values.school,
-              degree: values.degree,
-              field: values.field,
-              startYear: values.startYear,
-              endYear: values.endYear || null,
-              isCurrent: values.isCurrent,
-            }
-          : edu,
-      );
-      setLocalEducations(updatedEducations);
-      setEditingId(null);
-    } else {
-      // Add new education
-      const newEducation: Education = {
-        id: uuidv4(),
-        school: values.school,
-        degree: values.degree,
-        field: values.field,
-        startYear: values.startYear,
-        endYear: values.endYear || null,
-        isCurrent: values.isCurrent,
-      };
-      setLocalEducations([...localEducations, newEducation]);
-    }
-
-    setIsAddingNew(false);
-    form.reset();
-
-    // Show success message
-    toast({
-      title: editingId ? "Education updated" : "Education added",
-      description: editingId
-        ? "Your education has been updated."
-        : "Your education has been added.",
-    });
-  };
-
-  const handleSaveAll = async () => {
+  const handleSaveForm = async (values: Education) => {
     setIsSaving(true);
 
+    console.log("Saving education:", values);
+
     try {
-      onSave(localEducations);
+      if (editingId) {
+        // Update existing education
+        const updatedEducations = educations.map((edu) =>
+          edu.id === editingId
+            ? {
+                ...edu,
+                school: values.school,
+                degree: values.degree,
+                field: values.field,
+                startYear: values.startYear,
+                endYear: values.endYear || null,
+                isCurrent: values.isCurrent,
+              }
+            : edu,
+        );
+        await onSave(updatedEducations);
+        setEditingId(null);
+      } else {
+        // Add new education
+        const newEducation: Education = {
+          id: uuidv4(),
+          school: values.school,
+          degree: values.degree,
+          field: values.field,
+          startYear: values.startYear,
+          endYear: values.endYear || null,
+          isCurrent: values.isCurrent,
+        };
+        await onSave([...educations, newEducation]);
+      }
+
+      setIsAddingNew(false);
+      form.reset();
+
       toast({
-        title: "All education saved",
-        description: "All your education entries have been saved.",
+        title: editingId ? "Education updated" : "Education added",
+        description: editingId
+          ? "Your education has been updated."
+          : "Your education has been added.",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to save education entries.",
+        description: "Failed to save education.",
         variant: "destructive",
       });
     } finally {
@@ -159,14 +150,14 @@ export function EducationSection({
     <div className="space-y-4">
       {!isAddingNew && editingId === null && (
         <>
-          {localEducations.length === 0 ? (
+          {educations.length === 0 ? (
             <p className="text-sm text-gray-600">
               Add your educational background here.
             </p>
           ) : (
             <div className="space-y-3">
               {/* Map through educations and display them */}
-              {localEducations.map((edu) => (
+              {educations.map((edu) => (
                 <div
                   key={edu.id}
                   className="border p-3 rounded-md hover:border-gray-400 transition-colors"
@@ -193,12 +184,10 @@ export function EducationSection({
                         variant="ghost"
                         className="text-red-500 hover:text-red-700"
                         onClick={() => {
-                          const updatedEducations = localEducations.filter(
+                          const updatedEducations = educations.filter(
                             (e) => e.id !== edu.id,
                           );
-                          setLocalEducations(updatedEducations);
-                          // Auto-save when removing
-                          handleSaveAll();
+                          onSave(updatedEducations);
                         }}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -218,14 +207,6 @@ export function EducationSection({
             <PlusCircle className="h-4 w-4 mr-2" />
             Add another education
           </Button>
-
-          {localEducations.length > 0 && (
-            <div className="flex justify-end mt-3">
-              <Button size="sm" onClick={handleSaveAll} disabled={isSaving}>
-                {isSaving ? "Saving..." : "Save"}
-              </Button>
-            </div>
-          )}
         </>
       )}
 
@@ -363,7 +344,7 @@ export function EducationSection({
                 Cancel
               </Button>
               <Button type="submit">
-                {editingId !== null ? "Update" : "Add"}
+                {editingId !== null ? "Update" : "Add"} Education
               </Button>
             </div>
           </form>

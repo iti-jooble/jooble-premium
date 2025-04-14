@@ -2,16 +2,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
   FormLabel,
-  FormMessage  
+  FormMessage,
 } from "@/components/ui/form";
 import { useState } from "react";
-import { PlusCircle, Pencil, Check, SparkleIcon, FileText, Wand2, Trash2 } from "lucide-react";
+import {
+  PlusCircle,
+  Pencil,
+  Check,
+  SparkleIcon,
+  FileText,
+  Wand2,
+  Trash2,
+} from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,20 +32,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { WorkExperience } from "@shared/schema";
 
 // Generate years from 1970 to current year
 const currentYear = new Date().getFullYear();
-const years = Array.from({ length: currentYear - 1969 }, (_, i) => (currentYear - i).toString());
-
-interface WorkExperience {
-  id: string;
-  company: string;
-  position: string;
-  startYear: string;
-  endYear: string | null;
-  description: string;
-  isCurrent: boolean;
-}
+const years = Array.from({ length: currentYear - 1969 }, (_, i) =>
+  (currentYear - i).toString(),
+);
 
 interface WorkExperienceSectionProps {
   experiences?: WorkExperience[];
@@ -50,20 +51,21 @@ const experienceSchema = z.object({
   startYear: z.string().min(4, { message: "Start year is required" }),
   endYear: z.string().optional().nullable(),
   isCurrent: z.boolean().default(false),
-  description: z.string()
+  description: z
+    .string()
     .min(10, { message: "Description should be at least 10 characters" })
     .max(1000, { message: "Description should not exceed 1000 characters" }),
 });
 
-type ExperienceFormValues = z.infer<typeof experienceSchema>;
-
-export function WorkExperienceSection({ experiences = [], onSave }: WorkExperienceSectionProps) {
+export function WorkExperienceSection({
+  experiences = [],
+  onSave,
+}: WorkExperienceSectionProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [localExperiences, setLocalExperiences] = useState<WorkExperience[]>(experiences);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const form = useForm<ExperienceFormValues>({
+  const form = useForm<WorkExperience>({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
       position: "",
@@ -72,7 +74,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
       endYear: "",
       isCurrent: false,
       description: "",
-    }
+    },
   });
 
   const handleAddExperience = () => {
@@ -99,63 +101,54 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
     });
   };
 
-  const handleSaveForm = (values: ExperienceFormValues) => {
-    if (editingId) {
-      // Update existing experience
-      const updatedExperiences = localExperiences.map(exp => 
-        exp.id === editingId 
-          ? { 
-              ...exp, 
-              position: values.position,
-              company: values.company,
-              startYear: values.startYear,
-              endYear: values.isCurrent ? null : values.endYear || null,
-              isCurrent: values.isCurrent,
-              description: values.description
-            } 
-          : exp
-      );
-      setLocalExperiences(updatedExperiences);
-      setEditingId(null);
-    } else {
-      // Add new experience
-      const newExperience: WorkExperience = {
-        id: uuidv4(),
-        position: values.position,
-        company: values.company,
-        startYear: values.startYear,
-        endYear: values.isCurrent ? null : values.endYear || null,
-        isCurrent: values.isCurrent,
-        description: values.description
-      };
-      setLocalExperiences([...localExperiences, newExperience]);
-    }
-    
-    setIsAddingNew(false);
-    form.reset();
-    
-    // Show success message
-    toast({
-      title: editingId ? "Experience updated" : "Experience added",
-      description: editingId 
-        ? "Your work experience has been updated." 
-        : "Your work experience has been added.",
-    });
-  };
-
-  const handleSaveAll = async () => {
+  const handleSaveForm = async (values: WorkExperience) => {
     setIsSaving(true);
-    
+
     try {
-      onSave(localExperiences);
+      if (editingId) {
+        // Update existing experience
+        const updatedExperiences = experiences.map((exp) =>
+          exp.id === editingId
+            ? {
+                ...exp,
+                position: values.position,
+                company: values.company,
+                startYear: values.startYear,
+                endYear: values.isCurrent ? null : values.endYear || null,
+                isCurrent: values.isCurrent,
+                description: values.description,
+              }
+            : exp,
+        );
+        await onSave(updatedExperiences);
+        setEditingId(null);
+      } else {
+        // Add new experience
+        const newExperience: WorkExperience = {
+          id: uuidv4(),
+          position: values.position,
+          company: values.company,
+          startYear: values.startYear,
+          endYear: values.isCurrent ? null : values.endYear || null,
+          isCurrent: values.isCurrent,
+          description: values.description,
+        };
+        await onSave([...experiences, newExperience]);
+      }
+
+      setIsAddingNew(false);
+      form.reset();
+
       toast({
-        title: "All experiences saved",
-        description: "All your work experiences have been saved.",
+        title: editingId ? "Experience updated" : "Experience added",
+        description: editingId
+          ? "Your work experience has been updated."
+          : "Your work experience has been added.",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to save work experiences.",
+        description: "Failed to save work experience.",
         variant: "destructive",
       });
     } finally {
@@ -165,12 +158,14 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
 
   const generateDescription = () => {
     // This would normally call an AI service to generate content
-    const sampleDescription = "Responsible for implementing and maintaining software applications. Collaborated with cross-functional teams to deliver high-quality products. Helped improve system performance by 30%.";
+    const sampleDescription =
+      "Responsible for implementing and maintaining software applications. Collaborated with cross-functional teams to deliver high-quality products. Helped improve system performance by 30%.";
     form.setValue("description", sampleDescription);
-    
+
     toast({
       title: "Description generated",
-      description: "A sample description has been added. Feel free to edit it to match your experience.",
+      description:
+        "A sample description has been added. Feel free to edit it to match your experience.",
     });
   };
 
@@ -179,16 +174,19 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
     if (!currentText) {
       toast({
         title: "No text to improve",
-        description: "Please enter some text first before trying to improve it.",
+        description:
+          "Please enter some text first before trying to improve it.",
         variant: "destructive",
       });
       return;
     }
-    
+
     // This would normally call an AI service to improve content
-    const improvedText = currentText + " Additionally, led initiatives to enhance team productivity and mentored junior developers.";
+    const improvedText =
+      currentText +
+      " Additionally, led initiatives to enhance team productivity and mentored junior developers.";
     form.setValue("description", improvedText);
-    
+
     toast({
       title: "Description improved",
       description: "Your description has been enhanced.",
@@ -206,36 +204,45 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
     <div className="space-y-4">
       {!isAddingNew && editingId === null && (
         <>
-          {localExperiences.length === 0 ? (
-            <p className="text-sm text-gray-600">Add your work experience here to showcase your professional journey.</p>
+          {experiences.length === 0 ? (
+            <p className="text-sm text-gray-600">
+              Add your work experience here to showcase your professional
+              journey.
+            </p>
           ) : (
             <div className="space-y-3">
               {/* Map through experiences and display them */}
-              {localExperiences.map((exp) => (
-                <div key={exp.id} className="border p-3 rounded-md hover:border-gray-400 transition-colors">
+              {experiences.map((exp) => (
+                <div
+                  key={exp.id}
+                  className="border p-3 rounded-md hover:border-gray-400 transition-colors"
+                >
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-medium">{exp.position}</h3>
                       <p className="text-sm text-gray-600">{exp.company}</p>
                       <p className="text-xs text-gray-500">
-                        {exp.startYear} - {exp.isCurrent ? "Present" : exp.endYear}
+                        {exp.startYear} -{" "}
+                        {exp.isCurrent ? "Present" : exp.endYear}
                       </p>
                     </div>
                     <div className="flex space-x-1">
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         onClick={() => handleEditExperience(exp)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
+                      <Button
+                        size="sm"
+                        variant="ghost"
                         className="text-red-500 hover:text-red-700"
                         onClick={() => {
-                          const updatedExperiences = localExperiences.filter(e => e.id !== exp.id);
-                          setLocalExperiences(updatedExperiences);
+                          const updatedExperiences = experiences.filter(
+                            (e) => e.id !== exp.id,
+                          );
+                          onSave(updatedExperiences);
                         }}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -246,33 +253,26 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
               ))}
             </div>
           )}
-          
+
           <div className="flex justify-between mt-3">
-            <Button 
-              variant="ghost" 
-              className="text-blue-600 pl-0" 
+            <Button
+              variant="ghost"
+              className="text-blue-600 pl-0"
               onClick={handleAddExperience}
             >
               <PlusCircle className="h-4 w-4 mr-2" />
               Add another experience
             </Button>
-            
-            {localExperiences.length > 0 && (
-              <Button 
-                size="sm"
-                onClick={handleSaveAll}
-                disabled={isSaving}
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </Button>
-            )}
           </div>
         </>
       )}
 
       {(isAddingNew || editingId !== null) && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSaveForm)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSaveForm)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="position"
@@ -318,8 +318,10 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {years.map(year => (
-                          <SelectItem key={year} value={year}>{year}</SelectItem>
+                        {years.map((year) => (
+                          <SelectItem key={year} value={year}>
+                            {year}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -346,8 +348,10 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {years.map(year => (
-                            <SelectItem key={year} value={year}>{year}</SelectItem>
+                          {years.map((year) => (
+                            <SelectItem key={year} value={year}>
+                              {year}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -367,7 +371,9 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormLabel className="text-sm font-normal">I currently work here</FormLabel>
+                      <FormLabel className="text-sm font-normal">
+                        I currently work here
+                      </FormLabel>
                     </FormItem>
                   )}
                 />
@@ -381,7 +387,7 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                 <FormItem>
                   <FormLabel>Responsibilities and achievements</FormLabel>
                   <FormControl>
-                    <Textarea 
+                    <Textarea
                       placeholder="Describe what you did, your daily tasks, and mention the results you helped to achieve."
                       className="min-h-[120px]"
                       {...field}
@@ -398,13 +404,14 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                 <p className="text-blue-800 font-medium">Need a hint?</p>
               </div>
               <p className="text-sm text-blue-700 mb-3">
-                Start with a draft or add your text and use the tools below to improve it.
+                Start with a draft or add your text and use the tools below to
+                improve it.
               </p>
-              
+
               <div className="flex flex-wrap gap-2">
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   size="sm"
                   className="bg-white"
                   onClick={generateDescription}
@@ -412,10 +419,10 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                   <FileText className="h-4 w-4 mr-1" />
                   Get a draft
                 </Button>
-                
-                <Button 
-                  type="button" 
-                  variant="outline" 
+
+                <Button
+                  type="button"
+                  variant="outline"
                   size="sm"
                   className="bg-white"
                   onClick={improveDescription}
@@ -423,10 +430,10 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
                   <Wand2 className="h-4 w-4 mr-1" />
                   Make more professional
                 </Button>
-                
-                <Button 
-                  type="button" 
-                  variant="outline" 
+
+                <Button
+                  type="button"
+                  variant="outline"
                   size="sm"
                   className="bg-white"
                   onClick={checkSpelling}
@@ -438,8 +445,8 @@ export function WorkExperienceSection({ experiences = [], onSave }: WorkExperien
             </div>
 
             <div className="flex justify-end space-x-2 pt-2">
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 variant="outline"
                 onClick={() => {
                   setIsAddingNew(false);
