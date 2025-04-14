@@ -9,11 +9,13 @@ import {
   PlusIcon,
   ChevronRightIcon,
 } from "lucide-react";
-import { initCvBuilder } from "@/redux/thunks";
+import { createCv, initCvBuilder } from "@/redux/thunks";
 import { CvTable } from "@/components/cv-builder/CvTable";
 import { useToast } from "@/hooks/use-toast";
 import { CV } from "@shared/schema";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { deleteCv, duplicateCv } from "@/redux/thunks";
+import { setCurrentCvId } from "@/redux/slices/cvBuilderSlice";
 
 const CvBuilder = () => {
   const { t } = useTranslation();
@@ -40,29 +42,21 @@ const CvBuilder = () => {
   }, [dispatch, isInitialized, isLoading]);
 
   const handleEdit = (cv: CV) => {
-    // In a real application, we would navigate to the edit page with the CV ID
+    dispatch(setCurrentCvId(cv.id));
     toast({
       title: t("cvBuilder.editingCv.title"),
       description: t("cvBuilder.editingCv.description", { title: cv.title }),
     });
-    console.log("Edit CV:", cv);
-    // For now, we'll just redirect to step 1
+
     navigate("/cv-builder/create");
   };
 
   const handleDelete = (id: string) => {
-    setCvs(cvs.filter((cv) => cv.id !== id));
+    dispatch(deleteCv(id));
   };
 
-  const handleDuplicate = (cv: CV) => {
-    // Create a new CV with a unique ID but the same content
-    const newCv: CV = {
-      ...cv,
-      id: crypto.randomUUID(),
-      title: `${cv.title} (Copy)`,
-      dateCreated: new Date().toISOString(),
-    };
-    setCvs([...cvs, newCv]);
+  const handleDuplicate = (id: string) => {
+    dispatch(duplicateCv(id));
   };
 
   const handleDownload = (cv: CV) => {
@@ -71,7 +65,9 @@ const CvBuilder = () => {
     // For now we just show a toast in the CvTable component
   };
 
-  const handleCreateNew = () => {
+  const handleCreateNew = async () => {
+    await dispatch(createCv());
+
     navigate("/cv-builder/create");
   };
 

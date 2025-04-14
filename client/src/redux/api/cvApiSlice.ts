@@ -1,5 +1,9 @@
 import type { CV } from "@shared/schema";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
+import {
+  ICreateCvRequest,
+  IUpdateCvRequest,
+} from "@/types/api/cvBuilder.types";
 
 /**
  * API slice for CV-related operations
@@ -26,7 +30,7 @@ export const cvApiSlice = createApi({
     }),
 
     // Create a new CV
-    createCV: builder.mutation<CV, Omit<CV, "id" | "dateCreated">>({
+    createCV: builder.mutation<CV, ICreateCvRequest>({
       query: (data) => ({
         url: "/cvs",
         method: "POST",
@@ -36,9 +40,9 @@ export const cvApiSlice = createApi({
     }),
 
     // Update a CV
-    updateCV: builder.mutation<CV, { id: string; data: Partial<CV> }>({
-      query: ({ id, data }) => ({
-        url: `/cvs/${id}`,
+    updateCV: builder.mutation<CV, IUpdateCvRequest>({
+      query: (data) => ({
+        url: `/cvs/${data.id}`,
         method: "PUT",
         body: data,
       }),
@@ -61,11 +65,10 @@ export const cvApiSlice = createApi({
     }),
 
     // Duplicate a CV
-    duplicateCV: builder.mutation<CV, { id: string; title?: string }>({
-      query: ({ id, title }) => ({
+    duplicateCV: builder.mutation<CV, string>({
+      query: (id) => ({
         url: `/cvs/${id}/duplicate`,
         method: "POST",
-        body: { title },
       }),
       invalidatesTags: [{ type: "CV", id: "LIST" }],
     }),

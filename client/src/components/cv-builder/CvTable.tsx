@@ -41,7 +41,7 @@ interface CvTableProps {
   cvs: CV[];
   onEdit: (cv: CV) => void;
   onDelete: (id: string) => void;
-  onDuplicate?: (cv: CV) => void;
+  onDuplicate?: (id: string) => void;
   onDownload?: (cv: CV) => void;
 }
 
@@ -85,7 +85,7 @@ export const CvTable = ({
       title: t("common.notifications.success"),
       description: `A copy of "${cv.title}" has been created.`,
     });
-    onDuplicate(cv);
+    onDuplicate(cv.id);
   };
 
   const handleDownload = (cv: CV, e: React.MouseEvent) => {

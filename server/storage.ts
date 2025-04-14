@@ -94,8 +94,8 @@ export interface IStorage {
   // CV operations
   getAllCVs(): Promise<CV[]>;
   getCVById(id: string): Promise<CV | null>;
-  createCV(): Promise<CV>;
-  updateCV(id: string, data: Partial<CV>): Promise<CV | null>;
+  createCV(data: any): Promise<CV>;
+  updateCV(id: string, data: { cvData: Partial<CV> }): Promise<CV | null>;
   deleteCV(id: string): Promise<boolean>;
   duplicateCV(id: string, title?: string): Promise<CV | null>;
 
@@ -117,7 +117,7 @@ export const storage: IStorage = {
     return cv ? { ...cv } : null;
   },
 
-  createCV: async () => {
+  createCV: async (data: any) => {
     const newCV: CV = {
       id: uuidv4(),
       dateCreated: new Date().toISOString(),
@@ -135,11 +135,11 @@ export const storage: IStorage = {
     return { ...newCV };
   },
 
-  updateCV: async (id: string, data: Partial<CV>) => {
+  updateCV: async (id: string, data: { cvData: Partial<CV> }) => {
     const index = cvs.findIndex((cv) => cv.id === id);
     if (index === -1) return null;
 
-    cvs[index] = { ...cvs[index], ...data };
+    cvs[index] = { ...cvs[index], ...data.cvData };
     return { ...cvs[index] };
   },
 

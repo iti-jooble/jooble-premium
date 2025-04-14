@@ -1,19 +1,15 @@
 import { CV } from "@shared/schema";
 
 export enum CvSource {
-  MANUAL = 'manual',
-  IMPORTED = 'imported',
-  AI_GENERATED = 'ai_generated',
-  TEMPLATE = 'template'
+  MANUAL = "manual",
+  IMPORTED = "imported",
+  AI_GENERATED = "ai_generated",
+  TEMPLATE = "template",
 }
 
 // CV API types
 export interface ICreateCvRequest {
-  id: string;
   source: CvSource;
-  json: any;  // CV data model
-  html: string;
-  css: string;
 }
 
 export interface ICreateCvResponse {
@@ -23,7 +19,7 @@ export interface ICreateCvResponse {
 
 export interface IUpdateCvRequest {
   id: string;
-  json: any;  // CV data model
+  cvData: CV;
   html: string;
   css: string;
 }
@@ -49,7 +45,7 @@ export interface IDuplicateCvRequest {
 
 export interface IDuplicateCvResponse {
   success: boolean;
-  cv?: CV;  // The duplicated CV
+  cv?: CV; // The duplicated CV
   message?: string;
 }
 

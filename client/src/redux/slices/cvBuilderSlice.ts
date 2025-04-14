@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICVBuilderState } from "../../types/state/cvBuilder.types";
 import {
-  initCvBuilder,
+  getCvList,
   createCv,
   updateCv,
   deleteCv,
@@ -41,16 +41,16 @@ const cvBuilderSlice = createSlice({
   extraReducers: (builder) => {
     // Handle initCvBuilder actions
     builder
-      .addCase(initCvBuilder.pending, (state) => {
+      .addCase(getCvList.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(initCvBuilder.fulfilled, (state, action) => {
+      .addCase(getCvList.fulfilled, (state, action) => {
         state.cvList = action.payload || [];
         state.isInitialized = true;
         state.isLoading = false;
       })
-      .addCase(initCvBuilder.rejected, (state, action) => {
+      .addCase(getCvList.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })
@@ -64,8 +64,8 @@ const cvBuilderSlice = createSlice({
       .addCase(createCv.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSaving = false;
-        // After creation, we would typically update or add the CV to the list
-        // but we're keeping the state minimal
+        state.cvList.push(action.payload);
+        state.currentCvId = action.payload.id;
       })
       .addCase(createCv.rejected, (state, action) => {
         state.isLoading = false;
@@ -117,13 +117,8 @@ const cvBuilderSlice = createSlice({
   },
 });
 
-export const {
-  setCurrentCvId,
-  setIsEditing,
-  setCurrentSection,
-  setIsSaving,
-  resetCvBuilder,
-} = cvBuilderSlice.actions;
+export const { setCurrentCvId, setIsSaving, resetCvBuilder } =
+  cvBuilderSlice.actions;
 
 export const { getCurrentCvSelector } = cvBuilderSlice.selectors;
 

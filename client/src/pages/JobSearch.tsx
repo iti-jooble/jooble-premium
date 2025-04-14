@@ -1,15 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/hooks/use-toast";
-import { Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  SearchForm,
-  FilterBar,
-  JobListings,
-  JobDetail,
-} from "@/components/job-search";
-import { CvBuilderPromoModal } from "@/components/modals/CvBuilderPromoModal";
+import { SearchForm, JobListings, JobDetail } from "@/components/job-search";
 import { JobCardProps } from "@/components/job-search/JobCard";
 
 // Define job types for our page
@@ -26,17 +18,10 @@ type JobWithDescription = {
 };
 
 // Function to get jobs without description for compatibility with JobListings
-const stripDescriptions = (jobs: JobWithDescription[]): JobCardProps['job'][] => {
-  return jobs.map(({ description, ...rest }) => ({
-    id: rest.id,
-    title: rest.title,
-    company: rest.company,
-    location: rest.location,
-    type: rest.type,
-    salary: rest.salary,
-    posted: rest.posted,
-    isNew: rest.isNew
-  }));
+const stripDescriptions = (
+  jobs: JobWithDescription[],
+): JobCardProps["job"][] => {
+  return jobs.map(({ description, ...rest }) => rest);
 };
 
 // Mock job data
@@ -342,11 +327,10 @@ const JobSearch = () => {
     (typeof jobListings)[0] | null
   >(null);
   const [filteredJobs, setFilteredJobs] = useState(jobListings);
-  const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
 
-  const handleJobSelect = (job: JobCardProps['job']) => {
+  const handleJobSelect = (job: JobCardProps["job"]) => {
     // Find the full job data including description
-    const fullJobData = jobListings.find(j => j.id === job.id);
+    const fullJobData = jobListings.find((j) => j.id === job.id);
     if (fullJobData) {
       setSelectedJob(fullJobData);
     }
@@ -398,22 +382,11 @@ const JobSearch = () => {
           <h1 className="text-3xl font-bold tracking-tight">
             {t("jobSearch.title")}
           </h1>
-          <p className="text-muted-foreground mt-2">{t("jobSearch.subtitle")}</p>
+          <p className="text-muted-foreground mt-2">
+            {t("jobSearch.subtitle")}
+          </p>
         </div>
-        <Button 
-          onClick={() => setIsPromoModalOpen(true)} 
-          className="bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90"
-        >
-          <Sparkles className="mr-2 h-4 w-4" />
-          {t("jobSearch.promoButton", "Enhance Your CV")}
-        </Button>
       </div>
-      
-      {/* CV Builder Promo Modal */}
-      <CvBuilderPromoModal 
-        isOpen={isPromoModalOpen} 
-        onClose={() => setIsPromoModalOpen(false)} 
-      />
 
       {/* Search Form */}
       <SearchForm onSearch={handleSearch} />

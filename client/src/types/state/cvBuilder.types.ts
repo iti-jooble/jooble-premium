@@ -1,27 +1,36 @@
-import { CV } from "@shared/schema";
+import { CV, WorkExperience, Skill } from "@shared/schema";
 
-export interface CVBuilderState {
-  // ID of the currently selected CV
+export interface ICVTemplate {
+  id: number;
+  name: string;
+  previewImage: string;
+  isPremium: boolean;
+}
+
+export interface ICVBuilderState {
   currentCvId: string | null;
-  
-  // List of all CVs
   cvList: CV[];
-  
-  // Loading state
   isLoading: boolean;
-  
-  // Whether the CV builder has been initialized
   isInitialized: boolean;
-  
-  // Whether the user is currently editing a CV
-  isEditing: boolean;
-  
-  // The current section being edited
-  currentSection: string;
-  
-  // Whether a save operation is in progress
   isSaving: boolean;
-  
-  // Error message, if any
   error: string | null;
+}
+
+export interface IAISkillSuggestion {
+  skill: string;
+  relevance: number;
+  description: string;
+}
+
+export interface IAISummaryRequest {
+  experience: WorkExperience[];
+  skills: Skill[];
+  targetPosition?: string;
+}
+
+export interface IAIRecommendation {
+  type: "skill" | "summary" | "workExperience" | "education";
+  content: string;
+  score: number;
+  reason: string;
 }

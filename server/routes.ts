@@ -104,9 +104,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new CV
-  app.post("/api/cvs", async (_, res: Response) => {
+  app.post("/api/cvs", async (request: Request, res: Response) => {
     try {
-      const newCV = await storage.createCV();
+      const newCV = await storage.createCV(request.body);
       res.status(201).json(newCV);
     } catch (error: any) {
       log(`Error creating CV: ${error.message}`, "api");
