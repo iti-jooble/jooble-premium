@@ -95,10 +95,19 @@ export const updateCv = createAsyncThunk(
       if (!currentCv) {
         throw new Error("Selected CV not found");
       }
-
+      
+      // Import dynamically to avoid circular dependencies
+      const { calculateCvScore } = await import('../../lib/cvScoreUtils');
+      
+      // Create the updated CV data
+      const updatedCvData = { ...currentCv, ...partialCv };
+      
+      // Calculate the score
+      const score = calculateCvScore(updatedCvData);
+      
       const request: IUpdateCvRequest = {
         id: currentCv.id,
-        cvData: { ...currentCv, ...partialCv },
+        cvData: { ...updatedCvData, score },
         html,
         css,
       };

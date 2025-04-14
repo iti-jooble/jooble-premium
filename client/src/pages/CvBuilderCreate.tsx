@@ -26,6 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { updateCv } from "@/redux/thunks";
 import { getCurrentCvSelector } from "@/redux/slices/cvBuilderSlice";
+import { getCvScoreDescription } from "@/lib/cvScoreUtils";
 import {
   PersonalInfo,
   WorkExperience,
