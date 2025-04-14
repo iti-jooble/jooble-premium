@@ -40,7 +40,7 @@ const enhancedSchema = educationSchema.extend({
   degree: z.string().min(1, { message: "Degree is required" }),
   field: z.string().optional(),
   startYear: z.string().min(4, { message: "Start year is required" }),
-  endYear: z.string().optional(),
+  endYear: z.string().nullable(),
 });
 
 export function EducationSection({
