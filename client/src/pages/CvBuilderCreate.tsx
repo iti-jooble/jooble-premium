@@ -40,10 +40,10 @@ const CvBuilderCreate = () => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
   const [isTitleFocused, setIsTitleFocused] = useState(false);
-  const [titleValue, setTitleValue] = useState('');
-  
+  const [titleValue, setTitleValue] = useState("");
+
   const currentCv = useAppSelector(getCurrentCvSelector)!;
-  
+
   // Update the local title state when the CV changes
   useEffect(() => {
     if (currentCv) {
@@ -110,7 +110,7 @@ const CvBuilderCreate = () => {
       <div className="mb-8 max-w-3xl">
         {/* Editable CV title */}
         <div className="group relative mb-2">
-          <input 
+          <input
             type="text"
             value={titleValue}
             onChange={(e) => setTitleValue(e.target.value)}
@@ -122,7 +122,7 @@ const CvBuilderCreate = () => {
               }
             }}
             className={`text-3xl font-bold tracking-tight bg-transparent border-b 
-              ${isTitleFocused ? 'border-primary/50' : 'border-transparent'} 
+              ${isTitleFocused ? "border-primary/50" : "border-transparent"} 
               outline-none w-full pr-16 group-hover:border-primary/30 transition-all`}
             aria-label={t("cvBuilderCreate.titleInputLabel", "CV Title")}
           />
@@ -135,7 +135,10 @@ const CvBuilderCreate = () => {
                     setIsTitleFocused(false);
                   }}
                   className="bg-primary/10 hover:bg-primary/20 text-primary p-1 rounded-full transition-colors"
-                  aria-label={t("cvBuilderCreate.saveTitleButton", "Save title")}
+                  aria-label={t(
+                    "cvBuilderCreate.saveTitleButton",
+                    "Save title",
+                  )}
                 >
                   <Check className="h-4 w-4" />
                 </button>
@@ -145,7 +148,10 @@ const CvBuilderCreate = () => {
                     setIsTitleFocused(false);
                   }}
                   className="bg-destructive/10 hover:bg-destructive/20 text-destructive p-1 rounded-full transition-colors"
-                  aria-label={t("cvBuilderCreate.cancelEditButton", "Cancel edit")}
+                  aria-label={t(
+                    "cvBuilderCreate.cancelEditButton",
+                    "Cancel edit",
+                  )}
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -156,7 +162,17 @@ const CvBuilderCreate = () => {
                 className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-primary transition-opacity"
                 aria-label={t("cvBuilderCreate.editTitleButton", "Edit title")}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M12 20h9"></path>
                   <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                 </svg>
@@ -165,57 +181,75 @@ const CvBuilderCreate = () => {
           </div>
         </div>
         <div className="mt-2 space-y-3">
-          <p className="text-sm text-foreground">
-            <strong className="font-medium">{t("cvBuilderCreate.completeYourCv", "Complete your CV")}:</strong> {t("cvBuilderCreate.improveYourChances", "Fill in the sections below to build a professional CV that improves your chances of getting hired.")}
+          <p className="text-muted-foreground">
+            {t(
+              "cvBuilderCreate.improveYourChances",
+              "Fill in the sections below to build a professional CV that improves your chances of getting hired.",
+            )}
           </p>
-          
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-muted/40 border border-border/50 rounded-lg">
-            <div className="flex items-center gap-2">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                currentCv.score >= 80 ? 'bg-success/20 text-success' : 
-                currentCv.score >= 60 ? 'bg-primary/20 text-primary' : 
-                currentCv.score >= 40 ? 'bg-warning/20 text-warning' : 
-                'bg-destructive/20 text-destructive'
-              }`}>
-                <span className="text-sm font-bold">{currentCv.score}%</span>
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold">
-                  {t("cvBuilderCreate.cvScore", "CV Score")}: {getCvScoreDescription(currentCv.score)}
-                </h4>
-                <p className="text-xs text-muted-foreground">
-                  {currentCv.score < 70 ? 
-                    t("cvBuilderCreate.improveScore", "Complete more sections to increase your score") : 
-                    t("cvBuilderCreate.goodScore", "Your CV is looking great! Keep adding details to make it perfect.")}
-                </p>
-              </div>
-            </div>
-            
-            <div className="w-full sm:w-1/2 flex items-center gap-2">
-              <div className="relative w-full h-2.5 bg-muted rounded-full overflow-hidden">
-                <div 
-                  className={`absolute inset-y-0 left-0 ${
-                    currentCv.score >= 80 ? 'bg-success' : 
-                    currentCv.score >= 60 ? 'bg-primary' : 
-                    currentCv.score >= 40 ? 'bg-warning' : 
-                    'bg-destructive'
-                  } rounded-full transition-all duration-500`}
-                  style={{ width: `${currentCv.score}%` }}
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left side with accordion form */}
         <div className="w-full lg:w-1/2 min-w-[380px]">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-muted/40 border border-border/50 rounded-lg">
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  currentCv.score >= 80
+                    ? "bg-green-100 text-green-700"
+                    : currentCv.score >= 60
+                      ? "bg-blue-100 text-blue-700"
+                      : currentCv.score >= 40
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-red-100 text-red-700"
+                }`}
+              >
+                <span className="text-sm font-bold">{currentCv.score}%</span>
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold">
+                  {t("cvBuilderCreate.cvScore", "CV Score")}:{" "}
+                  {getCvScoreDescription(currentCv.score)}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {currentCv.score < 70
+                    ? t(
+                        "cvBuilderCreate.improveScore",
+                        "Complete more sections to increase your score",
+                      )
+                    : t(
+                        "cvBuilderCreate.goodScore",
+                        "Your CV is looking great! Keep adding details to make it perfect.",
+                      )}
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full sm:w-1/2 flex items-center gap-2">
+              <div className="relative w-full h-2.5 bg-muted rounded-full overflow-hidden">
+                <div
+                  className={`absolute inset-y-0 left-0 ${
+                    currentCv.score >= 80
+                      ? "bg-green-500"
+                      : currentCv.score >= 60
+                        ? "bg-blue-500"
+                        : currentCv.score >= 40
+                          ? "bg-amber-500"
+                          : "bg-red-500"
+                  } rounded-full transition-all duration-500`}
+                  style={{ width: `${currentCv.score}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
           <Accordion
             type="single"
             collapsible
             defaultValue="personal"
-            className="w-full"
+            className="w-full py-4"
           >
             {/* Personal Information Section */}
             <AccordionItem
