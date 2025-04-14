@@ -164,31 +164,44 @@ const CvBuilderCreate = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
-          <p className="text-muted-foreground">
-            {t("cvBuilderCreate.subtitle")}
+        <div className="mt-2 space-y-3">
+          <p className="text-sm text-foreground">
+            <strong className="font-medium">{t("cvBuilderCreate.completeYourCv", "Complete your CV")}:</strong> {t("cvBuilderCreate.improveYourChances", "Fill in the sections below to build a professional CV that improves your chances of getting hired.")}
           </p>
-          <div className="flex items-center">
-            <div className="h-5 mx-2 w-px bg-border hidden sm:block" />
+          
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-muted/40 border border-border/50 rounded-lg">
             <div className="flex items-center gap-2">
-              <div className="text-xs font-medium">
-                {t("cvBuilderCreate.cvScore", "CV Score")}:
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                currentCv.score >= 80 ? 'bg-success/20 text-success' : 
+                currentCv.score >= 60 ? 'bg-primary/20 text-primary' : 
+                currentCv.score >= 40 ? 'bg-warning/20 text-warning' : 
+                'bg-destructive/20 text-destructive'
+              }`}>
+                <span className="text-sm font-bold">{currentCv.score}%</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="relative w-24 h-2 bg-muted rounded-full overflow-hidden">
-                  <div 
-                    className={`absolute inset-y-0 left-0 ${
-                      currentCv.score >= 80 ? 'bg-success' : 
-                      currentCv.score >= 60 ? 'bg-primary' : 
-                      currentCv.score >= 40 ? 'bg-warning' : 
-                      'bg-destructive'
-                    } rounded-full`}
-                    style={{ width: `${currentCv.score}%` }}
-                  />
-                </div>
-                <span className="text-xs font-medium">
-                  {currentCv.score}% - {getCvScoreDescription(currentCv.score)}
-                </span>
+              <div>
+                <h4 className="text-sm font-semibold">
+                  {t("cvBuilderCreate.cvScore", "CV Score")}: {getCvScoreDescription(currentCv.score)}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {currentCv.score < 70 ? 
+                    t("cvBuilderCreate.improveScore", "Complete more sections to increase your score") : 
+                    t("cvBuilderCreate.goodScore", "Your CV is looking great! Keep adding details to make it perfect.")}
+                </p>
+              </div>
+            </div>
+            
+            <div className="w-full sm:w-1/2 flex items-center gap-2">
+              <div className="relative w-full h-2.5 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className={`absolute inset-y-0 left-0 ${
+                    currentCv.score >= 80 ? 'bg-success' : 
+                    currentCv.score >= 60 ? 'bg-primary' : 
+                    currentCv.score >= 40 ? 'bg-warning' : 
+                    'bg-destructive'
+                  } rounded-full transition-all duration-500`}
+                  style={{ width: `${currentCv.score}%` }}
+                />
               </div>
             </div>
           </div>
