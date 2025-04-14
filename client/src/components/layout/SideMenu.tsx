@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { BriefcaseIcon, FileEditIcon, FileSearchIcon, SearchIcon, LinkIcon, MailIcon, SettingsIcon, HelpCircleIcon, LogOutIcon, UserIcon, CompassIcon, MapIcon } from "lucide-react";
+import { BriefcaseIcon, FileEditIcon, FileSearchIcon, SearchIcon, LinkIcon, MailIcon, SettingsIcon, HelpCircleIcon, LogOutIcon, UserIcon, CompassIcon, MapIcon, PackageIcon } from "lucide-react";
 import { NavItem } from "@/types";
 import { Separator } from "@/components/ui/separator";
 
@@ -14,6 +14,7 @@ const navItems: NavItem[] = [
 const accountItems: NavItem[] = [
   { path: "/settings", label: "Settings", icon: <SettingsIcon className="h-4 w-4" /> },
   { path: "/help", label: "Help", icon: <HelpCircleIcon className="h-4 w-4" /> },
+  { path: "/button-demo", label: "Button Demo", icon: <PackageIcon className="h-4 w-4" /> },
 ];
 
 const SideMenu = () => {
