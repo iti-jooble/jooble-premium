@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { PlusCircle, Pencil, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -23,12 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { educationSchema, Education } from "@shared/schema";
-
-// Generate years from 1970 to current year
-const currentYear = new Date().getFullYear();
-const years = Array.from({ length: currentYear - 1969 }, (_, i) =>
-  (currentYear - i).toString(),
-);
+import { getCurrentYear, getYearsArray } from "@shared/dateUtils";
 
 interface EducationSectionProps {
   educations?: Education[];
@@ -40,7 +35,7 @@ const enhancedSchema = educationSchema.extend({
   degree: z.string().min(1, { message: "Degree is required" }),
   field: z.string().optional(),
   startYear: z.string().min(4, { message: "Start year is required" }),
-  endYear: z.string().nullable(),
+  endYear: z.string().optional().nullable(),
 });
 
 export function EducationSection({
@@ -51,13 +46,17 @@ export function EducationSection({
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  const years = useMemo(() => {
+    return getYearsArray();
+  }, []);
+
   const form = useForm<Education>({
     resolver: zodResolver(enhancedSchema),
     defaultValues: {
       school: "",
       degree: "",
       field: "",
-      startYear: currentYear.toString(),
+      startYear: getCurrentYear().toString(),
       endYear: "",
     },
   });
@@ -68,7 +67,7 @@ export function EducationSection({
       school: "",
       degree: "",
       field: "",
-      startYear: currentYear.toString(),
+      startYear: getCurrentYear().toString(),
       endYear: "",
     });
   };
@@ -89,7 +88,6 @@ export function EducationSection({
 
     try {
       if (editingId) {
-        // Update existing education
         const updatedEducations = educations.map((edu) =>
           edu.id === editingId
             ? {
@@ -105,7 +103,6 @@ export function EducationSection({
         await onSave(updatedEducations);
         setEditingId(null);
       } else {
-        // Add new education
         const newEducation: Education = {
           id: uuidv4(),
           school: values.school,

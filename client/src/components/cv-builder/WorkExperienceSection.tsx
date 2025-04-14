@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   PlusCircle,
   Pencil,
@@ -33,12 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { WorkExperience } from "@shared/schema";
-
-// Generate years from 1970 to current year
-const currentYear = new Date().getFullYear();
-const years = Array.from({ length: currentYear - 1969 }, (_, i) =>
-  (currentYear - i).toString(),
-);
+import { getCurrentYear, getYearsArray } from "@shared/dateUtils";
 
 interface WorkExperienceSectionProps {
   experiences?: WorkExperience[];
@@ -65,12 +60,16 @@ export function WorkExperienceSection({
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  const years = useMemo(() => {
+    return getYearsArray();
+  }, []);
+
   const form = useForm<WorkExperience>({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
       position: "",
       company: "",
-      startYear: currentYear.toString(),
+      startYear: getCurrentYear().toString(),
       endYear: "",
       isCurrent: false,
       description: "",
@@ -82,7 +81,7 @@ export function WorkExperienceSection({
     form.reset({
       position: "",
       company: "",
-      startYear: currentYear.toString(),
+      startYear: getCurrentYear().toString(),
       endYear: "",
       isCurrent: false,
       description: "",
@@ -106,7 +105,6 @@ export function WorkExperienceSection({
 
     try {
       if (editingId) {
-        // Update existing experience
         const updatedExperiences = experiences.map((exp) =>
           exp.id === editingId
             ? {
@@ -123,7 +121,6 @@ export function WorkExperienceSection({
         await onSave(updatedExperiences);
         setEditingId(null);
       } else {
-        // Add new experience
         const newExperience: WorkExperience = {
           id: uuidv4(),
           position: values.position,
