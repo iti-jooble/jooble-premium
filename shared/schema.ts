@@ -35,7 +35,6 @@ export const educationSchema = z.object({
   field: z.string().optional(),
   startYear: z.string(),
   endYear: z.string().nullable(),
-  isCurrent: z.boolean(),
 });
 
 export const workExperienceSchema = z.object({

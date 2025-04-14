@@ -40,9 +40,7 @@ const enhancedSchema = educationSchema.extend({
   degree: z.string().min(1, { message: "Degree is required" }),
   field: z.string().optional(),
   startYear: z.string().min(4, { message: "Start year is required" }),
-  endYear: z.string().optional().nullable(),
-  description: z.string().default(""),
-  isCurrent: z.boolean().default(false),
+  endYear: z.string().optional(),
 });
 
 export function EducationSection({
@@ -61,7 +59,6 @@ export function EducationSection({
       field: "",
       startYear: currentYear.toString(),
       endYear: "",
-      isCurrent: false,
     },
   });
 
@@ -73,7 +70,6 @@ export function EducationSection({
       field: "",
       startYear: currentYear.toString(),
       endYear: "",
-      isCurrent: false,
     });
   };
 
@@ -85,14 +81,11 @@ export function EducationSection({
       field: edu.field,
       startYear: edu.startYear,
       endYear: edu.endYear || "",
-      isCurrent: edu.isCurrent,
     });
   };
 
   const handleSaveForm = async (values: Education) => {
     setIsSaving(true);
-
-    console.log("Saving education:", values);
 
     try {
       if (editingId) {
@@ -106,7 +99,6 @@ export function EducationSection({
                 field: values.field,
                 startYear: values.startYear,
                 endYear: values.endYear || null,
-                isCurrent: values.isCurrent,
               }
             : edu,
         );
@@ -121,7 +113,6 @@ export function EducationSection({
           field: values.field,
           startYear: values.startYear,
           endYear: values.endYear || null,
-          isCurrent: values.isCurrent,
         };
         await onSave([...educations, newEducation]);
       }
