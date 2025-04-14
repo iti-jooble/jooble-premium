@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { Redirect } from "wouter";
+import { useState, useEffect } from "react";
 import {
   GraduationCap,
   BriefcaseBusiness,
   Sparkles,
   FileText,
+  Check,
+  X,
 } from "lucide-react";
 import { User } from "lucide-react";
 import {
@@ -35,8 +38,17 @@ const CvBuilderCreate = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
-
+  const [isTitleFocused, setIsTitleFocused] = useState(false);
+  const [titleValue, setTitleValue] = useState('');
+  
   const currentCv = useAppSelector(getCurrentCvSelector)!;
+  
+  // Update the local title state when the CV changes
+  useEffect(() => {
+    if (currentCv) {
+      setTitleValue(currentCv.title);
+    }
+  }, [currentCv?.id, currentCv?.title]);
 
   const handleUpdateCv = async (partialCv: Partial<CV>) => {
     try {
@@ -95,9 +107,62 @@ const CvBuilderCreate = () => {
   return (
     <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
       <div className="mb-8 max-w-3xl">
-        <h1 className="text-3xl font-bold tracking-tight">
-          {t("cvBuilderCreate.title")}
-        </h1>
+        {/* Editable CV title */}
+        <div className="group relative mb-2">
+          <input 
+            type="text"
+            value={titleValue}
+            onChange={(e) => setTitleValue(e.target.value)}
+            onFocus={() => setIsTitleFocused(true)}
+            onBlur={() => {
+              setIsTitleFocused(false);
+              if (titleValue !== currentCv.title) {
+                handleUpdateCv({ title: titleValue });
+              }
+            }}
+            className={`text-3xl font-bold tracking-tight bg-transparent border-b 
+              ${isTitleFocused ? 'border-primary/50' : 'border-transparent'} 
+              outline-none w-full pr-16 group-hover:border-primary/30 transition-all`}
+            aria-label={t("cvBuilderCreate.titleInputLabel", "CV Title")}
+          />
+          <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+            {isTitleFocused ? (
+              <>
+                <button
+                  onClick={() => {
+                    handleUpdateCv({ title: titleValue });
+                    setIsTitleFocused(false);
+                  }}
+                  className="bg-primary/10 hover:bg-primary/20 text-primary p-1 rounded-full transition-colors"
+                  aria-label={t("cvBuilderCreate.saveTitleButton", "Save title")}
+                >
+                  <Check className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => {
+                    setTitleValue(currentCv.title);
+                    setIsTitleFocused(false);
+                  }}
+                  className="bg-destructive/10 hover:bg-destructive/20 text-destructive p-1 rounded-full transition-colors"
+                  aria-label={t("cvBuilderCreate.cancelEditButton", "Cancel edit")}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setIsTitleFocused(true)}
+                className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-primary transition-opacity"
+                aria-label={t("cvBuilderCreate.editTitleButton", "Edit title")}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
         <p className="text-muted-foreground mt-2">
           {t("cvBuilderCreate.subtitle")}
         </p>
