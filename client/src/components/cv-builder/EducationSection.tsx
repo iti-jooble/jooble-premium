@@ -30,7 +30,7 @@ interface EducationSectionProps {
   onSave: (educations: Education[]) => void;
 }
 
-const enhancedSchema = educationSchema.extend({
+const enhancedSchema = z.object({
   school: z.string().min(1, { message: "School name is required" }),
   degree: z.string().min(1, { message: "Degree is required" }),
   field: z.string().optional(),
@@ -42,7 +42,7 @@ export function EducationSection({
   educations = [],
   onSave,
 }: EducationSectionProps) {
-  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -83,8 +83,15 @@ export function EducationSection({
     });
   };
 
+  const handleDeleteEducation = async (id: string) => {
+    setIsLoading(true);
+    const updatedEducations = educations.filter((edu) => edu.id !== id);
+    await onSave(updatedEducations);
+    setIsLoading(false);
+  };
+
   const handleSaveForm = async (values: Education) => {
-    setIsSaving(true);
+    setIsLoading(true);
 
     try {
       if (editingId) {
@@ -130,7 +137,7 @@ export function EducationSection({
         variant: "destructive",
       });
     } finally {
-      setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
@@ -171,12 +178,8 @@ export function EducationSection({
                         size="sm"
                         variant="ghost"
                         className="text-red-500 hover:text-red-700"
-                        onClick={() => {
-                          const updatedEducations = educations.filter(
-                            (e) => e.id !== edu.id,
-                          );
-                          onSave(updatedEducations);
-                        }}
+                        isLoading={isLoading}
+                        onClick={() => handleDeleteEducation(edu.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -209,9 +212,7 @@ export function EducationSection({
               name="degree"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium">
-                    Degree <span className="text-red-500">*</span>
-                  </FormLabel>
+                  <FormLabel className="font-medium">Degree</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Ex: Bachelor, Master, PhD..."
@@ -245,9 +246,7 @@ export function EducationSection({
               name="school"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium">
-                    School Name <span className="text-red-500">*</span>
-                  </FormLabel>
+                  <FormLabel className="font-medium">School Name</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Ex: Harvard University, MIT..."
@@ -331,7 +330,7 @@ export function EducationSection({
               >
                 Cancel
               </Button>
-              <Button type="submit">
+              <Button type="submit" isLoading={isLoading}>
                 {editingId !== null ? "Update" : "Add"} Education
               </Button>
             </div>

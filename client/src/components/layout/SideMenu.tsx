@@ -1,20 +1,59 @@
 import { Link, useLocation } from "wouter";
-import { BriefcaseIcon, FileEditIcon, FileSearchIcon, SearchIcon, LinkIcon, MailIcon, SettingsIcon, HelpCircleIcon, LogOutIcon, UserIcon, CompassIcon, MapIcon, PackageIcon } from "lucide-react";
+import {
+  FileEditIcon,
+  FileSearchIcon,
+  SearchIcon,
+  LinkIcon,
+  MailIcon,
+  SettingsIcon,
+  HelpCircleIcon,
+  LogOutIcon,
+  UserIcon,
+  CompassIcon,
+  MapIcon,
+} from "lucide-react";
 import { NavItem } from "@/types";
 import { Separator } from "@/components/ui/separator";
 
 const navItems: NavItem[] = [
-  { path: "/job-search", label: "Job Search", icon: <SearchIcon className="h-4 w-4" /> },
-  { path: "/cv-builder", label: "CV Builder", icon: <FileEditIcon className="h-4 w-4" /> },
-  { path: "/cv-review", label: "CV Review", icon: <FileSearchIcon className="h-4 w-4" /> },
-  { path: "/cv-matching", label: "CV Matching", icon: <LinkIcon className="h-4 w-4" /> },
-  { path: "/cover-letter", label: "Cover Letter", icon: <MailIcon className="h-4 w-4" /> },
+  {
+    path: "/job-search",
+    label: "Job Search",
+    icon: <SearchIcon className="h-4 w-4" />,
+  },
+  {
+    path: "/cv-builder",
+    label: "CV Builder",
+    icon: <FileEditIcon className="h-4 w-4" />,
+  },
+  {
+    path: "/cv-review",
+    label: "CV Review",
+    icon: <FileSearchIcon className="h-4 w-4" />,
+  },
+  {
+    path: "/cv-matching",
+    label: "CV Matching",
+    icon: <LinkIcon className="h-4 w-4" />,
+  },
+  {
+    path: "/cover-letter",
+    label: "Cover Letter",
+    icon: <MailIcon className="h-4 w-4" />,
+  },
 ];
 
 const accountItems: NavItem[] = [
-  { path: "/settings", label: "Settings", icon: <SettingsIcon className="h-4 w-4" /> },
-  { path: "/help", label: "Help", icon: <HelpCircleIcon className="h-4 w-4" /> },
-  { path: "/button-demo", label: "Button Demo", icon: <PackageIcon className="h-4 w-4" /> },
+  {
+    path: "/settings",
+    label: "Settings",
+    icon: <SettingsIcon className="h-4 w-4" />,
+  },
+  {
+    path: "/help",
+    label: "Help",
+    icon: <HelpCircleIcon className="h-4 w-4" />,
+  },
 ];
 
 const SideMenu = () => {
@@ -32,16 +71,24 @@ const SideMenu = () => {
             </div>
           </div>
           <div>
-            <h1 className="font-semibold text-lg text-neutral-800">Job Compass</h1>
-            <p className="text-xs text-primary font-medium -mt-0.5">by Jooble</p>
+            <h1 className="font-semibold text-lg text-neutral-800">
+              Job Compass
+            </h1>
+            <p className="text-xs text-primary font-medium -mt-0.5">
+              by Jooble
+            </p>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">Your career navigator</p>
+        <p className="text-xs text-muted-foreground mt-2">
+          Your career navigator
+        </p>
       </div>
 
       <nav className="flex-1 py-6">
         <div className="px-4 mb-4">
-          <span className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Navigation</span>
+          <span className="text-xs uppercase font-medium text-muted-foreground tracking-wider">
+            Navigation
+          </span>
         </div>
 
         {navItems.map((item) => (
@@ -55,7 +102,9 @@ const SideMenu = () => {
         ))}
 
         <div className="px-4 mt-8 mb-4">
-          <span className="text-xs uppercase font-medium text-muted-foreground tracking-wider">Account</span>
+          <span className="text-xs uppercase font-medium text-muted-foreground tracking-wider">
+            Account
+          </span>
         </div>
 
         {accountItems.map((item) => (
@@ -98,14 +147,16 @@ interface NavLinkProps {
 const NavLink = ({ path, label, icon, isActive }: NavLinkProps) => {
   return (
     <div className={`relative mb-1 transition-all group`}>
-      <div 
+      <div
         className={`absolute left-0 h-10 bg-primary-50 rounded-r-full transition-all duration-300 ${
           isActive ? "w-full" : "w-0 group-hover:w-full"
         }`}
       />
       <Link href={path}>
         <a className="flex items-center h-10 px-6 text-sm font-medium relative z-10">
-          <span className={`mr-3 ${isActive ? "text-primary" : "text-neutral-500"}`}>
+          <span
+            className={`mr-3 ${isActive ? "text-primary" : "text-neutral-500"}`}
+          >
             {icon}
           </span>
           <span className={isActive ? "text-neutral-800" : "text-neutral-600"}>

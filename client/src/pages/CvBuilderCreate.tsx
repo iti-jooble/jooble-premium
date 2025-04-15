@@ -94,7 +94,7 @@ const CvBuilderCreate = () => {
   };
 
   const handleEducationSave = (educations: Education[]) => {
-    handleUpdateCv({ education: educations });
+    return handleUpdateCv({ education: educations });
   };
 
   const handleSkillsSave = (skills: Skill[]) => {

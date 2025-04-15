@@ -34,7 +34,7 @@ export const educationSchema = z.object({
   degree: z.string(),
   field: z.string().optional(),
   startYear: z.string(),
-  endYear: z.string().nullable(),
+  endYear: z.string().optional().nullable(),
 });
 
 export const workExperienceSchema = z.object({

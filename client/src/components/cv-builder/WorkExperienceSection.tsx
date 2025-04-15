@@ -40,7 +40,7 @@ interface WorkExperienceSectionProps {
   onSave: (experiences: WorkExperience[]) => void;
 }
 
-const experienceSchema = z.object({
+const enhancedSchema = z.object({
   position: z.string().min(1, { message: "Position is required" }),
   company: z.string().min(1, { message: "Company is required" }),
   startYear: z.string().min(4, { message: "Start year is required" }),
@@ -56,7 +56,7 @@ export function WorkExperienceSection({
   experiences = [],
   onSave,
 }: WorkExperienceSectionProps) {
-  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -65,7 +65,7 @@ export function WorkExperienceSection({
   }, []);
 
   const form = useForm<WorkExperience>({
-    resolver: zodResolver(experienceSchema),
+    resolver: zodResolver(enhancedSchema),
     defaultValues: {
       position: "",
       company: "",
@@ -100,8 +100,15 @@ export function WorkExperienceSection({
     });
   };
 
+  const handleDeleteExperience = async (id: string) => {
+    setIsLoading(true);
+    const updatedExperiences = experiences.filter((exp) => exp.id !== id);
+    await onSave(updatedExperiences);
+    setIsLoading(false);
+  };
+
   const handleSaveForm = async (values: WorkExperience) => {
-    setIsSaving(true);
+    setIsLoading(true);
 
     try {
       if (editingId) {
@@ -149,7 +156,7 @@ export function WorkExperienceSection({
         variant: "destructive",
       });
     } finally {
-      setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
@@ -227,6 +234,7 @@ export function WorkExperienceSection({
                       <Button
                         size="sm"
                         variant="ghost"
+                        isLoading={isLoading}
                         onClick={() => handleEditExperience(exp)}
                       >
                         <Pencil className="h-4 w-4" />
@@ -235,12 +243,7 @@ export function WorkExperienceSection({
                         size="sm"
                         variant="ghost"
                         className="text-red-500 hover:text-red-700"
-                        onClick={() => {
-                          const updatedExperiences = experiences.filter(
-                            (e) => e.id !== exp.id,
-                          );
-                          onSave(updatedExperiences);
-                        }}
+                        onClick={() => handleDeleteExperience(exp.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -453,7 +456,7 @@ export function WorkExperienceSection({
               >
                 Cancel
               </Button>
-              <Button type="submit">
+              <Button type="submit" isLoading={isLoading}>
                 {editingId !== null ? "Update" : "Add"} Experience
               </Button>
             </div>

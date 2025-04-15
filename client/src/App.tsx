@@ -13,7 +13,6 @@ import CvMatching from "@/pages/CvMatching";
 import CoverLetter from "@/pages/CoverLetter";
 import Settings from "@/pages/Settings";
 import Help from "@/pages/Help";
-import ButtonDemo from "@/pages/ButtonDemo";
 
 function Router() {
   return (
@@ -30,7 +29,6 @@ function Router() {
           <Route path="/cover-letter" component={CoverLetter} />
           <Route path="/settings" component={Settings} />
           <Route path="/help" component={Help} />
-          <Route path="/button-demo" component={ButtonDemo} />
           <Route component={NotFound} />
         </Switch>
       </Content>
