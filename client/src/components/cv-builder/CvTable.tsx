@@ -204,17 +204,6 @@ export const CvTable = ({
                     <div className="flex justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
                       {/* Small screens: Show only the most important button and dropdown */}
                       <div className="sm:hidden flex gap-2">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEdit(cv);
-                          }}
-                          className="h-9 w-9 p-0 flex items-center justify-center"
-                        >
-                          <Edit2Icon className="h-4 w-4" />
-                        </Button>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
@@ -227,6 +216,16 @@ export const CvTable = ({
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onEdit(cv);
+                              }}
+                              className="cursor-pointer"
+                            >
+                              <Edit2Icon className="h-4 w-4 mr-2" />
+                              <span>{t("common.buttons.edit")}</span>
+                            </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={(e) =>
                                 handleDownload(

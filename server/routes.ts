@@ -77,7 +77,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all CVs
   app.get("/api/cvs", async (_, res: Response) => {
     try {
-      const cvs = await storage.getAllCVs();
+      const response = await axios.get("http://localhost:8082/fitly/cvs", {
+        headers: {
+          Cookie:
+            "AspNetCore.Auth=CfDJ8GdChKJoNXRDjdtYcEccIJOjGRGWeeSqFQlbhm2obxmiLbgKYxa7Ikn4kKQEyxoWQRuqvt8IKlK8Boe6zVfeY8cqbxrJi1b0ZUR9nxyAZhV8hxyy13k7b-fuzKLNCNTTT9NhsjI2HG8rptgSC-hKWYtLW7tOHiSvkwbN2Twjfdk0czVLASms3DBCX9VGw-9rnI-9gAr5vTpwumZfad8_uAdIMJEURVAGL-31RuTu1LExa4xaIEAkGZ4coOGlLF9YU5eSOr-2PFQQwgABtuWc9lUjeZhYDmwZJdevw7D0dY9czUr1w-83_U_b_V7dNLx5tWzgjfQu5H5qR2U-kgHYR5xKPtVWYazZfa3JZzES6YX9SR_bPRs37J958btqUvzN_MgVtJDHSs9pYMQLnyQp1LnRc0tFNqBilygHukFGO8l_DZCH5KSWc7UF3UoOEz92BM2eH6gCOiEh9z0m-_fsq6I",
+        },
+      });
+      console.log("response", response.data);
+      const cvs = response.data;
       res.json(cvs);
     } catch (error: any) {
       log(`Error fetching CVs: ${error.message}`, "api");

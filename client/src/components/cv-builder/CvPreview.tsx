@@ -1,7 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { MapPinIcon, PhoneIcon, MailIcon, FileText } from "lucide-react";
+import {
+  MapPinIcon,
+  PhoneIcon,
+  MailIcon,
+  FileText,
+  DownloadIcon,
+  LayoutTemplateIcon,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CV } from "@shared/schema";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface CvPreviewProps {
   data: CV;
@@ -20,36 +33,68 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
           </span>
           {t("cvPreview.preview")}
         </h2>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onChangeTemplate}
-          className="bg-card hover:bg-card/80 shadow-sm transition-all"
-        >
-          {t("cvPreview.changeTemplate")}
-        </Button>
+        <div className="flex gap-2">
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {}}
+                  className="h-9 w-9 p-0 transition-all hover:shadow-sm hover:bg-primary/5"
+                >
+                  <DownloadIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" sideOffset={5}>
+                <p>{t("common.buttons.download")} CV</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onChangeTemplate}
+                  className="bg-card hover:bg-card/80 shadow-sm transition-all"
+                >
+                  <LayoutTemplateIcon className="h-4 w-4" />
+                  {t("Template")}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" sideOffset={5}>
+                <p>{t("cvPreview.changeTemplate")}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
 
-      <div className="bg-card rounded-lg shadow-md overflow-auto flex-grow w-full max-w-[492px] border border-border/40">
-        <div className="flex flex-col md:flex-row">
+      <div className="bg-card rounded-lg shadow-md overflow-auto flex-grow w-full max-w-[492px] max-h-[696px] border border-border/40">
+        <div
+          className="flex flex-col md:flex-row"
+          style={{ minHeight: "100%" }}
+        >
           {/* Left sidebar in preview */}
           <div className="w-full md:w-1/3 bg-blue-50 p-4">
             <div className="mb-6">
               <h3 className="text-blue-800 font-medium mb-2">
                 {t("cvPreview.contact")}
               </h3>
-              <div className="text-sm space-y-1.5">
-                <div className="flex items-center text-gray-600">
-                  <MailIcon className="h-3.5 w-3.5 mr-2" />
+              <div className="text-xs space-y-1.5">
+                <div className="flex items-center text-xs text-gray-600">
+                  <MailIcon className="h-3.5 w-3.5 mr-2 min-w-3.5" />
                   <span>
                     {data.personalInfo?.email || "john.doe@example.com"}
                   </span>
                 </div>
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-xs text-gray-600">
                   <PhoneIcon className="h-3.5 w-3.5 mr-2" />
                   <span>{data.personalInfo?.phone || "+1 (555) 123-4567"}</span>
                 </div>
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-xs text-gray-600">
                   <MapPinIcon className="h-3.5 w-3.5 mr-2" />
                   <span>
                     {data.personalInfo?.city || "New York"},{" "}
@@ -181,8 +226,7 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                         <h3 className="text-sm font-medium">{edu.school}</h3>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {edu.startYear} -{" "}
-                        {edu.isCurrent ? t("cvPreview.present") : edu.endYear}
+                        {edu.startYear} - {edu.endYear}
                       </div>
                     </div>
                   </div>

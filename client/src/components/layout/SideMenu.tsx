@@ -10,7 +10,7 @@ import {
   LogOutIcon,
   UserIcon,
   CompassIcon,
-  MapIcon,
+  SearchCheckIcon,
 } from "lucide-react";
 import { NavItem } from "@/types";
 import { Separator } from "@/components/ui/separator";
@@ -26,21 +26,21 @@ const navItems: NavItem[] = [
     label: "CV Builder",
     icon: <FileEditIcon className="h-4 w-4" />,
   },
-  {
-    path: "/cv-review",
-    label: "CV Review",
-    icon: <FileSearchIcon className="h-4 w-4" />,
-  },
-  {
-    path: "/cv-matching",
-    label: "CV Matching",
-    icon: <LinkIcon className="h-4 w-4" />,
-  },
-  {
-    path: "/cover-letter",
-    label: "Cover Letter",
-    icon: <MailIcon className="h-4 w-4" />,
-  },
+  //   {
+  //     path: "/cv-review",
+  //     label: "CV Review",
+  //     icon: <FileSearchIcon className="h-4 w-4" />,
+  //   },
+  //   {
+  //     path: "/cv-matching",
+  //     label: "CV Matching",
+  //     icon: <LinkIcon className="h-4 w-4" />,
+  //   },
+  //   {
+  //     path: "/cover-letter",
+  //     label: "Cover Letter",
+  //     icon: <MailIcon className="h-4 w-4" />,
+  //   },
 ];
 
 const accountItems: NavItem[] = [
@@ -49,11 +49,11 @@ const accountItems: NavItem[] = [
     label: "Settings",
     icon: <SettingsIcon className="h-4 w-4" />,
   },
-  {
-    path: "/help",
-    label: "Help",
-    icon: <HelpCircleIcon className="h-4 w-4" />,
-  },
+  // {
+  //   path: "/help",
+  //   label: "Help",
+  //   icon: <HelpCircleIcon className="h-4 w-4" />,
+  // },
 ];
 
 const SideMenu = () => {
@@ -64,15 +64,14 @@ const SideMenu = () => {
       <div className="p-6 border-b border-neutral-200">
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary/60 rounded-lg blur-sm opacity-70"></div>
-            <div className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-lg p-2.5 overflow-hidden">
-              <CompassIcon className="h-5 w-5 absolute opacity-20 -top-1 -left-1 rotate-12 scale-150" />
-              <MapIcon className="h-5 w-5 relative z-10" />
-            </div>
+            <SearchCheckIcon className="h-10 w-10 relative z-10" />
           </div>
           <div>
-            <h1 className="font-semibold text-lg text-neutral-800">
-              Job Compass
+            <h1
+              className="font-black text-2xl tracking-widest text-neutral-800"
+              style={{ fontStretch: "extra-expanded" }}
+            >
+              Fitly
             </h1>
             <p className="text-xs text-primary font-medium -mt-0.5">
               by Jooble
@@ -80,7 +79,7 @@ const SideMenu = () => {
           </div>
         </div>
         <p className="text-xs text-muted-foreground mt-2">
-          Your career navigator
+          Find your career fit with ease
         </p>
       </div>
 

@@ -207,7 +207,7 @@ const CvBuilderCreate = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left side with accordion form */}
         <div className="w-full lg:w-1/2 min-w-[380px]">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-muted/40 border border-border/50 rounded-lg">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-muted/40 shadow-sm border border-border/50 rounded-lg">
             <div className="flex items-center gap-2">
               <div
                 className={`w-16 h-12 rounded-full flex items-center justify-center ${

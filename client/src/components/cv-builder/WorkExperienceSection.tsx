@@ -398,7 +398,7 @@ export function WorkExperienceSection({
               )}
             />
 
-            <div className="bg-blue-50 p-4 rounded-md">
+            <div className="bg-blue-50 p-4 mt-0 rounded-md">
               <div className="flex items-center mb-2">
                 <SparkleIcon className="h-5 w-5 text-blue-500 mr-2" />
                 <p className="text-blue-800 font-medium">Need a hint?</p>
