@@ -68,7 +68,7 @@ app.use((req, res, next) => {
   }
   
   // Start server
-  const port = process.env.PORT || 5000;
+  const port = process.env.PORT || process.env.CV_API_PORT || 5000;
   server.listen({
     port,
     host: "0.0.0.0",
