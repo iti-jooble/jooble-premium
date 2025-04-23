@@ -3,7 +3,7 @@ import { IEducationProps } from "./types";
 const Education: React.FC<IEducationProps> = ({ t, data }) => (
 	<div style={{ paddingTop: "32px" }}>
 		<div className="block-title break-block" id="breakBlock">
-			{t("cvBuilder.stepper.education")}
+			{t("cvPreview.education")}
 		</div>
 		{data.map((item) => (
 			<div

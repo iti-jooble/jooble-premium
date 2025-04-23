@@ -3,7 +3,7 @@ import { ISkillsProps } from "./types";
 
 const Skills: React.FC<ISkillsProps> = ({ t, data }) => (
 	<div>
-		<div className="block-title">{t("cvBuilder.stepper.skills")}</div>
+		<div className="block-title">{t("cvPreview.skills")}</div>
 		<div
 			className="table-cell-2"
 			style={{ display: "flex", flexWrap: "wrap", marginBottom: "14px" }}

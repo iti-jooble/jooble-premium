@@ -3,7 +3,7 @@ import { IExperienceProps } from "./types";
 const Experience: React.FC<IExperienceProps> = ({ t, data }) => (
 	<div style={{ paddingTop: "36px" }}>
 		<div className="block-title break-block" id="breakBlock">
-			{t("cvBuilder.stepper.experience")}
+			{t("cvPreview.experience")}
 		</div>
 		{data.map((item) => (
 			<div
@@ -43,7 +43,7 @@ const Experience: React.FC<IExperienceProps> = ({ t, data }) => (
 									{item.startYear && (item.endYear || item.isCurrent) && (
 										<span>&nbsp;-&nbsp;</span>
 									)}
-									{item.isCurrent ? t("cvBuilder.present") : item.endYear}
+									{item.isCurrent ? t("cvPreview.present") : item.endYear}
 								</div>
 							)}
 						</div>

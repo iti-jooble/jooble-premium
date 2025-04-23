@@ -155,7 +155,7 @@ const TemplateComponent: React.FC<ITemplateComponentProps> = ({
 
 							{atLeastOneFieldExists(cvData.education) && (
 								<Education
-									data={cvData.education.sort(
+									data={[...cvData.education].sort(
 										(a, b) =>
 											parseInt(b.startYear || "0") -
 											parseInt(a.startYear || "0"),

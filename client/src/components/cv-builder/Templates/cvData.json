@@ -1,5 +1,4 @@
 {
-    "templateId":  2,
     "personalInfo": {
         "fullName": "Alyson Lawrence",
         "yearOfBirth": "1990",
@@ -10,62 +9,53 @@
         "city": "New York",
         "country": "USA"
     },
-    "careerObjective": {
-        "position": "Driver",
-        "skills": "Driving, Navigation, Time Management, Customer Service",
-        "skillSet": ["Driving", "Navigation", "Time Management", "Customer Service"]
-    },
-    "experience": {
-        "workPlaces": [
-            {
-                "id": "1",
-                "position": "Driver",
-                "company": "ABC Company",
-                "period": "Jan 2018 - Present",
-                "startYear": "2018",
-                "endYear": "",
-                "responsibilities": "Driving vehicles and ensuring safe transportation. Following traffic laws and regulations. Maintaining cleanliness and proper functioning of vehicles. Providing excellent customer service. Managing delivery schedules and routes. Keeping accurate records of deliveries and payments. Resolving customer complaints and issues. Adhering to company policies and procedures. Collaborating with team members to optimize delivery processes. Ensuring compliance with safety standards. Performing routine vehicle inspections and maintenance. Updating delivery logs and reports. Communicating effectively with dispatchers and supervisors.",
-                "isStillWorking": true
-            },
-            {
-                "id": "2",
-                "position": "Driver",
-                "company": "XYZ Corporation",
-                "period": "Jan 2016 - Dec 2017",
-                "startYear": "2016",
-                "endYear": "2017",
-                "responsibilities": "Driving vehicles and delivering goods",
-                "isStillWorking": false
-            }
-        ],
-        "hasExperience": true,
-        "professionalSkills": "Driving, Navigation",
-        "careerObjective": {
+    "experience": [
+        {
+            "id": "1",
             "position": "Driver",
-            "skills": "Driving, Navigation",
-            "skillSet": ["Driving", "Navigation"]
+            "company": "ABC Company",
+            "startYear": "2018",
+            "endYear": "",
+            "description": "Driving vehicles and ensuring safe transportation. Following traffic laws and regulations. Maintaining cleanliness and proper functioning of vehicles. Providing excellent customer service. Managing delivery schedules and routes. Keeping accurate records of deliveries and payments. Resolving customer complaints and issues. Adhering to company policies and procedures. Collaborating with team members to optimize delivery processes. Ensuring compliance with safety standards. Performing routine vehicle inspections and maintenance. Updating delivery logs and reports. Communicating effectively with dispatchers and supervisors.",
+            "isCurrent": true
+        },
+        {
+            "id": "2",
+            "position": "Driver",
+            "company": "XYZ Corporation",
+            "startYear": "2015",
+            "endYear": "2018",
+            "description": "Driving vehicles and delivering goods. Following delivery routes and schedules. Ensuring timely and safe deliveries. Maintaining vehicle cleanliness and proper functioning. Providing excellent customer service. Keeping accurate records of deliveries and payments. Resolving customer complaints and issues. Adhering to company policies and procedures. Collaborating with team members to optimize delivery processes. Ensuring compliance with safety standards. Performing routine vehicle inspections and maintenance. Updating delivery logs and reports. Communicating effectively with dispatchers and supervisors.",
+            "isCurrent": false
         }
-    },
-    "education": {
-        "educationPlaces": [
-            {
-                "id": "1",
-                "educationLevel": "High School Diploma",
-                "admissionYear": "2005",
-                "nameOfInstitution": "ABC High School",
-                "specialty": "General Education",
-                "graduationYear": "2009"
-            },
-            {
-                "id": "2",
-                "educationLevel": "Driver's License",
-                "admissionYear": "2009",
-                "nameOfInstitution": "Department of Motor Vehicles",
-                "specialty": "Driving",
-                "graduationYear": "2009"
-            }
-        ]
-    },
+    ],
+    "education": [
+        {
+            "id": "1",
+            "degree": "High School Diploma",
+            "startYear": "2005",
+            "school": "ABC High School",
+            "field": "General Education",
+            "endYear": "2009"
+        },
+        {
+            "id": "2",
+            "degree": "Driver's License",
+            "startYear": "2009",
+            "school": "Department of Motor Vehicles",
+            "field": "Driving"
+        }
+    ],
+    "skills": [
+        {
+            "level": "middle",
+            "name": "Navigation"
+        },
+        {
+            "level": "senior",
+            "name": "Time Management"
+        }
+    ],
     "summary": "Experienced driver with excellent navigation skills. Committed to providing safe and efficient transportation services. Strong attention to detail and ability to handle various driving conditions.",
     "languages": [
         {

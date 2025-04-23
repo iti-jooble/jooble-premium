@@ -1,22 +1,17 @@
-import { ICvData, IEducationPlace, IWorkPlace } from '@fugu/store/cvBuilder/types';
-import { IntlShape } from 'react-intl';
-
-export interface ITemplateComponentProps {
-	intl: IntlShape;
-	cvData: ICvData;
-}
+import { Education, Experience, Skill } from "@shared/schema";
+import { TFunction } from "i18next";
 
 export interface ISkillsProps {
-	intl: IntlShape;
-	data: string[];
+	t: TFunction;
+	data: Skill[];
 }
 
 export interface IExperienceProps {
-	intl: IntlShape;
-	data: IWorkPlace[];
+	t: TFunction;
+	data: Experience[];
 }
 
 export interface IEducationProps {
-	intl: IntlShape;
-	data: IEducationPlace[];
+	t: TFunction;
+	data: Education[];
 }

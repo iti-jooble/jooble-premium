@@ -57,7 +57,7 @@ export const createCv = createAsyncThunk<string>(
         cvModel: {
           source: CvSource.MANUAL,
           title: "New CV",
-          templateId: 0,
+          templateId: 2,
           userInfo: {
             personalInfo: {
               firstName: "",

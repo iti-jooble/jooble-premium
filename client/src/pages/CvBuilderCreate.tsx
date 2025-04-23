@@ -25,6 +25,7 @@ import { CvPreview } from "@/components/cv-builder/CvPreview";
 import { useToast } from "@/hooks/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { updateCv } from "@/redux/thunks";
+import cvData from "@/components/cv-builder/Templates/cvData.json";
 import { getCurrentCvSelector } from "@/redux/slices/cvBuilderSlice";
 import { getCvScoreDescription } from "@/lib/cvScoreUtils";
 import {
@@ -48,7 +49,7 @@ const CvBuilderCreate = () => {
     userInfo,
     id,
     score = 0,
-    templateId,
+    templateId = 2,
   } = useAppSelector(getCurrentCvSelector) || {};
 
   // Update the local title state when the CV changes
@@ -437,7 +438,15 @@ const CvBuilderCreate = () => {
         </div>
 
         {/* Right side - Preview */}
-        <CvPreview data={userInfo} templateId={templateId} onChangeTemplate={handleChangeTemplate} />
+        <CvPreview
+          data={
+            userInfo.personalInfo.firstName || userInfo.personalInfo.lastName
+              ? userInfo
+              : (cvData as CvUserInfo)
+          }
+          templateId={templateId}
+          onChangeTemplate={handleChangeTemplate}
+        />
       </div>
     </div>
   );
