@@ -1,7 +1,7 @@
 /* eslint-disable import/no-webpack-loader-syntax */
-import template01styles from '!!raw-loader!./01/template.raw.css';
+import template01styles from './01/template.raw.css?raw';
 
-import template02styles from '!!raw-loader!./02/template.raw.css';
+import template02styles from './02/template.raw.css?raw';
 
 export const TEMPLATES = [
 	{
