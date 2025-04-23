@@ -17,16 +17,12 @@ import {
 } from "@/components/ui/tooltip";
 import { useState, useEffect, ComponentClass, FC, useRef } from "react";
 import { A4_PAGE_SIZES_IN_PX } from "./Templates/constants";
+import { ITemplateComponentProps } from "./Templates/types";
 
 interface CvPreviewProps {
   data: CvUserInfo;
   templateId: number;
   onChangeTemplate: () => void;
-}
-
-export interface ITemplateComponentProps {
-  t: (i18nKey: string, options?: any) => string;
-  data: CvUserInfo;
 }
 
 const getTemplate = (
@@ -35,7 +31,7 @@ const getTemplate = (
   loadable(
     () =>
       import(
-        `../Templates/${templateId <= 9 ? "0" : ""}${templateId}/TemplateComponent.tsx`
+        `./Templates/${templateId <= 9 ? "0" : ""}${templateId}/TemplateComponent.tsx`
       ),
     {
       fallback: <Loader2 />,
@@ -149,18 +145,32 @@ export function CvPreview({
         </div>
       </div>
 
-      <div className="bg-card rounded-lg shadow-md overflow-auto flex-grow w-full max-w-[492px] max-h-[696px] border border-border/40">
-        <div
-          id="previewInner"
-          className="flex flex-col md:flex-row"
-          style={{
-            transform: `scale(${previewSize.scale})`,
-            WebkitFontSmoothing: "antialiased",
-            minHeight: "100%",
-          }}
-        >
-          {Template && <Template t={t} data={data} />}
-        </div>
+      <div
+        ref={previewWidthReference}
+        className="bg-card rounded-lg shadow-md overflow-auto flex-grow w-full max-w-[492px] max-h-[696px] border border-border/40"
+      >
+        {previewSize.calculated && (
+          <div
+            className=""
+            style={{
+              width: `${previewSize.parentWidth}px`,
+              height: `${previewSize.parentHeight}px`,
+            }}
+          >
+            <div
+              id="previewInner"
+              className="flex flex-col md:flex-row"
+              style={{
+                transform: `scale(${previewSize.scale})`,
+                WebkitFontSmoothing: "antialiased",
+                transformOrigin: "top left",
+                minHeight: "100%",
+              }}
+            >
+              {Template && <Template t={t} cvData={data} />}
+            </div>
+          </div>
+        )}
       </div>
       {/* #tempDiv needed for creating a CV html */}
       <div id="tempDiv" className="absolute t-0 l-0" />
