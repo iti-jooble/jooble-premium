@@ -1,0 +1,27 @@
+/* eslint-disable import/no-webpack-loader-syntax */
+import template01styles from '!!raw-loader!./01/template.raw.css';
+
+import template02styles from '!!raw-loader!./02/template.raw.css';
+
+export const TEMPLATES = [
+	{
+		id: 1,
+		name: 'Template1',
+		preview: '',
+		css: template01styles,
+		fonts: `@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@700&display=swap');`,
+	},
+	{
+		id: 2,
+		name: 'Template2',
+		preview: '',
+		css: template02styles,
+		fonts: `@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap');`,
+	},
+];
+
+export const A4_PAGE_SIZES_IN_PX = {
+	WIDTH: 794,
+	HEIGHT: 1123,
+	MARGIN: 36,
+};

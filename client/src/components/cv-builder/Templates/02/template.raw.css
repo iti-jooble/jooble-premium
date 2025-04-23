@@ -1,0 +1,86 @@
+body.pdf-body {
+  background: #fff;
+}
+
+.template-02 {
+  background: #fff;
+}
+
+.template-02.template * {
+    box-sizing: border-box;
+    line-height: 1.4;
+    color: #6E6D8F;
+  }
+  .template-02.template {
+    width: 794px;
+    height: 1123px;
+    position: relative;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+  }
+ 
+  .template-02 .block-title {
+    font-size: 24px;
+    font-weight: 700;
+    padding: 8px 0;
+    margin-bottom: 10px;
+    font-family: 'Noto Serif', serif;
+    color: #3A395D;
+  }
+
+  .template-02 blockquote,
+  .template-02 dl,
+  .template-02 dd,
+  .template-02 h1,
+  .template-02 h2,
+  .template-02 h3,
+  .template-02 h4,
+  .template-02 h5,
+  .template-02 h6,
+  .template-02 hr,
+  .template-02 figure,
+  .template-02 p,
+  .template-02 pre {
+    margin: 0;
+  }
+
+  .template-02 .table-cell-content > * + * {
+    margin-top: 30px;
+  }
+
+  .template-02 .table-cell-content > * {
+    line-height: 1.6;
+    font-size: 27px; 
+    color: #6E6D8F;
+  }
+  
+  .template-02 .table-cell-content ul {
+    list-style: disc;
+    padding-left: 40px;
+  }
+  
+  .template-02 .table-cell-content ol {
+    list-style: decimal;
+    padding-left: 40px;
+  }
+  
+  .template-02 .table-cell-content ul li,
+  .template-02 .table-cell-content ol li {
+    margin-top: 6px;
+  }
+
+  .template-02 .page_break {
+    page-break-after: always; 
+    position: relative;
+} 
+
+.overflow-auto {
+  overflow: auto;
+}
+
+ .template-02 .page_break {
+  margin-bottom: 36px !important;
+  padding-bottom: 36px !important;
+}
+
+
