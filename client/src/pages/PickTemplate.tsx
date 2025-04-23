@@ -83,127 +83,127 @@ export default function PickTemplate() {
   return (
     <div className="bg-gradient-to-b from-background to-muted/20 min-h-screen py-10">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
-          {t('pickTemplate.title', 'Choose Your CV Template')}
-        </h1>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          {t('pickTemplate.description', 'Select a template that best represents your professional style and helps you stand out to potential employers')}
-        </p>
-      </div>
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
+            {t('pickTemplate.title', 'Choose Your CV Template')}
+          </h1>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            {t('pickTemplate.description', 'Select a template that best represents your professional style and helps you stand out to potential employers')}
+          </p>
+        </div>
 
-      <div className="relative px-12 my-12">
-        {/* Carousel Navigation Buttons */}
-        <Button
-          variant="outline"
-          size="icon"
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 rounded-full h-10 w-10 bg-background shadow-md"
-          onClick={handlePrevious}
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
-        
-        <Button
-          variant="outline"
-          size="icon"
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 rounded-full h-10 w-10 bg-background shadow-md"
-          onClick={handleNext}
-        >
-          <ChevronRight className="h-5 w-5" />
-        </Button>
+        <div className="relative px-12 my-12">
+          {/* Carousel Navigation Buttons */}
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 rounded-full h-10 w-10 bg-background shadow-md"
+            onClick={handlePrevious}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 rounded-full h-10 w-10 bg-background shadow-md"
+            onClick={handleNext}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </Button>
 
-        {/* Template Carousel */}
-        <div className="flex justify-center items-start gap-6 overflow-hidden h-[600px]">
-          {TEMPLATES.map((template, index) => {
-            const isActive = index === activeIndex;
-            const isSelected = template.id === selectedTemplateId;
-            
-            // Calculate offset for carousel effect
-            const offset = (index - activeIndex) * 100;
-            
-            return (
-              <div
-                key={template.id}
-                className={`transform transition-all duration-300 ${isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-50'}`}
-                style={{ transform: `translateX(${offset}%) scale(${isActive ? 1 : 0.9})` }}
-              >
-                <Card 
-                  className={`relative cursor-pointer transition-all overflow-hidden
-                    ${isSelected ? 'ring-4 ring-primary' : ''}
-                    ${isActive ? 'shadow-xl' : 'shadow-md'}`}
-                  onClick={() => setSelectedTemplateId(template.id)}
+          {/* Template Carousel */}
+          <div className="flex justify-center items-start gap-6 overflow-hidden h-[600px]">
+            {TEMPLATES.map((template, index) => {
+              const isActive = index === activeIndex;
+              const isSelected = template.id === selectedTemplateId;
+              
+              // Calculate offset for carousel effect
+              const offset = (index - activeIndex) * 100;
+              
+              return (
+                <div
+                  key={template.id}
+                  className={`transform transition-all duration-300 ${isActive ? 'scale-100 opacity-100' : 'scale-90 opacity-50'}`}
+                  style={{ transform: `translateX(${offset}%) scale(${isActive ? 1 : 0.9})` }}
                 >
-                  {/* Template Preview Image */}
-                  <div className="w-[300px] h-[450px] bg-card border-b">
-                    <img 
-                      src={template.imgSrc || DEFAULT_TEMPLATE_IMAGES[index % DEFAULT_TEMPLATE_IMAGES.length]} 
-                      alt={template.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  
-                  {/* Template Info */}
-                  <div className="p-4 flex justify-between items-center">
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{template.name}</h3>
-                      {isActive ? (
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {template.description || `Template #${template.id}`}
-                        </p>
-                      ) : (
-                        <p className="text-sm text-muted-foreground truncate">
-                          {template.description || `Template #${template.id}`}
-                        </p>
-                      )}
+                  <Card 
+                    className={`relative cursor-pointer transition-all overflow-hidden
+                      ${isSelected ? 'ring-4 ring-primary' : ''}
+                      ${isActive ? 'shadow-xl' : 'shadow-md'}`}
+                    onClick={() => setSelectedTemplateId(template.id)}
+                  >
+                    {/* Template Preview Image */}
+                    <div className="w-[300px] h-[450px] bg-card border-b">
+                      <img 
+                        src={template.imgSrc || DEFAULT_TEMPLATE_IMAGES[index % DEFAULT_TEMPLATE_IMAGES.length]} 
+                        alt={template.name}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     
-                    {/* Selection Indicator */}
-                    {isSelected && (
-                      <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                        <Check className="h-4 w-4 text-white" />
+                    {/* Template Info */}
+                    <div className="p-4 flex justify-between items-center">
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{template.name}</h3>
+                        {isActive ? (
+                          <p className="text-sm text-muted-foreground line-clamp-2">
+                            {template.description || `Template #${template.id}`}
+                          </p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground truncate">
+                            {template.description || `Template #${template.id}`}
+                          </p>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </Card>
-              </div>
-            );
-          })}
+                      
+                      {/* Selection Indicator */}
+                      {isSelected && (
+                        <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                          <Check className="h-4 w-4 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Indicators */}
+        <div className="flex justify-center gap-2 mb-8">
+          {TEMPLATES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === activeIndex ? 'bg-primary w-4' : 'bg-muted'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Continue Button */}
+        <div className="flex justify-center">
+          <Button 
+            size="lg" 
+            onClick={handleContinue} 
+            disabled={isCreating}
+            className="min-w-[250px]"
+          >
+            {isCreating ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t('pickTemplate.creating', 'Creating your CV...')}
+              </>
+            ) : (
+              t('pickTemplate.continue', 'Continue with this template')
+            )}
+          </Button>
         </div>
       </div>
-
-      {/* Indicators */}
-      <div className="flex justify-center gap-2 mb-8">
-        {TEMPLATES.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setActiveIndex(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === activeIndex ? 'bg-primary w-4' : 'bg-muted'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
-
-      {/* Continue Button */}
-      <div className="flex justify-center">
-        <Button 
-          size="lg" 
-          onClick={handleContinue} 
-          disabled={isCreating}
-          className="min-w-[250px]"
-        >
-          {isCreating ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t('pickTemplate.creating', 'Creating your CV...')}
-            </>
-          ) : (
-            t('pickTemplate.continue', 'Continue with this template')
-          )}
-        </Button>
-      </div>
-    </div>
     </div>
   );
 }
