@@ -37,6 +37,9 @@ const Settings = loadable(() => import("@/pages/Settings"), {
 const Help = loadable(() => import("@/pages/Help"), {
   fallback: <PageLoadingIndicator />
 });
+const PickTemplate = loadable(() => import("@/pages/PickTemplate"), {
+  fallback: <PageLoadingIndicator />
+});
 
 function Router() {
   return (
@@ -68,6 +71,9 @@ function Router() {
           </Route>
           <Route path="/help">
             {() => <Help />}
+          </Route>
+          <Route path="/pick-template/:returnPath?">
+            {() => <PickTemplate />}
           </Route>
           <Route>
             {() => <NotFound />}

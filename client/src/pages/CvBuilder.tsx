@@ -64,9 +64,8 @@ const CvBuilder = () => {
   };
 
   const handleCreateNew = async () => {
-    await dispatch(createCv());
-
-    navigate("/cv-builder/create");
+    // Redirect to template picker instead of directly creating a CV
+    navigate("/pick-template/cv-builder/create");
   };
 
   const handleCreateFromLinkedIn = () => {
