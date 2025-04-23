@@ -37,7 +37,7 @@ const Settings = loadable(() => import("@/pages/Settings"), {
 const Help = loadable(() => import("@/pages/Help"), {
   fallback: <PageLoadingIndicator />
 });
-const PickTemplate = loadable(() => import("@/pages/PickTemplate"), {
+const PickTemplate = loadable(() => import("@/pages/PickTemplateWithCarousel"), {
   fallback: <PageLoadingIndicator />
 });
 

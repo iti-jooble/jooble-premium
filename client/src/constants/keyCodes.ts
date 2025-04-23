@@ -1,0 +1,18 @@
+const KEY_CODES = {
+  ESC: 27,
+  ARROW_UP: 38,
+  ARROW_DOWN: 40,
+  LEFT_ARROW: 37,
+  RIGHT_ARROW: 39,
+  ENTER: 13,
+  SPACE: 32,
+  TAB: 9,
+  BACKSPACE: 8,
+  DELETE: 46,
+  HOME: 36,
+  END: 35,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34,
+};
+
+export default KEY_CODES;

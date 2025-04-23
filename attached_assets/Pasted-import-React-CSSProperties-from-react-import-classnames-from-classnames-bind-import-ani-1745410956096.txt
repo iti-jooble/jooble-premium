@@ -1,0 +1,126 @@
+import React, { CSSProperties } from 'react';
+import classnames from 'classnames/bind';
+import { animated } from '@react-spring/web';
+import { useIntl } from 'react-intl';
+import { PrimaryButton } from '@j-kit/components/PrimaryButton';
+import { Icon } from '@j-kit/components/Icon';
+import * as ICONS from '@fugu-old/components/common/Icon/constants';
+import { uniqueId } from 'lodash';
+import { useCarousel } from './hooks';
+import { ICarouselComponentProps } from './types';
+
+import css from './CarouselComponent.module.scss';
+
+const cx = classnames.bind(css);
+
+const Carousel = <I extends object>({
+	infinite = false,
+	swipable = false,
+	withBar = false,
+	selectedItem = 0,
+	items = [],
+	children: Children,
+	itemClassName,
+	itemSize,
+	className,
+	onChange,
+}: ICarouselComponentProps<I>): JSX.Element => {
+	const intl = useIntl();
+	const itemsCount = items.length;
+
+	const { springs, selectedItemIndex, handleSetItemIndex, bindSwipe } = useCarousel({
+		selectedItem,
+		itemsCount,
+		infinite,
+		swipable,
+	});
+
+	const _onChangeSlideClick =
+		(indexDiff: number) =>
+		(event: React.MouseEvent<HTMLDivElement>): void => {
+			const nextIndex = selectedItemIndex + indexDiff;
+
+			event.stopPropagation();
+			handleSetItemIndex(nextIndex);
+
+			if (infinite) {
+				if (nextIndex < 0) {
+					onChange?.(itemsCount - 1);
+
+					return;
+				}
+
+				if (nextIndex >= itemsCount) {
+					onChange?.(0);
+
+					return;
+				}
+			}
+
+			onChange?.(nextIndex);
+		};
+
+	const _isLeftButtonExixsts = infinite || selectedItemIndex !== 0;
+	const _isRightButtonExixsts = infinite || selectedItemIndex !== springs.length - 1;
+
+	return (
+		<div className={css.container}>
+			<div
+				className={cx('slider', {
+					[className!]: !!className,
+				})}
+			>
+				<Base
+					exists={_isLeftButtonExixsts}
+					component={PrimaryButton}
+					size="md"
+					appearance="blue"
+					renderLeading={<Icon glyph={ICONS.CHEVRON_DOWN} size="md" />}
+					className={cx('button', 'button__left')}
+					onClick={_onChangeSlideClick(-1)}
+					data-test-name="_brandingLeftArrowButton"
+				/>
+				{springs.map(({ x, display, position, opacity, scale }, i) => (
+					<animated.div
+						{...(!!bindSwipe && bindSwipe())}
+						key={uniqueId(i.toString())}
+						style={{
+							display,
+							position: position as unknown as CSSProperties['position'],
+							transform: x.to((xD) => `translate3D(${xD}%, 0, 0)`),
+							opacity,
+							scale,
+						}}
+						className={cx('slide', {
+							[itemClassName!]: !!itemClassName,
+							[`slide__size${itemSize}`]: !!itemSize,
+						})}
+					>
+						{/* <img style={{ width: '448px' }} src="/assets/images/cvTemplates/2.png" alt='"Mastery"' /> */}
+						{Children ? <Children item={items[i]} index={i} /> : <div>{`Slide #${i}`}</div>}
+					</animated.div>
+				))}
+				<Base
+					exists={_isRightButtonExixsts}
+					component={PrimaryButton}
+					size="md"
+					appearance="blue"
+					renderLeading={<Icon glyph={ICONS.CHEVRON_DOWN} size="md" />}
+					className={cx('button', 'button__right')}
+					onClick={_onChangeSlideClick(1)}
+					data-test-name="_brandingRightArrowButton"
+				/>
+				<div className={css.badge}>{intl.formatMessage({ id: 'cvBuilder.selectedCv' })}</div>
+			</div>
+			<Base exists={withBar} className={css.bar}>
+				<div className={css.bar_content}>
+					<strong className={css.caption}>{selectedItemIndex + 1}</strong>
+					<span className={css.prefix}>{intl.formatMessage({ id: 'jdp.brandedBannerFrom' })}</span>
+					<span className={css.caption}>{itemsCount}</span>
+				</div>
+			</Base>
+		</div>
+	);
+};
+
+export default Carousel;
