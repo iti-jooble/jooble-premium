@@ -49,15 +49,17 @@ export const getCvList = createAsyncThunk<CV[]>(
  * AsyncThunk for creating a new CV
  * Uses the API slice's createCv endpoint
  */
-export const createCv = createAsyncThunk<string>(
+export const createCv = createAsyncThunk<string, { templateId?: number } | undefined>(
   "cvBuilder/createCv",
-  async (_, { dispatch, rejectWithValue }) => {
+  async (payload = {}, { dispatch, rejectWithValue }) => {
     try {
+      const { templateId = 1 } = payload;
+      
       const request: ICreateCvRequest = {
         cvModel: {
           source: CvSource.MANUAL,
           title: "New CV",
-          templateId: 2,
+          templateId: templateId,
           userInfo: {
             personalInfo: {
               firstName: "",

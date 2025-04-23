@@ -72,7 +72,10 @@ function Router() {
           <Route path="/help">
             {() => <Help />}
           </Route>
-          <Route path="/pick-template/:returnPath?">
+          <Route path="/pick-template">
+            {() => <PickTemplate />}
+          </Route>
+          <Route path="/pick-template/:returnPath">
             {() => <PickTemplate />}
           </Route>
           <Route>

@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { TEMPLATES } from '@/components/cv-builder/Templates/constants';
+import { useAppDispatch } from '@/redux/store';
+import { createCv } from '@/redux/thunks';
 
 // Default template images if not provided in constants
 const DEFAULT_TEMPLATE_IMAGES = [
@@ -14,9 +16,10 @@ const DEFAULT_TEMPLATE_IMAGES = [
 
 export default function PickTemplate() {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [, navigate] = useLocation();
-  const [, params] = useRoute('/pick-template/:returnPath?');
-  const returnPath = params?.returnPath || 'cv-builder/create';
+  const [isReturnPathMatch, params] = useRoute('/pick-template/:returnPath');
+  const returnPath = isReturnPathMatch && params?.returnPath ? params.returnPath : 'cv-builder/create';
   
   const [selectedTemplateId, setSelectedTemplateId] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -34,10 +37,20 @@ export default function PickTemplate() {
     setActiveIndex((prev) => (prev - 1 + TEMPLATES.length) % TEMPLATES.length);
   };
 
-  const handleContinue = () => {
-    // Navigate back to the CV builder with the selected template
+  const handleContinue = async () => {
+    // First create a new CV
     if (returnPath === 'cv-builder/create') {
-      navigate(`/${returnPath}?templateId=${selectedTemplateId}`);
+      try {
+        // Create a new CV with the selected template
+        const result = await dispatch(createCv({
+          templateId: selectedTemplateId
+        }));
+        
+        // Navigate to the CV builder with the new CV
+        navigate(`/${returnPath}`);
+      } catch (error) {
+        console.error('Failed to create CV:', error);
+      }
     } else {
       // Assume we're changing the template for an existing CV
       navigate(`/${returnPath}`);
