@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { JobCardProps } from "./JobCard";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 interface JobDetailProps {
   selectedJob: (JobCardProps['job'] & { description: string }) | null;
@@ -24,6 +25,11 @@ interface JobDetailProps {
 
 export const JobDetail = ({ selectedJob }: JobDetailProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const handleApply = () => {
+    navigate("/paywall");
+  };
 
   return (
     <div className="lg:col-span-7">
@@ -163,7 +169,7 @@ export const JobDetail = ({ selectedJob }: JobDetailProps) => {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button className="flex items-center">
+              <Button className="flex items-center" onClick={handleApply}>
                 <CheckCircleIcon className="h-4 w-4 mr-2" />
                 Apply Now
               </Button>

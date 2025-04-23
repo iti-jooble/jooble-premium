@@ -1,4 +1,5 @@
 import { Switch, Route, Redirect } from "wouter";
+import { BrowserRouter } from "react-router-dom";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -22,9 +23,6 @@ const CvBuilderCreate = loadable(() => import("@/pages/CvBuilderCreate"), {
 const CvReview = loadable(() => import("@/pages/CvReview"), {
   fallback: <PageLoadingIndicator />
 });
-const JobSearch = loadable(() => import("@/pages/JobSearch"), {
-  fallback: <PageLoadingIndicator />
-});
 const CvMatching = loadable(() => import("@/pages/CvMatching"), {
   fallback: <PageLoadingIndicator />
 });
@@ -35,6 +33,12 @@ const Settings = loadable(() => import("@/pages/Settings"), {
   fallback: <PageLoadingIndicator />
 });
 const Help = loadable(() => import("@/pages/Help"), {
+  fallback: <PageLoadingIndicator />
+});
+const PaywallPage = loadable(() => import("@/pages/PaywallPage"), {
+  fallback: <PageLoadingIndicator />
+});
+const JobSearch = loadable(() => import("@/pages/JobSearch"), {
   fallback: <PageLoadingIndicator />
 });
 
@@ -57,6 +61,9 @@ function Router() {
           <Route path="/job-search">
             {() => <JobSearch />}
           </Route>
+          <Route path="/paywall">
+            {() => <PaywallPage />}
+          </Route>
           <Route path="/cv-matching">
             {() => <CvMatching />}
           </Route>
@@ -78,17 +85,6 @@ function Router() {
   );
 }
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <InitialRequestProvider>
-        <AppContent />
-      </InitialRequestProvider>
-      <Toaster />
-    </QueryClientProvider>
-  );
-}
-
 function AppContent() {
   const { isInitialLoading, initialRequestError, retryInitialRequest, initData } = useAppLoading();
   
@@ -96,7 +92,7 @@ function AppContent() {
   if (isInitialLoading) {
     return <GlobalLoadingScreen fullPage={true} />;
   }
-  
+
   // If there was an error and we don't have cached data
   if (initialRequestError && !initData) {
     return (
@@ -122,9 +118,9 @@ function AppContent() {
       </div>
     );
   }
-  
+
   // If maintenance mode is enabled
-  if (initData?.appConfig.maintenance) {
+  if (initData?.appConfig?.maintenance) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="max-w-md text-center p-6 bg-card rounded-lg shadow-lg border border-border">
@@ -151,9 +147,22 @@ function AppContent() {
       </div>
     );
   }
-  
+
   // All good, render the application
   return <Router />;
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <InitialRequestProvider>
+          <AppContent />
+        </InitialRequestProvider>
+        <Toaster />
+      </QueryClientProvider>
+    </BrowserRouter>
+  );
 }
 
 export default App;

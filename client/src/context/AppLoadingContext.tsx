@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
+import { useDispatch } from "react-redux";
+import { setPremiumStatus } from "@/redux/slices/userInfoSlice";
 
 // Define interface for initialization data
 export interface AppInitData {
@@ -12,6 +14,12 @@ export interface AppInitData {
       cvMatching: boolean;
     };
     maintenance: boolean;
+  };
+  userInfo?: {
+    premium: {
+      isSubscribed: boolean;
+      expireDate: string | null;
+    };
   };
   // Add any other initialization data needed
 }
@@ -52,6 +60,7 @@ export const InitialRequestProvider: React.FC<InitialRequestProviderProps> = ({
     null,
   );
   const [initData, setInitData] = useState<AppInitData | null>(null);
+  const dispatch = useDispatch();
 
   const loadInitialData = async () => {
     setIsLoading(true);
@@ -65,6 +74,11 @@ export const InitialRequestProvider: React.FC<InitialRequestProviderProps> = ({
 
       // Store the initialization data
       setInitData(data);
+
+      // Update userInfo in Redux store if available
+      if (data.userInfo?.premium) {
+        dispatch(setPremiumStatus(data.userInfo.premium));
+      }
 
       // Mark the initial request as complete
       setIsInitialRequestComplete(true);
