@@ -48,6 +48,7 @@ const CvBuilderCreate = () => {
     userInfo,
     id,
     score = 0,
+    templateId,
   } = useAppSelector(getCurrentCvSelector) || {};
 
   // Update the local title state when the CV changes
@@ -436,7 +437,7 @@ const CvBuilderCreate = () => {
         </div>
 
         {/* Right side - Preview */}
-        <CvPreview data={userInfo} onChangeTemplate={handleChangeTemplate} />
+        <CvPreview data={userInfo} templateId={templateId} onChangeTemplate={handleChangeTemplate} />
       </div>
     </div>
   );

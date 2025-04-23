@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import loadable, { LoadableClassComponent } from "@loadable/component";
+// import loadable, { LoadableClassComponent } from "@loadable/component";
 import {
   MapPinIcon,
   PhoneIcon,
@@ -17,43 +17,49 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ComponentClass } from "react";
 
 interface CvPreviewProps {
-  data: CV;
+  data: CvUserInfo;
+  templateId: number;
   onChangeTemplate: () => void;
 }
 
 export interface ITemplateComponentProps {
   t: (i18nKey: string, options?: any) => string;
-  data: CV;
+  data: CvUserInfo;
 }
 
-const getTemplate = (
-  templateId: number,
-): LoadableClassComponent<ComponentClass> =>
-  loadable(
-    () =>
-      import(
-        `../Templates/${templateId <= 9 ? "0" : ""}${templateId}/TemplateComponent`
-      ),
-    {
-      fallback: <Loader2 />,
-    },
-  );
+// const getTemplate = (
+//   templateId: number,
+// ): LoadableClassComponent<ComponentClass> =>
+//   loadable(
+//     () =>
+//       import(
+//         `../Templates/${templateId <= 9 ? "0" : ""}${templateId}/TemplateComponent`
+//       ),
+//     {
+//       fallback: <Loader2 />,
+//     },
+//   );
 
-export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
+export function CvPreview({
+  data,
+  templateId,
+  onChangeTemplate,
+}: CvPreviewProps) {
   const { t } = useTranslation();
   const [Template, setTemplate] =
     useState<React.FC<ITemplateComponentProps> | null>(null);
 
   useEffect(() => {
     (async (): Promise<void> => {
-      const NewTemplate = await getTemplate(data.templateId);
+      const NewTemplate = () => null;
+      // await getTemplate(data.templateId);
 
       setTemplate(NewTemplate as React.FC<ITemplateComponentProps>);
     })();
-  }, [data.templateId]);
+  }, [templateId]);
 
   return (
     <div className="w-full lg:w-1/2 flex-shrink-0 rounded-lg flex flex-col items-center h-[calc(100vh-150px)]">
@@ -152,7 +158,7 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
               <ul className="text-xs text-gray-600 space-y-1">
                 {data.skills && data.skills.length > 0 ? (
                   data.skills.map((skill) => (
-                    <li key={skill.id}>{skill.name}</li>
+                    <li key={skill.name}>{skill.name}</li>
                   ))
                 ) : (
                   <>
