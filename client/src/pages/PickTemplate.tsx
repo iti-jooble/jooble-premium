@@ -3,10 +3,11 @@ import { useLocation, useRoute } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Loader2 } from 'lucide-react';
 import { TEMPLATES } from '@/components/cv-builder/Templates/constants';
 import { useAppDispatch } from '@/redux/store';
 import { createCv } from '@/redux/thunks';
+import { useToast } from '@/hooks/use-toast';
 
 // Default template images if not provided in constants
 const DEFAULT_TEMPLATE_IMAGES = [
@@ -16,6 +17,7 @@ const DEFAULT_TEMPLATE_IMAGES = [
 
 export default function PickTemplate() {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const dispatch = useAppDispatch();
   const [, navigate] = useLocation();
   const [isReturnPathMatch, params] = useRoute('/pick-template/:returnPath');
@@ -23,6 +25,7 @@ export default function PickTemplate() {
   
   const [selectedTemplateId, setSelectedTemplateId] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isCreating, setIsCreating] = useState(false);
 
   // Set selected template when active index changes
   useEffect(() => {
@@ -38,33 +41,54 @@ export default function PickTemplate() {
   };
 
   const handleContinue = async () => {
-    // First create a new CV
-    if (returnPath === 'cv-builder/create') {
-      try {
+    setIsCreating(true);
+    
+    try {
+      // First create a new CV
+      if (returnPath === 'cv-builder/create') {
         // Create a new CV with the selected template
-        const result = await dispatch(createCv({
-          templateId: selectedTemplateId
-        }));
+        const result = await dispatch(createCv({ templateId: selectedTemplateId }));
+        
+        toast({
+          title: t('pickTemplate.success', 'Template selected'),
+          description: t('pickTemplate.successDescription', 'Your CV has been created with the selected template'),
+          variant: 'default',
+        });
         
         // Navigate to the CV builder with the new CV
         navigate(`/${returnPath}`);
-      } catch (error) {
-        console.error('Failed to create CV:', error);
+      } else {
+        // Assume we're changing the template for an existing CV
+        toast({
+          title: t('pickTemplate.templateChanged', 'Template changed'),
+          description: t('pickTemplate.templateChangedDescription', 'Your CV template has been updated'),
+          variant: 'default',
+        });
+        
+        navigate(`/${returnPath}`);
       }
-    } else {
-      // Assume we're changing the template for an existing CV
-      navigate(`/${returnPath}`);
-      // You might want to store the selected template in a state or context
-      // to be used by the CvBuilderCreate component
+    } catch (error) {
+      console.error('Failed to create CV:', error);
+      
+      toast({
+        title: t('pickTemplate.error', 'Error'),
+        description: t('pickTemplate.errorDescription', 'Failed to create CV with selected template'),
+        variant: 'destructive',
+      });
+    } finally {
+      setIsCreating(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <div className="bg-gradient-to-b from-background to-muted/20 min-h-screen py-10">
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold mb-2">{t('pickTemplate.title', 'Choose Your CV Template')}</h1>
-        <p className="text-muted-foreground">
-          {t('pickTemplate.description', 'Select a template that best represents your professional style')}
+        <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text">
+          {t('pickTemplate.title', 'Choose Your CV Template')}
+        </h1>
+        <p className="text-muted-foreground max-w-md mx-auto">
+          {t('pickTemplate.description', 'Select a template that best represents your professional style and helps you stand out to potential employers')}
         </p>
       </div>
 
@@ -122,9 +146,15 @@ export default function PickTemplate() {
                   <div className="p-4 flex justify-between items-center">
                     <div className="flex-1">
                       <h3 className="font-semibold">{template.name}</h3>
-                      <p className="text-sm text-muted-foreground truncate max-w-[200px]">
-                        {template.description || `Template #${template.id}`}
-                      </p>
+                      {isActive ? (
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {template.description || `Template #${template.id}`}
+                        </p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground truncate">
+                          {template.description || `Template #${template.id}`}
+                        </p>
+                      )}
                     </div>
                     
                     {/* Selection Indicator */}
@@ -157,10 +187,23 @@ export default function PickTemplate() {
 
       {/* Continue Button */}
       <div className="flex justify-center">
-        <Button size="lg" onClick={handleContinue}>
-          {t('pickTemplate.continue', 'Continue with this template')}
+        <Button 
+          size="lg" 
+          onClick={handleContinue} 
+          disabled={isCreating}
+          className="min-w-[250px]"
+        >
+          {isCreating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {t('pickTemplate.creating', 'Creating your CV...')}
+            </>
+          ) : (
+            t('pickTemplate.continue', 'Continue with this template')
+          )}
         </Button>
       </div>
+    </div>
     </div>
   );
 }
