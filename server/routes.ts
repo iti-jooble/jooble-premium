@@ -77,6 +77,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/health", (_, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
+  
+  // Application initialization endpoint
+  app.get("/api/init", async (_, res) => {
+    try {
+      // Simulate a realistic initial data load
+      // In a real app, this might fetch user data, app configuration, permissions, etc.
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+      
+      // Return basic initialization data
+      res.json({
+        appConfig: {
+          version: "1.0.0",
+          features: {
+            jobSearch: true,
+            cvBuilder: true,
+            coverLetterGenerator: true,
+            cvMatching: true,
+          },
+          maintenance: false,
+        },
+        // Add any other initialization data needed across the application
+      });
+    } catch (error: any) {
+      log(`Error in app initialization: ${error.message}`, "api");
+      res.status(500).json({ 
+        error: "Failed to initialize application", 
+        message: error.message 
+      });
+    }
+  });
 
   // === CV API Routes ===
 
