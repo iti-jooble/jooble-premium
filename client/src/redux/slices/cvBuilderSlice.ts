@@ -39,7 +39,7 @@ const cvBuilderSlice = createSlice({
     resetCvBuilder: () => initialState,
   },
   extraReducers: (builder) => {
-    // Handle initCvBuilder actions
+    // Handle getCvList actions
     builder
       .addCase(getCvList.pending, (state) => {
         state.isLoading = true;
@@ -64,8 +64,7 @@ const cvBuilderSlice = createSlice({
       .addCase(createCv.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSaving = false;
-        state.cvList.push(action.payload);
-        state.currentCvId = action.payload.id;
+        state.currentCvId = action.payload;
       })
       .addCase(createCv.rejected, (state, action) => {
         state.isLoading = false;

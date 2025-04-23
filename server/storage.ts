@@ -30,7 +30,7 @@ const cvs: CV[] = [
         isCurrent: false,
       },
     ],
-    workExperience: [
+    experience: [
       {
         id: "1",
         company: "Tech Solutions Inc.",
@@ -72,7 +72,7 @@ const cvs: CV[] = [
         isCurrent: false,
       },
     ],
-    workExperience: [
+    experience: [
       {
         id: "1",
         company: "Creative Design Studio",
@@ -123,7 +123,7 @@ export const storage: IStorage = {
       dateCreated: new Date().toISOString(),
       personalInfo: {},
       education: [],
-      workExperience: [],
+      experience: [],
       skills: [],
       templateId: 1,
       score: 0,
@@ -179,7 +179,7 @@ export const storage: IStorage = {
         suggestion =
           "Accomplished professional with a proven track record of delivering results in fast-paced environments. Strong analytical skills combined with a collaborative approach to problem-solving.";
         break;
-      case "workExperience":
+      case "experience":
         suggestion =
           "Led cross-functional team in development of key product features, resulting in 30% increased user engagement and 25% reduction in customer support inquiries.";
         break;

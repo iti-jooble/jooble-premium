@@ -64,6 +64,12 @@ const createApiProxy = (targetUrl: string) => {
   };
 };
 
+const getApiUrl = (): string => {
+  return (
+    process.env.API_URL || "https://40cd-195-123-10-42.ngrok-free.app/fitly"
+  );
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // === API Routes ===
 
@@ -77,16 +83,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all CVs
   app.get("/api/cvs", async (_, res: Response) => {
     try {
-      const CV_API_URL = process.env.CV_API_URL || 'http://0.0.0.0:5000/api/cvs';
-      const response = await axios.get(CV_API_URL, {
+      const apiUrl = getApiUrl();
+      const response = await axios.get(`${apiUrl}/cvs`, {
         headers: {
           Cookie:
-            "AspNetCore.Auth=CfDJ8GdChKJoNXRDjdtYcEccIJOjGRGWeeSqFQlbhm2obxmiLbgKYxa7Ikn4kKQEyxoWQRuqvt8IKlK8Boe6zVfeY8cqbxrJi1b0ZUR9nxyAZhV8hxyy13k7b-fuzKLNCNTTT9NhsjI2HG8rptgSC-hKWYtLW7tOHiSvkwbN2Twjfdk0czVLASms3DBCX9VGw-9rnI-9gAr5vTpwumZfad8_uAdIMJEURVAGL-31RuTu1LExa4xaIEAkGZ4coOGlLF9YU5eSOr-2PFQQwgABtuWc9lUjeZhYDmwZJdevw7D0dY9czUr1w-83_U_b_V7dNLx5tWzgjfQu5H5qR2U-kgHYR5xKPtVWYazZfa3JZzES6YX9SR_bPRs37J958btqUvzN_MgVtJDHSs9pYMQLnyQp1LnRc0tFNqBilygHukFGO8l_DZCH5KSWc7UF3UoOEz92BM2eH6gCOiEh9z0m-_fsq6I",
+            "AspNetCore.Auth=CfDJ8GdChKJoNXRDjdtYcEccIJMhI_cb45jJQru_qMrzGUnaIvpAJHhATXEzX5uIFlStRIWgLxHNLs3ihvIBUfuvX4ZfmMIEO1bEcyi6JDnqj3hcM9cAokdnaDy-DqssWwjgdDnNZSEuRdQ0gBa8PQ2GsNRfpVcw9NGwhqQ9GiEr9Ioumv-TvqfJ0zVCq36GPsS-A4wVcDy7sLmvVgTC2xAlx-qsIPRj9ulpMRFao2VTGt9GVWpKwSVFkDdPsXDjUkVC2-SlltvDdOKu3ZYd55pVOKErkXNJtZXpmSEqgkrYnViXpAmFfn8eISKteG4MJZKvGGt5-FuPxdsjxl14ItLECGBIw2tvV4u7aMV97S_U2k7gsxXu_868CP5DQu1LR-vA2HPsgFtM-3YrbJlG4sW_5Hbzh0G1J9WcVkrVtkxB19uJcDG1HI0cEwZy2gNkWpF-4ATfxIave1-urYS8QnwHPtU",
         },
       });
-      console.log("response", response.data);
-      const cvs = response.data;
-      res.json(cvs);
+      res.json(response.data);
     } catch (error: any) {
       log(`Error fetching CVs: ${error.message}`, "api");
       res
@@ -98,11 +102,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get CV by ID
   app.get("/api/cvs/:id", async (req: Request, res: Response) => {
     try {
-      const cv = await storage.getCVById(req.params.id);
-      if (!cv) {
-        return res.status(404).json({ error: "CV not found" });
-      }
-      res.json(cv);
+      const apiUrl = getApiUrl();
+      const response = await axios.get(`${apiUrl}/cvs/${req.params.id}`);
+
+      res.json(response.data.cv);
     } catch (error: any) {
       log(`Error fetching CV ${req.params.id}: ${error.message}`, "api");
       res
@@ -112,10 +115,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new CV
-  app.post("/api/cvs", async (request: Request, res: Response) => {
+  app.post("/api/cvs", async (req: Request, res: Response) => {
     try {
-      const newCV = await storage.createCV(request.body);
-      res.status(201).json(newCV);
+      const apiUrl = getApiUrl();
+      const response = await axios.post(`${apiUrl}/cvs`, {
+        ...req.body,
+      });
+      res.json(response.data);
     } catch (error: any) {
       log(`Error creating CV: ${error.message}`, "api");
       res
@@ -127,12 +133,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update CV
   app.put("/api/cvs/:id", async (req: Request, res: Response) => {
     try {
-      const updatedCV = await storage.updateCV(req.params.id, req.body);
-      if (!updatedCV) {
-        return res.status(404).json({ error: "CV not found" });
-      }
+      const apiUrl = getApiUrl();
+      const response = await axios.put(`${apiUrl}/cvs/${req.params.id}`, {
+        ...req.body,
+      });
 
-      res.json(updatedCV);
+      res.json(response.data);
     } catch (error: any) {
       log(`Error updating CV ${req.params.id}: ${error.message}`, "api");
       res
@@ -144,10 +150,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Delete CV
   app.delete("/api/cvs/:id", async (req: Request, res: Response) => {
     try {
-      const success = await storage.deleteCV(req.params.id);
-      if (!success) {
-        return res.status(404).json({ error: "CV not found" });
-      }
+      const apiUrl = getApiUrl();
+      await axios.delete(`${apiUrl}/cvs/${req.params.id}`);
 
       res.status(204).send();
     } catch (error: any) {
@@ -161,19 +165,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Duplicate CV
   app.post("/api/cvs/:id/duplicate", async (req: Request, res: Response) => {
     try {
-      const { title } = req.body;
-      const duplicatedCV = await storage.duplicateCV(req.params.id, title);
+      const apiUrl = getApiUrl();
+      const response = await axios.post(
+        `${apiUrl}/cvs/${req.params.id}/duplicate`,
+      );
 
-      if (!duplicatedCV) {
-        return res.status(404).json({ error: "Original CV not found" });
-      }
-
-      res.status(201).json(duplicatedCV);
+      res.status(201).json(response.data);
     } catch (error: any) {
       log(`Error duplicating CV ${req.params.id}: ${error.message}`, "api");
       res
         .status(500)
         .json({ error: "Failed to duplicate CV", message: error.message });
+    }
+  });
+
+  app.get("/api/cvs/:id/download", async (req: Request, res: Response) => {
+    try {
+      const apiUrl = getApiUrl();
+      const response = await axios.get(
+        `${apiUrl}/cvs/${req.params.id}/download`,
+      );
+
+      // Set the proper headers for file download
+      res.setHeader("Content-Disposition", "attachment; filename=cv_download");
+      res.setHeader(
+        "Content-Type",
+        response.headers["content-type"] || "application/octet-stream",
+      );
+
+      // Stream the response data directly to the client
+      res.send(response.data);
+    } catch (error: any) {
+      log(`Error downloading CV ${req.params.id}: ${error.message}`, "api");
+      res
+        .status(500)
+        .json({ error: "Failed to download CV", message: error.message });
     }
   });
 

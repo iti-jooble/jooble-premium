@@ -1,7 +1,7 @@
 /**
  * Types for the CV API
  */
-import { CV, PersonalInfo, Education, Skill, WorkExperience } from '../state/cvBuilder.types';
+import { CV, PersonalInfo, Education, Skill, experience } from '../state/cvBuilder.types';
 
 /**
  * Interface for get CVs response
@@ -27,7 +27,7 @@ export interface CreateCVRequest {
   summary?: string;
   skills?: Skill[];
   education?: Education[];
-  workExperience?: WorkExperience[];
+  experience?: experience[];
 }
 
 /**
@@ -40,7 +40,7 @@ export interface UpdateCVRequest {
   summary?: string;
   skills?: Skill[];
   education?: Education[];
-  workExperience?: WorkExperience[];
+  experience?: experience[];
 }
 
 /**

@@ -17,7 +17,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { PersonalInfoSection } from "@/components/cv-builder/PersonalInfoSection";
-import { WorkExperienceSection } from "@/components/cv-builder/WorkExperienceSection";
+import { ExperienceSection } from "@/components/cv-builder/WorkExperienceSection";
 import { EducationSection } from "@/components/cv-builder/EducationSection";
 import { SkillsSection } from "@/components/cv-builder/SkillsSection";
 import { SummarySection } from "@/components/cv-builder/SummarySection";
@@ -29,10 +29,11 @@ import { getCurrentCvSelector } from "@/redux/slices/cvBuilderSlice";
 import { getCvScoreDescription } from "@/lib/cvScoreUtils";
 import {
   PersonalInfo,
-  WorkExperience,
+  Experience,
   Education,
   Skill,
   CV,
+  CvUserInfo,
 } from "@shared/schema";
 
 const CvBuilderCreate = () => {
@@ -42,14 +43,19 @@ const CvBuilderCreate = () => {
   const [isTitleFocused, setIsTitleFocused] = useState(false);
   const [titleValue, setTitleValue] = useState("");
 
-  const currentCv = useAppSelector(getCurrentCvSelector)!;
+  const {
+    title,
+    userInfo,
+    id,
+    score = 0,
+  } = useAppSelector(getCurrentCvSelector) || {};
 
   // Update the local title state when the CV changes
   useEffect(() => {
-    if (currentCv) {
-      setTitleValue(currentCv.title);
+    if (title) {
+      setTitleValue(title);
     }
-  }, [currentCv?.id, currentCv?.title]);
+  }, [id, title]);
 
   const handleUpdateCv = async (partialCv: Partial<CV>) => {
     try {
@@ -75,17 +81,25 @@ const CvBuilderCreate = () => {
   };
 
   const handlePersonalInfoSave = (values: PersonalInfo) => {
-    handleUpdateCv({ personalInfo: values });
+    handleUpdateCv({
+      userInfo: {
+        ...(userInfo as CvUserInfo),
+        personalInfo: values,
+      },
+    });
   };
 
-  const handleWorkExperienceSave = (experiences: WorkExperience[]) => {
+  const handleExperienceSave = (experiences: Experience[]) => {
     const cvData: Partial<CV> = {
-      workExperience: experiences,
+      userInfo: {
+        ...(userInfo as CvUserInfo),
+        experience: experiences,
+      },
     };
 
-    if (currentCv.workExperience.length === 0 && currentCv.title === "New CV") {
+    if (!userInfo?.experience?.length && title === "New CV") {
       cvData.title =
-        `${currentCv?.personalInfo?.firstName ?? ""} ${currentCv?.personalInfo?.lastName ?? ""} - ${experiences[0].position}`
+        `${userInfo?.personalInfo?.firstName ?? ""} ${userInfo?.personalInfo?.lastName ?? ""} - ${experiences[0].position}`
           .trim()
           .replace(/^-\s*/, "");
     }
@@ -94,21 +108,36 @@ const CvBuilderCreate = () => {
   };
 
   const handleEducationSave = (educations: Education[]) => {
-    return handleUpdateCv({ education: educations });
+    return handleUpdateCv({
+      userInfo: {
+        ...(userInfo as CvUserInfo),
+        education: educations,
+      },
+    });
   };
 
   const handleSkillsSave = (skills: Skill[]) => {
-    handleUpdateCv({ skills });
+    handleUpdateCv({
+      userInfo: {
+        ...(userInfo as CvUserInfo),
+        skills,
+      },
+    });
   };
 
   const handleSummarySave = (values: { summary: string }) => {
-    handleUpdateCv({ summary: values.summary });
+    handleUpdateCv({
+      userInfo: {
+        ...(userInfo as CvUserInfo),
+        summary: values.summary,
+      },
+    });
   };
 
   const handleSaveTitle = () => {
     setIsTitleFocused(false);
 
-    if (titleValue !== currentCv.title) {
+    if (titleValue !== title) {
       handleUpdateCv({ title: titleValue });
     }
   };
@@ -120,7 +149,7 @@ const CvBuilderCreate = () => {
     });
   };
 
-  if (!currentCv) {
+  if (!id || !userInfo) {
     return <Redirect to="/cv-builder" />;
   }
 
@@ -158,7 +187,7 @@ const CvBuilderCreate = () => {
                 </button>
                 <button
                   onClick={() => {
-                    setTitleValue(currentCv.title);
+                    setTitleValue(title || "");
                     setIsTitleFocused(false);
                   }}
                   className="bg-destructive/10 hover:bg-destructive/20 text-destructive p-1 rounded-full transition-colors"
@@ -211,22 +240,22 @@ const CvBuilderCreate = () => {
             <div className="flex items-center gap-2">
               <div
                 className={`w-16 h-12 rounded-full flex items-center justify-center ${
-                  currentCv.score >= 80
+                  score >= 80
                     ? "bg-green-100 text-green-700"
-                    : currentCv.score >= 60
+                    : score >= 60
                       ? "bg-yellow-100 text-yellow-700"
                       : "bg-red-100 text-red-700"
                 }`}
               >
-                <span className="text-sm font-bold">{currentCv.score}%</span>
+                <span className="text-sm font-bold">{score}%</span>
               </div>
               <div>
                 <h4 className="text-sm font-semibold">
                   {t("cvBuilderCreate.cvScore", "CV Score")}:{" "}
-                  {getCvScoreDescription(currentCv.score)}
+                  {getCvScoreDescription(score)}
                 </h4>
                 <p className="text-xs text-muted-foreground">
-                  {currentCv.score < 70
+                  {score < 70
                     ? t(
                         "cvBuilderCreate.improveScore",
                         "Complete more sections to increase your score",
@@ -243,14 +272,14 @@ const CvBuilderCreate = () => {
               <div className="relative w-full h-2.5 bg-muted rounded-full overflow-hidden">
                 <div
                   className={`absolute inset-y-0 left-0 rounded-full transition-all duration-500 ${
-                    currentCv.score >= 80
+                    score >= 80
                       ? "text-green-700"
-                      : currentCv.score >= 60
+                      : score >= 60
                         ? "text-yellow-500"
                         : "text-red-700"
                   }`}
                   style={{
-                    width: `${currentCv.score}%`,
+                    width: `${score}%`,
                     backgroundColor: "currentColor",
                   }}
                 />
@@ -286,7 +315,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <PersonalInfoSection
-                  defaultValues={currentCv.personalInfo}
+                  defaultValues={userInfo.personalInfo}
                   onSave={handlePersonalInfoSave}
                 />
               </AccordionContent>
@@ -313,9 +342,9 @@ const CvBuilderCreate = () => {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
-                <WorkExperienceSection
-                  experiences={currentCv.workExperience}
-                  onSave={handleWorkExperienceSave}
+                <ExperienceSection
+                  experiences={userInfo.experience}
+                  onSave={handleExperienceSave}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -342,7 +371,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <EducationSection
-                  educations={currentCv.education}
+                  educations={userInfo.education}
                   onSave={handleEducationSave}
                 />
               </AccordionContent>
@@ -370,7 +399,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <SkillsSection
-                  skills={currentCv.skills}
+                  skills={userInfo.skills}
                   onSave={handleSkillsSave}
                 />
               </AccordionContent>
@@ -398,7 +427,7 @@ const CvBuilderCreate = () => {
               </AccordionTrigger>
               <AccordionContent className="p-5 pt-2 border-t border-border/40">
                 <SummarySection
-                  defaultValues={{ summary: currentCv.summary || "" }}
+                  defaultValues={{ summary: userInfo.summary || "" }}
                   onSave={handleSummarySave}
                 />
               </AccordionContent>
@@ -407,7 +436,7 @@ const CvBuilderCreate = () => {
         </div>
 
         {/* Right side - Preview */}
-        <CvPreview data={currentCv} onChangeTemplate={handleChangeTemplate} />
+        <CvPreview data={userInfo} onChangeTemplate={handleChangeTemplate} />
       </div>
     </div>
   );

@@ -1,15 +1,16 @@
 import { CV } from "@shared/schema";
 
 export enum CvSource {
-  MANUAL = "manual",
-  IMPORTED = "imported",
-  AI_GENERATED = "ai_generated",
-  TEMPLATE = "template",
+  MANUAL = 100,
+  DUPLICATED = 101,
+  IMPORTED = 102,
 }
 
 // CV API types
 export interface ICreateCvRequest {
-  source: CvSource;
+  html?: string;
+  css?: string;
+  cvModel: Partial<CV>;
 }
 
 export interface ICreateCvResponse {
@@ -19,7 +20,7 @@ export interface ICreateCvResponse {
 
 export interface IUpdateCvRequest {
   id: string;
-  cvData: CV;
+  cvModel: Partial<CV>;
   html: string;
   css: string;
 }

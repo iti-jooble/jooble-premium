@@ -32,12 +32,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { WorkExperience } from "@shared/schema";
+import { Experience } from "@shared/schema";
 import { getCurrentYear, getYearsArray } from "@shared/dateUtils";
 
 interface WorkExperienceSectionProps {
-  experiences?: WorkExperience[];
-  onSave: (experiences: WorkExperience[]) => void;
+  experiences?: Experience[];
+  onSave: (experiences: Experience[]) => void;
 }
 
 const enhancedSchema = z.object({
@@ -52,7 +52,7 @@ const enhancedSchema = z.object({
     .max(1000, { message: "Description should not exceed 1000 characters" }),
 });
 
-export function WorkExperienceSection({
+export function ExperienceSection({
   experiences = [],
   onSave,
 }: WorkExperienceSectionProps) {
@@ -64,7 +64,7 @@ export function WorkExperienceSection({
     return getYearsArray();
   }, []);
 
-  const form = useForm<WorkExperience>({
+  const form = useForm<Experience>({
     resolver: zodResolver(enhancedSchema),
     defaultValues: {
       position: "",
@@ -88,7 +88,7 @@ export function WorkExperienceSection({
     });
   };
 
-  const handleEditExperience = (exp: WorkExperience) => {
+  const handleEditExperience = (exp: Experience) => {
     setEditingId(exp.id);
     form.reset({
       position: exp.position,
@@ -107,7 +107,7 @@ export function WorkExperienceSection({
     setIsLoading(false);
   };
 
-  const handleSaveForm = async (values: WorkExperience) => {
+  const handleSaveForm = async (values: Experience) => {
     setIsLoading(true);
 
     try {
@@ -128,7 +128,7 @@ export function WorkExperienceSection({
         await onSave(updatedExperiences);
         setEditingId(null);
       } else {
-        const newExperience: WorkExperience = {
+        const newExperience: Experience = {
           id: uuidv4(),
           position: values.position,
           company: values.company,
@@ -150,6 +150,7 @@ export function WorkExperienceSection({
           : "Your work experience has been added.",
       });
     } catch (error) {
+      console.error("Error saving work experience:", error);
       toast({
         title: "Error",
         description: "Failed to save work experience.",

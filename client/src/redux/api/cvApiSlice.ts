@@ -18,7 +18,7 @@ export const cvApiSlice = createApi({
   tagTypes: ["CvBuilder", "CV"],
   endpoints: (builder) => ({
     // Get all CVs
-    getCVs: builder.query<CV[], void>({
+    getCVs: builder.query<{ cvList: CV[] }, void>({
       query: () => "/cvs",
       providesTags: [{ type: "CV", id: "LIST" }],
     }),
@@ -30,7 +30,7 @@ export const cvApiSlice = createApi({
     }),
 
     // Create a new CV
-    createCV: builder.mutation<CV, ICreateCvRequest>({
+    createCV: builder.mutation<{ cvId: string }, ICreateCvRequest>({
       query: (data) => ({
         url: "/cvs",
         method: "POST",
@@ -40,7 +40,7 @@ export const cvApiSlice = createApi({
     }),
 
     // Update a CV
-    updateCV: builder.mutation<CV, IUpdateCvRequest>({
+    updateCV: builder.mutation<{ cvId: string }, IUpdateCvRequest>({
       query: (data) => ({
         url: `/cvs/${data.id}`,
         method: "PUT",
@@ -65,7 +65,7 @@ export const cvApiSlice = createApi({
     }),
 
     // Duplicate a CV
-    duplicateCV: builder.mutation<CV, string>({
+    duplicateCV: builder.mutation<{ cvId: number }, string>({
       query: (id) => ({
         url: `/cvs/${id}/duplicate`,
         method: "POST",

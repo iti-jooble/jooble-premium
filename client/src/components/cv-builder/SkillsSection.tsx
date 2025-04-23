@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, KeyboardEvent } from "react";
-import { PlusCircle, Trash2, Sparkles, X } from "lucide-react";
+import { PlusCircle, Sparkles, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { v4 as uuidv4 } from "uuid";
 import { Skill } from "@shared/schema";
 
 interface SkillsSectionProps {
@@ -38,7 +37,6 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
     }
 
     const skill: Skill = {
-      id: uuidv4(),
       name: newSkill.trim(),
     };
 
@@ -61,8 +59,8 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
     }
   };
 
-  const handleRemoveSkill = (id: string) => {
-    const updatedSkills = localSkills.filter((skill) => skill.id !== id);
+  const handleRemoveSkill = (id: number) => {
+    const updatedSkills = localSkills.filter((_, index) => index !== id);
     setLocalSkills(updatedSkills);
 
     // Auto-save as we remove skills
@@ -71,7 +69,6 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
 
   const handleAddSuggestion = (suggestion: string) => {
     const skill: Skill = {
-      id: uuidv4(),
       name: suggestion,
     };
 
@@ -118,8 +115,8 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
     <div className="space-y-4">
       {/* Skills list */}
       <div className="flex flex-wrap gap-2">
-        {localSkills.map((skill) => (
-          <div key={skill.id} className="relative group">
+        {localSkills.map((skill, index) => (
+          <div key={skill.name} className="relative group">
             <Button
               variant="outline"
               size="sm"
@@ -128,7 +125,7 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
               {skill.name}
               <span
                 className="absolute right-2 hover:text-red-500 cursor-pointer"
-                onClick={() => handleRemoveSkill(skill.id)}
+                onClick={() => handleRemoveSkill(index)}
               >
                 <X className="h-3.5 w-3.5 ml-1" />
               </span>

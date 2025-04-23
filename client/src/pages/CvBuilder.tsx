@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import {
   LinkedinIcon,
   PlusIcon,
   ChevronRightIcon,
+  Loader2,
 } from "lucide-react";
 import { createCv, initCvBuilder } from "@/redux/thunks";
 import { CvTable } from "@/components/cv-builder/CvTable";
@@ -16,37 +17,27 @@ import { CV } from "@shared/schema";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { deleteCv, duplicateCv } from "@/redux/thunks";
 import { setCurrentCvId } from "@/redux/slices/cvBuilderSlice";
+import axios from "axios";
 
 const CvBuilder = () => {
   const { t } = useTranslation();
-  const [cvs, setCvs] = useState<CV[]>([]);
   const [, navigate] = useLocation();
   const { toast } = useToast();
 
   const dispatch = useAppDispatch();
-  const { isLoading, isInitialized, cvList } = useAppSelector(
+  const { isLoading, isInitialized, cvList, error } = useAppSelector(
     (state) => state.cvBuilder,
   );
 
-  useEffect(() => {
-    if (cvList) {
-      setCvs(cvList);
-    }
-  }, [cvList.length]);
-
   useLayoutEffect(() => {
     console.log("Initializing CV builder...");
-    if (!isInitialized && !isLoading) {
+    if (!isInitialized && !isLoading && !error) {
       dispatch(initCvBuilder());
     }
   }, [dispatch, isInitialized, isLoading]);
 
   const handleEdit = (cv: CV) => {
     dispatch(setCurrentCvId(cv.id));
-    toast({
-      title: t("cvBuilder.editingCv.title"),
-      description: t("cvBuilder.editingCv.description", { title: cv.title }),
-    });
 
     navigate("/cv-builder/create");
   };
@@ -59,10 +50,17 @@ const CvBuilder = () => {
     dispatch(duplicateCv(id));
   };
 
-  const handleDownload = (cv: CV) => {
-    // In a real application, this would generate a PDF and trigger a download
-    console.log("Download CV:", cv);
-    // For now we just show a toast in the CvTable component
+  const handleDownload = async (cv: CV) => {
+    const response = await axios.get(`/api/cvs/${cv.id}/download`, {
+      responseType: "blob",
+    });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${cv.title}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
   };
 
   const handleCreateNew = async () => {
@@ -110,7 +108,19 @@ const CvBuilder = () => {
         </div>
       </div>
 
-      {cvs.length === 0 ? (
+      {(!isInitialized && isLoading) || error ? (
+        <Card className="shadow-lg border-0 bg-gradient-to-br from-background to-muted/50">
+          <CardContent className="p-10 flex flex-col items-center justify-center text-center">
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <p className="text-red-600">
+                {t("Something went wrong. Please try again later.")}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      ) : cvList.length === 0 ? (
         <Card className="shadow-lg border-0 bg-gradient-to-br from-background to-muted/50">
           <CardContent className="p-10 flex flex-col items-center justify-center text-center">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 ring-4 ring-primary/5">
@@ -144,7 +154,7 @@ const CvBuilder = () => {
           </CardHeader>
           <CardContent className="p-0">
             <CvTable
-              cvs={cvs}
+              cvs={cvList}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onDuplicate={handleDuplicate}

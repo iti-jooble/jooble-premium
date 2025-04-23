@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import loadable, { LoadableClassComponent } from "@loadable/component";
 import {
   MapPinIcon,
   PhoneIcon,
@@ -6,23 +7,53 @@ import {
   FileText,
   DownloadIcon,
   LayoutTemplateIcon,
+  Loader2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { CV } from "@shared/schema";
+import { CV, CvUserInfo } from "@shared/schema";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState, useEffect } from "react";
 
 interface CvPreviewProps {
   data: CV;
   onChangeTemplate: () => void;
 }
 
+export interface ITemplateComponentProps {
+  t: (i18nKey: string, options?: any) => string;
+  data: CV;
+}
+
+const getTemplate = (
+  templateId: number,
+): LoadableClassComponent<ComponentClass> =>
+  loadable(
+    () =>
+      import(
+        `../Templates/${templateId <= 9 ? "0" : ""}${templateId}/TemplateComponent`
+      ),
+    {
+      fallback: <Loader2 />,
+    },
+  );
+
 export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
   const { t } = useTranslation();
+  const [Template, setTemplate] =
+    useState<React.FC<ITemplateComponentProps> | null>(null);
+
+  useEffect(() => {
+    (async (): Promise<void> => {
+      const NewTemplate = await getTemplate(data.templateId);
+
+      setTemplate(NewTemplate as React.FC<ITemplateComponentProps>);
+    })();
+  }, [data.templateId]);
 
   return (
     <div className="w-full lg:w-1/2 flex-shrink-0 rounded-lg flex flex-col items-center h-[calc(100vh-150px)]">
@@ -148,8 +179,8 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
                 {t("cvPreview.experience")}
               </h2>
 
-              {data.workExperience && data.workExperience.length > 0 ? (
-                data.workExperience.map((exp) => (
+              {data.experience && data.experience.length > 0 ? (
+                data.experience.map((exp) => (
                   <div key={exp.id} className="mb-4">
                     <div className="flex justify-between items-start">
                       <div>
@@ -283,6 +314,8 @@ export function CvPreview({ data, onChangeTemplate }: CvPreviewProps) {
           </div>
         </div>
       </div>
+      {/* #tempDiv needed for creating a CV html */}
+      <div id="tempDiv" className="absolute t-0 l-0" />
     </div>
   );
 }

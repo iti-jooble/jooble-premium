@@ -1,6 +1,5 @@
 export enum CvSource {
-  MANUAL = 'manual',
-  IMPORTED = 'imported',
-  AI_GENERATED = 'ai_generated',
-  TEMPLATE = 'template'
+  MANUAL = 100,
+  DUPLICATED = 101,
+  IMPORTED = 102,
 }

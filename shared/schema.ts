@@ -23,7 +23,6 @@ export const personalInfoSchema = z.object({
 });
 
 export const skillSchema = z.object({
-  id: z.string(),
   name: z.string(),
   level: z.enum(["beginner", "intermediate", "advanced", "expert"]).optional(),
 });
@@ -37,7 +36,7 @@ export const educationSchema = z.object({
   endYear: z.string().optional().nullable(),
 });
 
-export const workExperienceSchema = z.object({
+export const experienceSchema = z.object({
   id: z.string(),
   company: z.string(),
   position: z.string(),
@@ -47,16 +46,21 @@ export const workExperienceSchema = z.object({
   isCurrent: z.boolean(),
 });
 
-export const cvSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  score: z.number(),
-  dateCreated: z.string(),
+export const cvUserInfoSchema = z.object({
   personalInfo: personalInfoSchema.partial(),
   summary: z.string().optional(),
   skills: z.array(skillSchema),
   education: z.array(educationSchema),
-  workExperience: z.array(workExperienceSchema),
+  experience: z.array(experienceSchema),
+});
+
+export const cvSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  score: z.number(),
+  source: z.number(),
+  dateCreated: z.string(),
+  userInfo: cvUserInfoSchema,
   templateId: z.number(),
 });
 
@@ -64,4 +68,5 @@ export type CV = z.infer<typeof cvSchema>;
 export type PersonalInfo = z.infer<typeof personalInfoSchema>;
 export type Skill = z.infer<typeof skillSchema>;
 export type Education = z.infer<typeof educationSchema>;
-export type WorkExperience = z.infer<typeof workExperienceSchema>;
+export type Experience = z.infer<typeof experienceSchema>;
+export type CvUserInfo = z.infer<typeof cvUserInfoSchema>;

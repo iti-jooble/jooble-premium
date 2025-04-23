@@ -1,4 +1,4 @@
-import { CV, WorkExperience, Skill } from "@shared/schema";
+import { CV, experience, Skill } from "@shared/schema";
 
 export interface ICVTemplate {
   id: number;
@@ -23,13 +23,13 @@ export interface IAISkillSuggestion {
 }
 
 export interface IAISummaryRequest {
-  experience: WorkExperience[];
+  experience: experience[];
   skills: Skill[];
   targetPosition?: string;
 }
 
 export interface IAIRecommendation {
-  type: "skill" | "summary" | "workExperience" | "education";
+  type: "skill" | "summary" | "experience" | "education";
   content: string;
   score: number;
   reason: string;

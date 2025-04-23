@@ -1,12 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CvSource, ICreateCvRequest } from "../../types/api/cvBuilder.types";
 import { IUpdateCvRequest } from "../../types/api/cvBuilder.types";
-import { cvBuilderApiSlice } from "../api/cvBuilderApiSlice";
 import { getErrorMessage } from "../helpers";
 import { cvApiSlice } from "../api/cvApiSlice";
 import { CV } from "@shared/schema";
 import { RootState } from "../store";
-import { getCurrentCvSelector, setCurrentCvId } from "../slices/cvBuilderSlice";
+import { getCurrentCvSelector } from "../slices/cvBuilderSlice";
 
 /**
  * AsyncThunk for initializing the CV builder
@@ -37,7 +36,7 @@ export const getCvList = createAsyncThunk<CV[]>(
         throw new Error(getErrorMessage(result.error));
       }
 
-      return result.data;
+      return result.data.cvList;
     } catch (error: any) {
       return rejectWithValue(
         error.message || "An error occurred fetching CV list",
@@ -50,23 +49,43 @@ export const getCvList = createAsyncThunk<CV[]>(
  * AsyncThunk for creating a new CV
  * Uses the API slice's createCv endpoint
  */
-export const createCv = createAsyncThunk<CV>(
+export const createCv = createAsyncThunk<string>(
   "cvBuilder/createCv",
   async (_, { dispatch, rejectWithValue }) => {
     try {
       const request: ICreateCvRequest = {
-        source: CvSource.MANUAL,
+        cvModel: {
+          source: CvSource.MANUAL,
+          title: "New CV",
+          templateId: 0,
+          userInfo: {
+            personalInfo: {
+              firstName: "",
+              lastName: "",
+              email: "",
+              phone: "",
+              city: "",
+              country: "",
+            },
+            summary: "",
+            skills: [],
+            experience: [],
+            education: [],
+          },
+        },
       };
 
       const result = await dispatch(
         cvApiSlice.endpoints.createCV.initiate(request),
       );
 
+      await dispatch(getCvList());
+
       if (!result.data) {
         throw new Error("Failed to create CV");
       }
 
-      return result.data;
+      return result.data.cvId;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -95,19 +114,26 @@ export const updateCv = createAsyncThunk(
       if (!currentCv) {
         throw new Error("Selected CV not found");
       }
-      
+
       // Import dynamically to avoid circular dependencies
-      const { calculateCvScore } = await import('../../lib/cvScoreUtils');
-      
+      const { calculateCvScore } = await import("../../lib/cvScoreUtils");
+
       // Create the updated CV data
-      const updatedCvData = { ...currentCv, ...partialCv };
-      
+      const updatedCvData: CV = {
+        ...currentCv,
+        ...partialCv,
+        userInfo: {
+          ...currentCv.userInfo,
+          ...partialCv.userInfo,
+        },
+      };
+
       // Calculate the score
-      const score = calculateCvScore(updatedCvData);
-      
+      const score = calculateCvScore(updatedCvData.userInfo);
+
       const request: IUpdateCvRequest = {
-        id: currentCv.id,
-        cvData: { ...updatedCvData, score },
+        id: updatedCvData.id,
+        cvModel: { ...updatedCvData, score },
         html,
         css,
       };

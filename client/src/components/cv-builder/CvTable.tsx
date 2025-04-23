@@ -90,11 +90,6 @@ export const CvTable = ({
 
   const handleDownload = (cv: CV, e: React.MouseEvent) => {
     e.stopPropagation();
-    // In a real app, this would create a PDF and download it, but for demo we just show a toast
-    toast({
-      title: t("common.notifications.success"),
-      description: `"${cv.title}" has been downloaded.`,
-    });
     onDownload(cv);
   };
 
@@ -112,7 +107,7 @@ export const CvTable = ({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat("en-UK", {
       year: "numeric",
       month: "short",
       day: "numeric",
