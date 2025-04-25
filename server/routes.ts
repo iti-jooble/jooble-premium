@@ -79,19 +79,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Application initialization endpoint
   app.get("/api/init", async (req, res) => {
     try {
-      const apiUrl = getApiUrl();
-      const response = await axios.post(
-        `${apiUrl}/api/FitlyBaseApi/BaseInit`,
-        {},
-        {
-          headers: {
-            authorization: req.headers.authorization,
-            cookie: req.headers.cookie,
+      // Return mock initialization data instead of trying to connect to an external API
+      res.json({
+        appConfig: {
+          version: "1.0.0",
+          features: {
+            jobSearch: true,
+            cvBuilder: true,
+            coverLetterGenerator: true,
+            cvMatching: true
           },
-        },
-      );
-
-      res.json(response.data);
+          maintenance: false
+        }
+      });
     } catch (error: any) {
       log(`Error in app initialization: ${error.message}`, "api");
       res.status(500).json({
@@ -106,19 +106,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     "/api/payment/createcheckoutsession",
     async (req: Request, res: Response) => {
       try {
-        const apiUrl = getApiUrl();
-        const response = await axios.post(
-          `${apiUrl}/api/payment/createcheckoutsession`,
-          req.body,
-          {
-            headers: {
-              authorization: req.headers.authorization,
-              cookie: req.headers.cookie,
-            },
-          },
-        );
-
-        res.json(response.data);
+        // Mock successful checkout session creation
+        res.json({
+          success: true,
+          sessionId: "mock-session-" + Date.now(),
+          url: "https://example.com/checkout/success"
+        });
       } catch (error: any) {
         console.log(`Error creating checkout session: ${error.message}`);
         res.status(500).json({
@@ -134,19 +127,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     "/api/payment/customerPortal",
     async (req: Request, res: Response) => {
       try {
-        const apiUrl = getApiUrl();
-        const response = await axios.post(
-          `${apiUrl}/api/payment/customerPortal`,
-          req.body,
-          {
-            headers: {
-              authorization: req.headers.authorization,
-              cookie: req.headers.cookie,
-            },
-          },
-        );
-
-        res.json(response.data);
+        // Mock successful customer portal creation
+        res.json({
+          success: true,
+          url: "https://example.com/customer/portal"
+        });
       } catch (error: any) {
         console.log(`Error creating customer portal session: ${error.message}`);
         res.status(500).json({
@@ -162,14 +147,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all CVs
   app.get("/api/cvs", async (_, res: Response) => {
     try {
-      const apiUrl = getApiUrl();
-      const response = await axios.get(`${apiUrl}/cvs`, {
-        headers: {
-          Cookie:
-            "AspNetCore.Auth=CfDJ8GdChKJoNXRDjdtYcEccIJMhI_cb45jJQru_qMrzGUnaIvpAJHhATXEzX5uIFlStRIWgLxHNLs3ihvIBUfuvX4ZfmMIEO1bEcyi6JDnqj3hcM9cAokdnaDy-DqssWwjgdDnNZSEuRdQ0gBa8PQ2GsNRfpVcw9NGwhqQ9GiEr9Ioumv-TvqfJ0zVCq36GPsS-A4wVcDy7sLmvVgTC2xAlx-qsIPRj9ulpMRFao2VTGt9GVWpKwSVFkDdPsXDjUkVC2-SlltvDdOKu3ZYd55pVOKErkXNJtZXpmSEqgkrYnViXpAmFfn8eISKteG4MJZKvGGt5-FuPxdsjxl14ItLECGBIw2tvV4u7aMV97S_U2k7gsxXu_868CP5DQu1LR-vA2HPsgFtM-3YrbJlG4sW_5Hbzh0G1J9WcVkrVtkxB19uJcDG1HI0cEwZy2gNkWpF-4ATfxIave1-urYS8QnwHPtU",
-        },
-      });
-      res.json(response.data);
+      const cvs = await storage.getAllCVs();
+      res.json({ cvList: cvs });
     } catch (error: any) {
       log(`Error fetching CVs: ${error.message}`, "api");
       res
@@ -181,10 +160,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get CV by ID
   app.get("/api/cvs/:id", async (req: Request, res: Response) => {
     try {
-      const apiUrl = getApiUrl();
-      const response = await axios.get(`${apiUrl}/cvs/${req.params.id}`);
-
-      res.json(response.data.cv);
+      const cv = await storage.getCVById(req.params.id);
+      
+      if (!cv) {
+        return res.status(404).json({ error: "CV not found" });
+      }
+      
+      res.json(cv);
     } catch (error: any) {
       log(`Error fetching CV ${req.params.id}: ${error.message}`, "api");
       res
@@ -196,12 +178,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new CV
   app.post("/api/cvs", async (req: Request, res: Response) => {
     try {
-      console.log("request", req.body);
-      const apiUrl = getApiUrl();
-      const response = await axios.post(`${apiUrl}/cvs`, {
-        ...req.body,
-      });
-      res.json(response.data);
+      const newCV = await storage.createCV(req.body);
+      res.status(201).json({ cvId: newCV.id });
     } catch (error: any) {
       log(`Error creating CV: ${error.message}`, "api");
       res
@@ -213,12 +191,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update CV
   app.put("/api/cvs/:id", async (req: Request, res: Response) => {
     try {
-      const apiUrl = getApiUrl();
-      const response = await axios.put(`${apiUrl}/cvs/${req.params.id}`, {
-        ...req.body,
-      });
-
-      res.json(response.data);
+      const updatedCV = await storage.updateCV(req.params.id, { cvData: req.body });
+      
+      if (!updatedCV) {
+        return res.status(404).json({ error: "CV not found" });
+      }
+      
+      res.json({ cvId: updatedCV.id });
     } catch (error: any) {
       log(`Error updating CV ${req.params.id}: ${error.message}`, "api");
       res
@@ -230,9 +209,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Delete CV
   app.delete("/api/cvs/:id", async (req: Request, res: Response) => {
     try {
-      const apiUrl = getApiUrl();
-      await axios.delete(`${apiUrl}/cvs/${req.params.id}`);
-
+      const success = await storage.deleteCV(req.params.id);
+      
+      if (!success) {
+        return res.status(404).json({ error: "CV not found" });
+      }
+      
       res.status(204).send();
     } catch (error: any) {
       log(`Error deleting CV ${req.params.id}: ${error.message}`, "api");
@@ -245,12 +227,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Duplicate CV
   app.post("/api/cvs/:id/duplicate", async (req: Request, res: Response) => {
     try {
-      const apiUrl = getApiUrl();
-      const response = await axios.post(
-        `${apiUrl}/cvs/${req.params.id}/duplicate`,
-      );
-
-      res.status(201).json(response.data);
+      const duplicatedCV = await storage.duplicateCV(req.params.id);
+      
+      if (!duplicatedCV) {
+        return res.status(404).json({ error: "CV not found" });
+      }
+      
+      res.status(201).json({ cvId: duplicatedCV.id });
     } catch (error: any) {
       log(`Error duplicating CV ${req.params.id}: ${error.message}`, "api");
       res
@@ -259,23 +242,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Mocked CV download - in a real app, this would generate a PDF
   app.get("/api/cvs/:id/download", async (req: Request, res: Response) => {
     try {
-      const apiUrl = getApiUrl();
-      const response = await axios.get(
-        `${apiUrl}/cvs/${req.params.id}/download`,
-        { responseType: "stream" },
-      );
-
-      res.setHeader("Content-Type", response.headers["content-type"]);
-      if (response.headers["content-disposition"]) {
-        res.setHeader(
-          "Content-Disposition",
-          response.headers["content-disposition"],
-        );
+      const cv = await storage.getCVById(req.params.id);
+      
+      if (!cv) {
+        return res.status(404).json({ error: "CV not found" });
       }
-
-      response.data.pipe(res);
+      
+      // For now, just return the CV data as JSON with filename info
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader("Content-Disposition", `attachment; filename="cv-${cv.id}.json"`);
+      res.json({
+        cv,
+        message: "In a production environment, this would be a formatted PDF"
+      });
     } catch (error: any) {
       log(`Error downloading CV ${req.params.id}: ${error.message}`, "api");
       res

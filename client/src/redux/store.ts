@@ -44,19 +44,32 @@ export const store = configureStore({
     // Custom endpoints injected into apiSlice use the same reducerPath
     // This is handled automatically by RTK Query
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
+  middleware: (getDefaultMiddleware) => {
+    // Start with the default middleware
+    const middleware = getDefaultMiddleware({
       serializableCheck: false, // Needed for non-serializable values like functions
-    }).concat(
+    });
+    
+    // Create an array of API middleware to add
+    const apiMiddleware = [
       apiSlice.middleware,
       cvApiSlice.middleware,
       jobApi.middleware,
       authApi.middleware,
       coverLetterApi.middleware,
-      cvBuilderApiSlice.middleware,
       configApiSlice.middleware,
       paymentApiSlice.middleware,
-    ),
+    ];
+    
+    // Only add cvBuilderApiSlice.middleware if it's not derived from apiSlice
+    // If it's injected into apiSlice, it shares the same middleware
+    if (cvBuilderApiSlice.reducerPath !== apiSlice.reducerPath) {
+      apiMiddleware.push(cvBuilderApiSlice.middleware);
+    }
+    
+    // Return the combined middleware
+    return middleware.concat(...apiMiddleware);
+  },
 });
 
 // Export types for use in components
