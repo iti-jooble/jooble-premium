@@ -14,6 +14,7 @@ interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isLoading?: boolean;
   title: string;
   message: string;
   confirmButtonText: string;
@@ -26,6 +27,7 @@ const ConfirmationModal = ({
   onConfirm,
   title,
   message,
+  isLoading,
   confirmButtonText,
   cancelButtonText,
 }: ConfirmationModalProps) => {
@@ -38,7 +40,9 @@ const ConfirmationModal = ({
           </div>
         </div>
         <AlertDialogHeader className="space-y-2 text-center">
-          <AlertDialogTitle className="text-xl font-semibold">{title}</AlertDialogTitle>
+          <AlertDialogTitle className="text-xl font-semibold">
+            {title}
+          </AlertDialogTitle>
           <AlertDialogDescription className="text-muted-foreground text-sm">
             {message}
           </AlertDialogDescription>
@@ -47,8 +51,9 @@ const ConfirmationModal = ({
           <AlertDialogCancel className="mt-0 w-full font-medium">
             {cancelButtonText}
           </AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={onConfirm} 
+          <AlertDialogAction
+            onClick={onConfirm}
+            disabled={isLoading}
             className="w-full bg-red-600 hover:bg-red-700 text-white hover:text-white transition-colors font-medium"
           >
             {confirmButtonText}

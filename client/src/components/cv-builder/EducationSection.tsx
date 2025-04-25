@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { useState, useMemo } from "react";
 import { PlusCircle, Pencil, Trash2 } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -22,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { educationSchema, Education } from "@shared/schema";
+import { Education } from "@shared/schema";
 import { getCurrentYear, getYearsArray } from "@shared/dateUtils";
 
 interface EducationSectionProps {
@@ -123,19 +122,6 @@ export function EducationSection({
 
       setIsAddingNew(false);
       form.reset();
-
-      toast({
-        title: editingId ? "Education updated" : "Education added",
-        description: editingId
-          ? "Your education has been updated."
-          : "Your education has been added.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save education.",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }

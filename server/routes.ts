@@ -77,14 +77,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/health", (_, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
-  
+
   // Application initialization endpoint
   app.get("/api/init", async (_, res) => {
     try {
       // Simulate a realistic initial data load
       // In a real app, this might fetch user data, app configuration, permissions, etc.
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-      
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
+
       // Return basic initialization data
       res.json({
         appConfig: {
@@ -101,9 +101,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       log(`Error in app initialization: ${error.message}`, "api");
-      res.status(500).json({ 
-        error: "Failed to initialize application", 
-        message: error.message 
+      res.status(500).json({
+        error: "Failed to initialize application",
+        message: error.message,
       });
     }
   });
@@ -147,6 +147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new CV
   app.post("/api/cvs", async (req: Request, res: Response) => {
     try {
+      console.log("request", req.body);
       const apiUrl = getApiUrl();
       const response = await axios.post(`${apiUrl}/cvs`, {
         ...req.body,
@@ -214,17 +215,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const apiUrl = getApiUrl();
       const response = await axios.get(
         `${apiUrl}/cvs/${req.params.id}/download`,
+        { responseType: "stream" },
       );
 
-      // Set the proper headers for file download
-      res.setHeader("Content-Disposition", "attachment; filename=cv_download");
-      res.setHeader(
-        "Content-Type",
-        response.headers["content-type"] || "application/octet-stream",
-      );
+      res.setHeader("Content-Type", response.headers["content-type"]);
+      if (response.headers["content-disposition"]) {
+        res.setHeader(
+          "Content-Disposition",
+          response.headers["content-disposition"],
+        );
+      }
 
-      // Stream the response data directly to the client
-      res.send(response.data);
+      response.data.pipe(res);
     } catch (error: any) {
       log(`Error downloading CV ${req.params.id}: ${error.message}`, "api");
       res

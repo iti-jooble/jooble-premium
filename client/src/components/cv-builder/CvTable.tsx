@@ -20,7 +20,6 @@ import {
   MoreHorizontalIcon,
 } from "lucide-react";
 import ConfirmationModal from "@/components/cv-builder/ConfirmationModal";
-import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -40,8 +39,8 @@ import { CV } from "@shared/schema";
 interface CvTableProps {
   cvs: CV[];
   onEdit: (cv: CV) => void;
-  onDelete: (id: string) => void;
-  onDuplicate?: (id: string) => void;
+  onDelete: (id: number) => void;
+  onDuplicate?: (id: number) => void;
   onDownload?: (cv: CV) => void;
 }
 
@@ -54,22 +53,22 @@ export const CvTable = ({
 }: CvTableProps) => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCvId, setSelectedCvId] = useState<string | null>(null);
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCvId, setSelectedCvId] = useState<number | null>(null);
 
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = (id: number) => {
     setSelectedCvId(id);
     setIsModalOpen(true);
   };
 
-  const confirmDelete = () => {
+  const filteredCvs = cvs.filter((cv) => !!cv.id);
+
+  const confirmDelete = async () => {
     if (selectedCvId) {
-      onDelete(selectedCvId);
+      setIsLoading(true);
+      await onDelete(selectedCvId);
+      setIsLoading(false);
       setIsModalOpen(false);
-      toast({
-        title: t("common.notifications.success"),
-        description: "Your CV has been deleted successfully.",
-      });
     }
   };
 
@@ -80,11 +79,7 @@ export const CvTable = ({
 
   const handleDuplicate = (cv: CV, e: React.MouseEvent) => {
     e.stopPropagation();
-    // In a real app, this would create a copy with a new ID, but for demo we just show a toast
-    toast({
-      title: t("common.notifications.success"),
-      description: `A copy of "${cv.title}" has been created.`,
-    });
+
     onDuplicate(cv.id);
   };
 
@@ -144,7 +139,7 @@ export const CvTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {cvs.length === 0 ? (
+            {filteredCvs.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={4}
@@ -157,7 +152,7 @@ export const CvTable = ({
                 </TableCell>
               </TableRow>
             ) : (
-              cvs.map((cv) => (
+              filteredCvs.map((cv) => (
                 <TableRow
                   key={cv.id}
                   className="hover:bg-muted/30 transition-colors group cursor-pointer border-b border-dashed"
@@ -352,6 +347,7 @@ export const CvTable = ({
       <ConfirmationModal
         isOpen={isModalOpen}
         onClose={cancelDelete}
+        isLoading={isLoading}
         onConfirm={confirmDelete}
         title={t("common.buttons.delete") + " CV"}
         message="Are you sure you want to delete this CV? This action cannot be undone."

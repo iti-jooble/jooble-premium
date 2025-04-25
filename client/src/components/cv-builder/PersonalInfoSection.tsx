@@ -61,21 +61,9 @@ export function PersonalInfoSection({
   const handleSave = async (values: PersonalInfo) => {
     setIsSaving(true);
 
-    try {
-      onSave(values);
-      toast({
-        title: "Saved",
-        description: "Your personal information has been saved.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save personal information.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
+    await onSave(values);
+
+    setIsSaving(false);
   };
 
   return (

@@ -10,14 +10,13 @@ import {
   ChevronRightIcon,
   Loader2,
 } from "lucide-react";
-import { createCv, initCvBuilder } from "@/redux/thunks";
+import { initCvBuilder, downloadCv } from "@/redux/thunks";
 import { CvTable } from "@/components/cv-builder/CvTable";
 import { useToast } from "@/hooks/use-toast";
 import { CV } from "@shared/schema";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { deleteCv, duplicateCv } from "@/redux/thunks";
 import { setCurrentCvId } from "@/redux/slices/cvBuilderSlice";
-import axios from "axios";
 
 const CvBuilder = () => {
   const { t } = useTranslation();
@@ -39,28 +38,19 @@ const CvBuilder = () => {
   const handleEdit = (cv: CV) => {
     dispatch(setCurrentCvId(cv.id));
 
-    navigate("/cv-builder/create");
+    navigate("/cv-builder");
   };
 
-  const handleDelete = (id: string) => {
-    dispatch(deleteCv(id));
+  const handleDelete = async (id: number) => {
+    await dispatch(deleteCv(id));
   };
 
-  const handleDuplicate = (id: string) => {
+  const handleDuplicate = (id: number) => {
     dispatch(duplicateCv(id));
   };
 
   const handleDownload = async (cv: CV) => {
-    const response = await axios.get(`/api/cvs/${cv.id}/download`, {
-      responseType: "blob",
-    });
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `${cv.title}.pdf`);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode?.removeChild(link);
+    dispatch(downloadCv({ id: cv.id, title: cv.title }));
   };
 
   const handleCreateNew = async () => {

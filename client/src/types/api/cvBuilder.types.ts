@@ -6,23 +6,14 @@ export enum CvSource {
   IMPORTED = 102,
 }
 
-// CV API types
 export interface ICreateCvRequest {
   html?: string;
   css?: string;
   cvModel: Partial<CV>;
 }
 
-export interface ICreateCvResponse {
-  success: boolean;
-  message?: string;
-}
-
-export interface IUpdateCvRequest {
-  id: string;
-  cvModel: Partial<CV>;
-  html: string;
-  css: string;
+export interface IUpdateCvRequest extends ICreateCvRequest {
+  id: number;
 }
 
 export interface IUpdateCvResponse {
@@ -34,20 +25,9 @@ export interface IDeleteCvRequest {
   id: string;
 }
 
-export interface IDeleteCvResponse {
-  success: boolean;
-  message?: string;
-}
-
 export interface IDuplicateCvRequest {
   id: string;
   newTitle?: string;
-}
-
-export interface IDuplicateCvResponse {
-  success: boolean;
-  cv?: CV; // The duplicated CV
-  message?: string;
 }
 
 // AI Suggestion API types
@@ -55,10 +35,4 @@ export interface IPromptConfigApi {
   section: string;
   jobTitle?: string;
   additionalContext?: string;
-}
-
-export interface IAiSuggestionResponse {
-  success: boolean;
-  suggestion?: string;
-  message?: string;
 }

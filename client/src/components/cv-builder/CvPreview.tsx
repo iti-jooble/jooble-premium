@@ -22,6 +22,7 @@ import { ITemplateComponentProps } from "./Templates/types";
 interface CvPreviewProps {
   data: CvUserInfo;
   templateId: number;
+  onDownload: () => void;
   onChangeTemplate: () => void;
 }
 
@@ -41,12 +42,14 @@ const getTemplate = (
 export function CvPreview({
   data,
   templateId,
+  onDownload,
   onChangeTemplate,
 }: CvPreviewProps) {
   const { t } = useTranslation();
   const [Template, setTemplate] = useState<FC<ITemplateComponentProps> | null>(
     null,
   );
+  const [isLoading, setIsLoading] = useState(false);
   const previewWidthReference = useRef<HTMLDivElement>(null);
   const [previewSize, setPreviewSize] = useState({
     scale: 1,
@@ -69,6 +72,12 @@ export function CvPreview({
         });
       }
     }
+  };
+
+  const handleDownload = async (): Promise<void> => {
+    setIsLoading(true);
+    await onDownload();
+    setIsLoading(false);
   };
 
   const setCalculatedFalse = (): void => {
@@ -113,7 +122,8 @@ export function CvPreview({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={(e) => {}}
+                  isLoading={isLoading}
+                  onClick={handleDownload}
                   className="h-9 w-9 p-0 transition-all hover:shadow-sm hover:bg-primary/5"
                 >
                   <DownloadIcon className="h-4 w-4" />

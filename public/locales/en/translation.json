@@ -32,7 +32,7 @@
     }
   },
   "jobSearch": {
-    "title": "Job Search",
+    "title": "Jobs",
     "subtitle": "Search thousands of job listings from multiple sources in one place",
     "search": {
       "title": "Find Your Next Opportunity",
@@ -72,14 +72,14 @@
     }
   },
   "cvBuilder": {
-    "title": "CV Builder",
-    "subtitle": "Create and manage your professional CVs",
-    "createNew": "Create New CV",
+    "title": "Resume",
+    "subtitle": "Easily create and manage your resumes with our tools",
+    "createNew": "Create new resume",
     "importFromLinkedIn": "Import from LinkedIn",
     "noData": {
-      "title": "Start Building Your CV",
-      "description": "Create a professional CV with our easy-to-use builder. Choose from multiple templates and customize to match your style.",
-      "button": "Create New CV"
+      "title": "Start Building Your Resume",
+      "description": "Create a professional resume with our easy-to-use builder. Choose from multiple templates and customize to match your style.",
+      "button": "Create new resume"
     },
     "yourCvs": "Your CVs",
     "linkedInImport": {

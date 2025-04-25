@@ -55,7 +55,7 @@ export const cvUserInfoSchema = z.object({
 });
 
 export const cvSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   title: z.string(),
   score: z.number(),
   source: z.number(),

@@ -24,13 +24,13 @@ export const cvApiSlice = createApi({
     }),
 
     // Get a single CV by ID
-    getCVById: builder.query<CV, string>({
+    getCVById: builder.query<CV, number>({
       query: (id) => `/cvs/${id}`,
       providesTags: (result, error, id) => [{ type: "CV", id }],
     }),
 
     // Create a new CV
-    createCV: builder.mutation<{ cvId: string }, ICreateCvRequest>({
+    createCV: builder.mutation<{ cvId: number }, ICreateCvRequest>({
       query: (data) => ({
         url: "/cvs",
         method: "POST",
@@ -40,7 +40,7 @@ export const cvApiSlice = createApi({
     }),
 
     // Update a CV
-    updateCV: builder.mutation<{ cvId: string }, IUpdateCvRequest>({
+    updateCV: builder.mutation<{ cvId: number }, IUpdateCvRequest>({
       query: (data) => ({
         url: `/cvs/${data.id}`,
         method: "PUT",
@@ -53,7 +53,7 @@ export const cvApiSlice = createApi({
     }),
 
     // Delete a CV
-    deleteCV: builder.mutation<void, string>({
+    deleteCV: builder.mutation<void, number>({
       query: (id) => ({
         url: `/cvs/${id}`,
         method: "DELETE",
@@ -65,7 +65,7 @@ export const cvApiSlice = createApi({
     }),
 
     // Duplicate a CV
-    duplicateCV: builder.mutation<{ cvId: number }, string>({
+    duplicateCV: builder.mutation<{ cvId: number }, number>({
       query: (id) => ({
         url: `/cvs/${id}/duplicate`,
         method: "POST",

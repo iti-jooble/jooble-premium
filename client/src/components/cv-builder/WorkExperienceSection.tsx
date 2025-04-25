@@ -100,62 +100,51 @@ export function ExperienceSection({
     });
   };
 
-  const handleDeleteExperience = async (id: string) => {
+  const handleDeleteExperience = (id: string) => {
     setIsLoading(true);
     const updatedExperiences = experiences.filter((exp) => exp.id !== id);
-    await onSave(updatedExperiences);
+    onSave(updatedExperiences);
     setIsLoading(false);
   };
 
-  const handleSaveForm = async (values: Experience) => {
+  const handleSaveForm = (values: Experience) => {
     setIsLoading(true);
+
+    const newExperiencePartial: Omit<Experience, "id"> = {
+      position: values.position,
+      company: values.company,
+      startYear: values.startYear,
+      endYear: values.isCurrent ? null : values.endYear || null,
+      isCurrent: values.isCurrent,
+      description: values.description,
+    };
+
+    var updatedExperiences: Experience[];
 
     try {
       if (editingId) {
-        const updatedExperiences = experiences.map((exp) =>
+        updatedExperiences = experiences.map((exp) =>
           exp.id === editingId
             ? {
                 ...exp,
-                position: values.position,
-                company: values.company,
-                startYear: values.startYear,
-                endYear: values.isCurrent ? null : values.endYear || null,
-                isCurrent: values.isCurrent,
-                description: values.description,
+                ...newExperiencePartial,
               }
             : exp,
         );
-        await onSave(updatedExperiences);
-        setEditingId(null);
       } else {
         const newExperience: Experience = {
           id: uuidv4(),
-          position: values.position,
-          company: values.company,
-          startYear: values.startYear,
-          endYear: values.isCurrent ? null : values.endYear || null,
-          isCurrent: values.isCurrent,
-          description: values.description,
+          ...newExperiencePartial,
         };
-        await onSave([...experiences, newExperience]);
+
+        updatedExperiences = [...experiences, newExperience];
       }
 
+      onSave(updatedExperiences);
+
+      setEditingId(null);
       setIsAddingNew(false);
       form.reset();
-
-      toast({
-        title: editingId ? "Experience updated" : "Experience added",
-        description: editingId
-          ? "Your work experience has been updated."
-          : "Your work experience has been added.",
-      });
-    } catch (error) {
-      console.error("Error saving work experience:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save work experience.",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }

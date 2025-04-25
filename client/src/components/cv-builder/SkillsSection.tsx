@@ -72,7 +72,6 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       name: suggestion,
     };
 
-    // Check if the skill already exists
     if (
       localSkills.some((s) => s.name.toLowerCase() === suggestion.toLowerCase())
     ) {
@@ -86,29 +85,15 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
 
     setLocalSkills([...localSkills, skill]);
 
-    // Auto-save as we add skills
     handleSaveSkills([...localSkills, skill]);
-
-    toast({
-      title: "Skill added",
-      description: `The skill '${suggestion}' has been added.`,
-    });
   };
 
   const handleSaveSkills = async (skillsToSave: Skill[]) => {
     setIsSaving(true);
 
-    try {
-      onSave(skillsToSave);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An error occurred while saving skills.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
+    await onSave(skillsToSave);
+
+    setIsSaving(false);
   };
 
   return (

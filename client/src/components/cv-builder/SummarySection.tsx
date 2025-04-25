@@ -42,21 +42,9 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
   const handleSave = async (values: SummaryValues) => {
     setIsSaving(true);
 
-    try {
-      onSave(values);
-      toast({
-        title: "Saved",
-        description: "Your professional summary has been saved.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save summary.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
+    await onSave(values);
+
+    setIsSaving(false);
   };
 
   const generateSummary = () => {

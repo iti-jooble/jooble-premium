@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CvSource, ICreateCvRequest } from "../../types/api/cvBuilder.types";
+import { ICreateCvRequest } from "../../types/api/cvBuilder.types";
 import { IUpdateCvRequest } from "../../types/api/cvBuilder.types";
 import { getErrorMessage } from "../helpers";
 import { cvApiSlice } from "../api/cvApiSlice";
 import { CV } from "@shared/schema";
-import { RootState } from "../store";
-import { getCurrentCvSelector } from "../slices/cvBuilderSlice";
+import { PdfDataCreator } from "@/components/cv-builder/Templates/PdfDataCreator";
+import axios from "axios";
 
 /**
  * AsyncThunk for initializing the CV builder
@@ -49,36 +49,12 @@ export const getCvList = createAsyncThunk<CV[]>(
  * AsyncThunk for creating a new CV
  * Uses the API slice's createCv endpoint
  */
-export const createCv = createAsyncThunk<string, { templateId?: number } | undefined>(
+export const createCv = createAsyncThunk<number, ICreateCvRequest>(
   "cvBuilder/createCv",
-  async (payload = {}, { dispatch, rejectWithValue }) => {
+  async (payload, { dispatch, rejectWithValue }) => {
     try {
-      const { templateId = 1 } = payload;
-      
-      const request: ICreateCvRequest = {
-        cvModel: {
-          source: CvSource.MANUAL,
-          title: "New CV",
-          templateId: templateId,
-          userInfo: {
-            personalInfo: {
-              firstName: "",
-              lastName: "",
-              email: "",
-              phone: "",
-              city: "",
-              country: "",
-            },
-            summary: "",
-            skills: [],
-            experience: [],
-            education: [],
-          },
-        },
-      };
-
       const result = await dispatch(
-        cvApiSlice.endpoints.createCV.initiate(request),
+        cvApiSlice.endpoints.createCV.initiate(payload),
       );
 
       await dispatch(getCvList());
@@ -98,50 +74,12 @@ export const createCv = createAsyncThunk<string, { templateId?: number } | undef
  * AsyncThunk for updating an existing CV
  * Uses the API slice's updateCv endpoint
  */
-export const updateCv = createAsyncThunk(
+export const updateCv = createAsyncThunk<void, IUpdateCvRequest>(
   "cvBuilder/updateCv",
-  async (
-    payload: {
-      partialCv: Partial<CV>;
-      html: string;
-      css: string;
-    },
-    { getState, dispatch, rejectWithValue },
-  ) => {
+  async (payload, { dispatch, rejectWithValue }) => {
     try {
-      const { html, css, partialCv } = payload;
-      const state = getState() as RootState;
-      const currentCv = getCurrentCvSelector(state);
-
-      if (!currentCv) {
-        throw new Error("Selected CV not found");
-      }
-
-      // Import dynamically to avoid circular dependencies
-      const { calculateCvScore } = await import("../../lib/cvScoreUtils");
-
-      // Create the updated CV data
-      const updatedCvData: CV = {
-        ...currentCv,
-        ...partialCv,
-        userInfo: {
-          ...currentCv.userInfo,
-          ...partialCv.userInfo,
-        },
-      };
-
-      // Calculate the score
-      const score = calculateCvScore(updatedCvData.userInfo);
-
-      const request: IUpdateCvRequest = {
-        id: updatedCvData.id,
-        cvModel: { ...updatedCvData, score },
-        html,
-        css,
-      };
-
       const result = await dispatch(
-        cvApiSlice.endpoints.updateCV.initiate(request),
+        cvApiSlice.endpoints.updateCV.initiate(payload),
       );
 
       if (result.error) {
@@ -155,11 +93,43 @@ export const updateCv = createAsyncThunk(
   },
 );
 
+export const createOrUpdateCv = createAsyncThunk<void, CV>(
+  "cvBuilder/createOrUpdateCv",
+  async (cv, { dispatch, rejectWithValue }) => {
+    try {
+      // Import dynamically to avoid circular dependencies
+      const { calculateCvScore } = await import("../../lib/cvScoreUtils");
+
+      const score = calculateCvScore(cv.userInfo);
+
+      const pdfDataCreator = new PdfDataCreator({
+        templateId: cv.templateId,
+      });
+
+      const { html, css } = pdfDataCreator.createPdfData();
+
+      const request = {
+        cvModel: { ...cv, score },
+        html,
+        css,
+      };
+
+      if (cv.id == 0) {
+        await dispatch(createCv(request));
+      } else {
+        await dispatch(updateCv({ ...request, id: cv.id }));
+      }
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 /**
  * AsyncThunk for deleting a CV
  * Uses the API slice's deleteCv endpoint
  */
-export const deleteCv = createAsyncThunk<void, string>(
+export const deleteCv = createAsyncThunk<void, number>(
   "cvBuilder/deleteCv",
   async (id, { dispatch, rejectWithValue }) => {
     try {
@@ -181,7 +151,7 @@ export const deleteCv = createAsyncThunk<void, string>(
  * AsyncThunk for duplicating a CV
  * Uses the API slice's duplicateCv endpoint
  */
-export const duplicateCv = createAsyncThunk<void, string>(
+export const duplicateCv = createAsyncThunk<void, number>(
   "cvBuilder/duplicateCv",
   async (payload, { dispatch, rejectWithValue }) => {
     try {
@@ -198,5 +168,21 @@ export const duplicateCv = createAsyncThunk<void, string>(
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
+  },
+);
+
+export const downloadCv = createAsyncThunk<void, { id: number; title: string }>(
+  "cvBuilder/downloadCv",
+  async (cv) => {
+    const response = await axios.get(`/api/cvs/${cv.id}/download`, {
+      responseType: "blob",
+    });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${cv.title}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
   },
 );

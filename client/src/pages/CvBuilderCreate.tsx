@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { Redirect } from "wouter";
-import { useState, useEffect } from "react";
+import { useSearch, useLocation } from "wouter";
+import { useState, useEffect, useLayoutEffect } from "react";
 import {
   GraduationCap,
   BriefcaseBusiness,
@@ -24,8 +24,9 @@ import { SummarySection } from "@/components/cv-builder/SummarySection";
 import { CvPreview } from "@/components/cv-builder/CvPreview";
 import { useToast } from "@/hooks/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { updateCv } from "@/redux/thunks";
+import { createOrUpdateCv, downloadCv } from "@/redux/thunks";
 import cvData from "@/components/cv-builder/Templates/cvData.json";
+import { CvSource } from "@/types/enums/cv.enums";
 import { getCurrentCvSelector } from "@/redux/slices/cvBuilderSlice";
 import { getCvScoreDescription } from "@/lib/cvScoreUtils";
 import {
@@ -36,38 +37,77 @@ import {
   CV,
   CvUserInfo,
 } from "@shared/schema";
+import isNumber from "lodash/isNumber";
+
+const getNewCv = (): CV => ({
+  id: 0,
+  dateCreated: new Date().toISOString(),
+  source: CvSource.MANUAL,
+  score: 0,
+  title: "New CV",
+  templateId: 2,
+  userInfo: {
+    personalInfo: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      city: "",
+      country: "",
+    },
+    summary: "",
+    skills: [],
+    experience: [],
+    education: [],
+  },
+});
 
 const CvBuilderCreate = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
+  const searchString = useSearch();
+  const [, navigate] = useLocation();
   const [isTitleFocused, setIsTitleFocused] = useState(false);
   const [titleValue, setTitleValue] = useState("");
+  const [localCv, setLocalCv] = useState<CV>({} as CV);
 
-  const {
-    title,
-    userInfo,
-    id,
-    score = 0,
-    templateId = 2,
-  } = useAppSelector(getCurrentCvSelector) || {};
+  const searchParams = new URLSearchParams(searchString);
+  const templateIdFromSearch = searchParams.get("templateId");
 
-  // Update the local title state when the CV changes
+  const currentCv = useAppSelector(getCurrentCvSelector);
+
+  const { title, userInfo, id, score = 0, templateId = 2 } = localCv || {};
+
   useEffect(() => {
     if (title) {
       setTitleValue(title);
     }
   }, [id, title]);
 
-  const handleUpdateCv = async (partialCv: Partial<CV>) => {
+  useLayoutEffect(() => {
+    const newCv = isNumber(currentCv?.id) ? currentCv : getNewCv();
+
+    setLocalCv((prev) => ({
+      ...(prev as CV),
+      ...(newCv as CV),
+    }));
+  }, [currentCv]);
+
+  useEffect(() => {
+    if (!templateIdFromSearch) {
+      return;
+    }
+
+    setLocalCv((prev) => ({
+      ...(prev as CV),
+      templateId: parseInt(templateIdFromSearch),
+    }));
+  }, [templateIdFromSearch]);
+
+  const handleUpdateCv = async (cv: CV) => {
     try {
-      await dispatch(
-        updateCv({
-          partialCv,
-          html: '<div class="cv-container">Generated CV HTML</div>',
-          css: ".cv-container { font-family: Arial; }",
-        }),
-      ).unwrap();
+      await dispatch(createOrUpdateCv(cv)).unwrap();
 
       toast({
         title: t("cvBuilder.saveSuccess"),
@@ -82,17 +122,23 @@ const CvBuilderCreate = () => {
     }
   };
 
-  const handlePersonalInfoSave = (values: PersonalInfo) => {
-    handleUpdateCv({
+  const handlePersonalInfoSave = async (values: PersonalInfo) => {
+    const newCv: CV = {
+      ...localCv,
       userInfo: {
-        ...(userInfo as CvUserInfo),
+        ...localCv.userInfo,
         personalInfo: values,
       },
-    });
+    };
+
+    setLocalCv(newCv);
+
+    return handleUpdateCv(newCv);
   };
 
   const handleExperienceSave = (experiences: Experience[]) => {
-    const cvData: Partial<CV> = {
+    const newCv: CV = {
+      ...localCv,
       userInfo: {
         ...(userInfo as CvUserInfo),
         experience: experiences,
@@ -100,59 +146,89 @@ const CvBuilderCreate = () => {
     };
 
     if (!userInfo?.experience?.length && title === "New CV") {
-      cvData.title =
+      newCv.title =
         `${userInfo?.personalInfo?.firstName ?? ""} ${userInfo?.personalInfo?.lastName ?? ""} - ${experiences[0].position}`
           .trim()
           .replace(/^-\s*/, "");
     }
 
-    return handleUpdateCv(cvData);
+    setLocalCv(newCv);
+
+    return handleUpdateCv(newCv);
   };
 
   const handleEducationSave = (educations: Education[]) => {
-    return handleUpdateCv({
+    const newCv: CV = {
+      ...localCv,
       userInfo: {
         ...(userInfo as CvUserInfo),
         education: educations,
       },
-    });
+    };
+
+    setLocalCv(newCv);
+    return handleUpdateCv(newCv);
   };
 
   const handleSkillsSave = (skills: Skill[]) => {
-    handleUpdateCv({
+    const newCv: CV = {
+      ...localCv,
       userInfo: {
         ...(userInfo as CvUserInfo),
         skills,
       },
-    });
+    };
+
+    setLocalCv(newCv);
+    return handleUpdateCv(newCv);
   };
 
   const handleSummarySave = (values: { summary: string }) => {
-    handleUpdateCv({
+    const newCv: CV = {
+      ...localCv,
       userInfo: {
         ...(userInfo as CvUserInfo),
         summary: values.summary,
       },
-    });
+    };
+
+    setLocalCv(newCv);
+    return handleUpdateCv(newCv);
   };
 
   const handleSaveTitle = () => {
     setIsTitleFocused(false);
 
-    if (titleValue !== title) {
-      handleUpdateCv({ title: titleValue });
+    if (titleValue == title) {
+      return;
     }
+
+    const newCv: CV = {
+      ...localCv,
+      title: titleValue,
+    };
+
+    setLocalCv(newCv);
+    return handleUpdateCv(newCv);
   };
 
   const handleChangeTemplate = () => {
-    toast({
-      title: t("common.labels.comingSoon"),
-      description: "Template selection will be available in a future update.",
-    });
+    navigate(`/pick-template?templateId=${templateId}`);
   };
 
-  if (!id || !userInfo) {
-    return <Redirect to="/cv-builder" />;
+  const handleDownload = async () => {
+    if (!id || !title) {
+      toast({
+        title: t("cvBuilder.saveFirst", "Save your CV first"),
+        description: t("cvBuilder.saveFirstDescription"),
+      });
+    }
+
+    await dispatch(downloadCv({ id, title }));
+  };
+
+  if (!isNumber(id) || !userInfo) {
+    return null;
   }
 
   return (
@@ -175,10 +251,7 @@ const CvBuilderCreate = () => {
             {isTitleFocused ? (
               <>
                 <button
-                  onClick={() => {
-                    handleUpdateCv({ title: titleValue });
-                    setIsTitleFocused(false);
-                  }}
+                  onClick={handleSaveTitle}
                   className="bg-primary/10 hover:bg-primary/20 text-primary p-1 rounded-full transition-colors"
                   aria-label={t(
                     "cvBuilderCreate.saveTitleButton",
@@ -444,6 +517,7 @@ const CvBuilderCreate = () => {
               ? userInfo
               : (cvData as CvUserInfo)
           }
+          onDownload={handleDownload}
           templateId={templateId}
           onChangeTemplate={handleChangeTemplate}
         />

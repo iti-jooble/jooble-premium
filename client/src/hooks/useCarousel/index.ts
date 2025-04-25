@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useSprings } from '@react-spring/web';
-import { useDrag } from 'react-use-gesture';
-import { clamp } from 'lodash';
-import KEY_CODES from '@/constants/keyCodes';
-import getWindow from '@/utils/getWindow';
-import { ISpring, ISpringProps, IUseCarouselProps } from './types';
+import { useState, useEffect } from "react";
+import { useSprings } from "@react-spring/web";
+import { ReactEventHandlers } from "react-use-gesture/dist/types";
+import { useDrag } from "react-use-gesture";
+import { clamp } from "lodash";
+import KEY_CODES from "@/constants/keyCodes";
+import getWindow from "@/utils/getWindow";
+import { ISpring, ISpringProps, IUseCarouselProps } from "./types";
 
 export const useCarousel = ({
   infinite = false,
@@ -16,7 +17,8 @@ export const useCarousel = ({
   springs: ISpring[];
   selectedItemIndex: number;
   handleSetItemIndex(index: number): void;
-  bindSwipe?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  bindSwipe?(...args: any[]): ReactEventHandlers;
 } => {
   const [selectedItemIndex, setSelectedItemIndex] = useState(selectedItem);
 
@@ -28,16 +30,20 @@ export const useCarousel = ({
     const x = indexDiff * (isNextElement ? 98 : 95);
     const opacity = currentIndex === selectedItemIndex ? 1 : 0.8;
     const scale = currentIndex === selectedItemIndex ? 1 : 0.8;
-    const position = x === 0 ? 'relative' : 'absolute';
+    const position = x === 0 ? "relative" : "absolute";
     const display =
-      currentIndex < selectedItemIndex - itemsCountBeside || currentIndex > selectedItemIndex + itemsCountBeside
-        ? 'none'
-        : 'block';
+      currentIndex < selectedItemIndex - itemsCountBeside ||
+      currentIndex > selectedItemIndex + itemsCountBeside
+        ? "none"
+        : "block";
 
     return { x, display, position, opacity, scale };
   };
 
-  const [springs, setSprings] = useSprings<ISpringProps>(itemsCount, createSprings);
+  const [springs, setSprings] = useSprings<ISpringProps>(
+    itemsCount,
+    createSprings,
+  );
 
   const handleSetItemIndex = (index: number): void => {
     let itemIndex = index;
@@ -58,9 +64,10 @@ export const useCarousel = ({
 
   const bindSwipe = useDrag(
     ({ down, direction: [xDir], distance, cancel }) => {
-      const window = getWindow();
-      if (down && distance > (window?.innerWidth || 1000) / 5 && cancel) {
-        setSelectedItemIndex(clamp(selectedItemIndex + (xDir > 0 ? -1 : 1), 0, itemsCount - 1));
+      if (down && distance > window?.innerWidth / 5 && cancel) {
+        setSelectedItemIndex(
+          clamp(selectedItemIndex + (xDir > 0 ? -1 : 1), 0, itemsCount - 1),
+        );
         cancel();
       } else {
         setSprings((currentIndex) => {
@@ -74,7 +81,7 @@ export const useCarousel = ({
         });
       }
     },
-    { event: { passive: false } }
+    { event: { passive: false } },
   );
 
   const onKeyDown = (event: KeyboardEvent): void => {
@@ -87,11 +94,17 @@ export const useCarousel = ({
 
     let newSlideIndex = selectedItemIndex;
 
-    if (keyCode === KEY_CODES.LEFT_ARROW && (selectedItemIndex !== 0 || infinite)) {
+    if (
+      keyCode === KEY_CODES.LEFT_ARROW &&
+      (selectedItemIndex !== 0 || infinite)
+    ) {
       newSlideIndex -= 1;
     }
 
-    if (keyCode === KEY_CODES.RIGHT_ARROW && (selectedItemIndex !== itemsCount - 1 || infinite)) {
+    if (
+      keyCode === KEY_CODES.RIGHT_ARROW &&
+      (selectedItemIndex !== itemsCount - 1 || infinite)
+    ) {
       newSlideIndex += 1;
     }
 
@@ -103,10 +116,15 @@ export const useCarousel = ({
 
     const window = getWindow();
 
-    window?.addEventListener('keydown', onKeyDown, false);
+    window?.addEventListener("keydown", onKeyDown, false);
 
-    return (): void => window?.removeEventListener('keydown', onKeyDown, false);
+    return (): void => window?.removeEventListener("keydown", onKeyDown, false);
   }, [selectedItemIndex]);
 
-  return { springs, selectedItemIndex, handleSetItemIndex, ...(swipable && { bindSwipe }) };
+  return {
+    springs,
+    selectedItemIndex,
+    handleSetItemIndex,
+    ...(swipable && { bindSwipe }),
+  };
 };

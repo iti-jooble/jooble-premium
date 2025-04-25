@@ -1,4 +1,4 @@
-import { CV, experience, Skill } from "@shared/schema";
+import { CV, Experience, Skill } from "@shared/schema";
 
 export interface ICVTemplate {
   id: number;
@@ -8,7 +8,7 @@ export interface ICVTemplate {
 }
 
 export interface ICVBuilderState {
-  currentCvId: string | null;
+  currentCvId: number | null;
   cvList: CV[];
   isLoading: boolean;
   isInitialized: boolean;
@@ -23,7 +23,7 @@ export interface IAISkillSuggestion {
 }
 
 export interface IAISummaryRequest {
-  experience: experience[];
+  experience: Experience[];
   skills: Skill[];
   targetPosition?: string;
 }

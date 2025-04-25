@@ -1,5 +1,5 @@
-import getWindow from '@fugu/utils/getWindow';
-import { A4_PAGE_SIZES_IN_PX, TEMPLATES } from './constants';
+import getWindow from "@/utils/getWindow";
+import { A4_PAGE_SIZES_IN_PX, TEMPLATES } from "./constants";
 
 interface ITemplate {
 	id: number;
@@ -30,10 +30,10 @@ export class PdfDataCreator {
 		const template = this.templates.find((item) => item.id === this.templateId);
 
 		if (!template) {
-			throw new Error('Template not found');
+			throw new Error("Template not found");
 		}
 
-		const css = `${template.css}${template.fonts ? template.fonts : ''}`;
+		const css = `${template.css}${template.fonts ? template.fonts : ""}`;
 
 		const html = `<!DOCTYPE html>
           <html lang="en">
@@ -55,19 +55,26 @@ export class PdfDataCreator {
 
 	private getAbsoluteHeight(element: HTMLDivElement | string): number {
 		const window = getWindow();
-		const domElement = typeof element === 'string' ? document.querySelector<HTMLDivElement>(element) : element;
+		const domElement =
+			typeof element === "string"
+				? document.querySelector<HTMLDivElement>(element)
+				: element;
 
 		if (!domElement || !window) {
-			throw new Error('Element not found');
+			throw new Error("Element not found");
 		}
 
 		const styles = window.getComputedStyle(domElement);
-		const margin = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
+		const margin =
+			parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
 
 		return Math.ceil(domElement.offsetHeight + margin);
 	}
 
-	private calculateCumulativeOffset(element: HTMLDivElement): { top: number; left: number } {
+	private calculateCumulativeOffset(element: HTMLDivElement): {
+		top: number;
+		left: number;
+	} {
 		let currentElement: HTMLDivElement | null = element;
 		let top = 0;
 		let left = 0;
@@ -98,14 +105,16 @@ export class PdfDataCreator {
 				const lastOnPage = page.pop();
 
 				if (lastOnPage) {
-					lastOnPage.classList.add('page_break');
+					lastOnPage.classList.add("page_break");
 				}
 			}
 		});
 	}
 
 	private stretchBlocks(tempDiv: HTMLDivElement, pagesCount: number): void {
-		const stretchableBlocks = Array.from(tempDiv.querySelectorAll<HTMLDivElement>('.stretch'));
+		const stretchableBlocks = Array.from(
+			tempDiv.querySelectorAll<HTMLDivElement>(".stretch"),
+		);
 
 		stretchableBlocks.forEach((block) => {
 			block.style.height = `${A4_PAGE_SIZES_IN_PX.HEIGHT * pagesCount}px`;
@@ -113,38 +122,48 @@ export class PdfDataCreator {
 	}
 
 	private applyTemplateStyles(tempDiv: HTMLDivElement): void {
-		const template = tempDiv.querySelector<HTMLDivElement>('#template');
+		const template = tempDiv.querySelector<HTMLDivElement>("#template");
 
 		if (!template) {
-			throw new Error("Can't create CV template. Element with id #template not found");
+			throw new Error(
+				"Can't create CV template. Element with id #template not found",
+			);
 		}
 
-		template.style.height = 'auto';
+		template.style.height = "auto";
 	}
 
 	private createHtml(): string {
-		const tempDiv = document.querySelector<HTMLDivElement>('#tempDiv');
-		const previewInner = document.querySelector<HTMLDivElement>('#previewInner');
+		const tempDiv = document.querySelector<HTMLDivElement>("#tempDiv");
+		const previewInner =
+			document.querySelector<HTMLDivElement>("#previewInner");
 
 		if (!tempDiv || !previewInner) {
-			throw new Error("Can't create CV template. Element with id #tempDiv not found or html markup is broken");
+			throw new Error(
+				"Can't create CV template. Element with id #tempDiv not found or html markup is broken",
+			);
 		}
 
 		tempDiv.innerHTML = previewInner.innerHTML;
 
 		this.applyTemplateStyles(tempDiv);
 
-		const breakColumns = Array.from(tempDiv.querySelectorAll<HTMLDivElement>('#breakColumn'));
+		const breakColumns = Array.from(
+			tempDiv.querySelectorAll<HTMLDivElement>("#breakColumn"),
+		);
 
 		breakColumns.forEach((col) => {
 			const pages: HTMLDivElement[][] = [[]];
 			const restOfPages: HTMLDivElement[] = [];
 
-			const breakBlocks = Array.from(col.querySelectorAll<HTMLDivElement>('#breakBlock'));
+			const breakBlocks = Array.from(
+				col.querySelectorAll<HTMLDivElement>("#breakBlock"),
+			);
 
 			breakBlocks.forEach((block) => {
 				if (
-					this.calculateCumulativeOffset(block).top + this.getAbsoluteHeight(block) <
+					this.calculateCumulativeOffset(block).top +
+						this.getAbsoluteHeight(block) <
 					A4_PAGE_SIZES_IN_PX.HEIGHT - A4_PAGE_SIZES_IN_PX.MARGIN
 				) {
 					pages[0].push(block);
@@ -161,7 +180,10 @@ export class PdfDataCreator {
 				restOfPages.forEach((block) => {
 					const blockHeight = this.getAbsoluteHeight(block);
 
-					if (pageHeight + blockHeight < A4_PAGE_SIZES_IN_PX.HEIGHT - A4_PAGE_SIZES_IN_PX.MARGIN) {
+					if (
+						pageHeight + blockHeight <
+						A4_PAGE_SIZES_IN_PX.HEIGHT - A4_PAGE_SIZES_IN_PX.MARGIN
+					) {
 						pageHeight += blockHeight;
 					} else {
 						pageNumber += 1;
@@ -180,7 +202,7 @@ export class PdfDataCreator {
 
 		const result = tempDiv.innerHTML;
 
-		tempDiv.innerHTML = '';
+		tempDiv.innerHTML = "";
 
 		return result;
 	}

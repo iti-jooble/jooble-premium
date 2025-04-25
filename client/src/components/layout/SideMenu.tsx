@@ -17,13 +17,13 @@ import { Separator } from "@/components/ui/separator";
 
 const navItems: NavItem[] = [
   {
-    path: "/job-search",
-    label: "Job Search",
+    path: "/jobs",
+    label: "Jobs",
     icon: <SearchIcon className="h-4 w-4" />,
   },
   {
-    path: "/cv-builder",
-    label: "CV Builder",
+    path: "/resume",
+    label: "Resume",
     icon: <FileEditIcon className="h-4 w-4" />,
   },
   //   {
