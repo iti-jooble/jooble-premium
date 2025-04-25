@@ -49,7 +49,7 @@ export const store = configureStore({
     const middleware = getDefaultMiddleware({
       serializableCheck: false, // Needed for non-serializable values like functions
     });
-    
+
     // Create an array of API middleware to add
     const apiMiddleware = [
       apiSlice.middleware,
@@ -60,13 +60,7 @@ export const store = configureStore({
       configApiSlice.middleware,
       paymentApiSlice.middleware,
     ];
-    
-    // Only add cvBuilderApiSlice.middleware if it's not derived from apiSlice
-    // If it's injected into apiSlice, it shares the same middleware
-    if (cvBuilderApiSlice.reducerPath !== apiSlice.reducerPath) {
-      apiMiddleware.push(cvBuilderApiSlice.middleware);
-    }
-    
+
     // Return the combined middleware
     return middleware.concat(...apiMiddleware);
   },
