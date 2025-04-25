@@ -232,7 +232,7 @@ const CvBuilderCreate = () => {
   }
 
   return (
-    <div className="p-6 sm:p-8 animate-in fade-in duration-300 bg-gradient-to-b from-background to-muted/20">
+    <div className="p-6 sm:p-8 animate-in fade-in duration-300">
       <div className="mb-8 max-w-xl min-w-[380px]">
         {/* Editable CV title */}
         <div className="group relative mb-2">
