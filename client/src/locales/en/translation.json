@@ -1,0 +1,17 @@
+{
+  "settings": {
+    "billing": {
+      "currentPlan": {
+        "title": "Current Plan",
+        "premiumBadge": "Premium",
+        "freeBadge": "Free",
+        "premiumDescription": "You are currently subscribed to our Premium plan.",
+        "freeDescription": "You are currently on our Free plan.",
+        "manageButton": "Manage Plan",
+        "cancelButton": "Cancel Subscription",
+        "upgradeButton": "Upgrade to Premium",
+        "expiresOn": "Expires on {date}"
+      }
+    }
+  }
+} 

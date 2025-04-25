@@ -4,10 +4,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { UserIcon, ShieldIcon, BellIcon, CreditCardIcon, CheckIcon, AlertTriangleIcon } from "lucide-react";
+import { UserIcon, ShieldIcon, BellIcon, CreditCardIcon, CheckIcon, AlertTriangleIcon, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useCreateCustomerPortalMutation } from "@/redux/api/paymentApiSlice";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import {
   Dialog,
   DialogContent,
@@ -18,23 +22,29 @@ import {
 } from "@/components/ui/dialog";
 
 const Settings = () => {
-  const [isPremium, setIsPremium] = useState(true);
   const [unsubscribeDialogOpen, setUnsubscribeDialogOpen] = useState(false);
-  const [unsubscribeSuccess, setUnsubscribeSuccess] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [createCustomerPortal, { isLoading: isPortalLoading }] = useCreateCustomerPortalMutation();
+  const premiumInfo = useSelector((state: RootState) => state.userInfo.premium);
   
-  const handleUnsubscribe = () => {
-    // Here would be the API call to unsubscribe the user
-    setIsPremium(false);
-    setUnsubscribeDialogOpen(false);
-    setUnsubscribeSuccess(true);
-    
-    toast({
-      title: t('settings.billing.unsubscribe.toastTitle'),
-      description: t('settings.billing.unsubscribe.toastDescription'),
-      variant: "default",
-    });
+  const handleManagePlan = async () => {
+    try {
+      const returnUrl = `${window.location.origin}/settings`;
+      const response = await createCustomerPortal({ returnUrl }).unwrap();
+      
+      if (response.redirectUrl) {
+        window.location.href = response.redirectUrl;
+      }
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to open customer portal. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Customer portal creation failed:", err);
+    }
   };
   
   return (
@@ -204,42 +214,32 @@ const Settings = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">{t('settings.billing.currentPlan.title')}</h2>
-                {isPremium ? (
+                {premiumInfo.isSubscribed ? (
                   <Badge className="bg-primary text-white">{t('settings.billing.currentPlan.premiumBadge')}</Badge>
                 ) : (
                   <Badge variant="outline">{t('settings.billing.currentPlan.freeBadge')}</Badge>
                 )}
               </div>
               
-              {unsubscribeSuccess ? (
-                <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-4">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <CheckIcon className="h-5 w-5 text-green-500" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="text-sm font-medium text-green-800">{t('settings.billing.unsubscribe.successTitle')}</h3>
-                      <div className="mt-2 text-sm text-green-700">
-                        <p>{t('settings.billing.unsubscribe.successMessage')}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-              
-              {isPremium ? (
+              {premiumInfo.isSubscribed ? (
                 <>
                   <p className="text-neutral-600 mb-4">
                     {t('settings.billing.currentPlan.premiumDescription')}
                   </p>
                   <div className="flex space-x-3">
-                    <Button variant="outline">{t('settings.billing.currentPlan.manageButton')}</Button>
                     <Button 
                       variant="outline" 
-                      className="text-destructive hover:text-destructive"
-                      onClick={() => setUnsubscribeDialogOpen(true)}
+                      onClick={handleManagePlan}
+                      disabled={isPortalLoading}
                     >
-                      {t('settings.billing.currentPlan.cancelButton')}
+                      {isPortalLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Loading...
+                        </>
+                      ) : (
+                        t('settings.billing.currentPlan.manageButton')
+                      )}
                     </Button>
                   </div>
                 </>
@@ -248,69 +248,14 @@ const Settings = () => {
                   <p className="text-neutral-600 mb-4">
                     {t('settings.billing.currentPlan.freeDescription')}
                   </p>
-                  <Button>{t('settings.billing.currentPlan.upgradeButton')}</Button>
+                  <Button onClick={() => navigate("/paywall")}>
+                    {t('settings.billing.currentPlan.upgradeButton')}
+                  </Button>
                 </>
               )}
             </CardContent>
           </Card>
-          
-          {isPremium && (
-            <Card className="shadow-sm">
-              <CardContent className="p-6">
-                <h2 className="text-lg font-semibold mb-4">{t('settings.billing.paymentMethods.title')}</h2>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between py-2 px-4 border rounded-lg">
-                    <div className="flex items-center">
-                      <div className="w-10 h-6 bg-neutral-200 rounded mr-3"></div>
-                      <div>
-                        <p className="font-medium">•••• •••• •••• 4242</p>
-                        <p className="text-xs text-neutral-500">
-                          {t('settings.billing.paymentMethods.cardExpiry', { month: '06', year: '2025' })}
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm">{t('common.buttons.edit')}</Button>
-                  </div>
-                  <Button variant="outline" className="w-full">{t('settings.billing.paymentMethods.addButton')}</Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </TabsContent>
-        
-        {/* Unsubscribe Confirmation Dialog */}
-        <Dialog open={unsubscribeDialogOpen} onOpenChange={setUnsubscribeDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <AlertTriangleIcon className="h-5 w-5 text-amber-500" />
-                <span>{t('settings.billing.unsubscribe.title')}</span>
-              </DialogTitle>
-              <DialogDescription>
-                {t('settings.billing.unsubscribe.description')}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="bg-muted/50 rounded-md p-4">
-              <h4 className="font-medium text-sm mb-2">{t('settings.billing.unsubscribe.featuresLostTitle')}</h4>
-              <ul className="text-sm space-y-1">
-                {t('settings.billing.unsubscribe.featuresLost', { returnObjects: true }).map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary"></span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setUnsubscribeDialogOpen(false)}>
-                {t('settings.billing.unsubscribe.keepButton')}
-              </Button>
-              <Button variant="destructive" onClick={handleUnsubscribe}>
-                {t('settings.billing.unsubscribe.cancelButton')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </Tabs>
     </div>
   );

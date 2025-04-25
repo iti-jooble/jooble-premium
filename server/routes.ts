@@ -65,9 +65,7 @@ const createApiProxy = (targetUrl: string) => {
 };
 
 const getApiUrl = (): string => {
-  return (
-    process.env.API_URL || "https://40cd-195-123-10-42.ngrok-free.app/fitly"
-  );
+  return process.env.API_URL || "http://localhost:8082/fitly";
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -79,26 +77,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Application initialization endpoint
-  app.get("/api/init", async (_, res) => {
+  app.get("/api/init", async (req, res) => {
     try {
-      // Simulate a realistic initial data load
-      // In a real app, this might fetch user data, app configuration, permissions, etc.
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
-
-      // Return basic initialization data
-      res.json({
-        appConfig: {
-          version: "1.0.0",
-          features: {
-            jobSearch: true,
-            cvBuilder: true,
-            coverLetterGenerator: true,
-            cvMatching: true,
+      const apiUrl = getApiUrl();
+      const response = await axios.post(
+        `${apiUrl}/api/FitlyBaseApi/BaseInit`,
+        {},
+        {
+          headers: {
+            authorization: req.headers.authorization,
+            cookie: req.headers.cookie,
           },
-          maintenance: false,
         },
-        // Add any other initialization data needed across the application
-      });
+      );
+
+      res.json(response.data);
     } catch (error: any) {
       log(`Error in app initialization: ${error.message}`, "api");
       res.status(500).json({
@@ -107,6 +100,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // === Payment API Routes ===
+  app.post(
+    "/api/payment/createcheckoutsession",
+    async (req: Request, res: Response) => {
+      try {
+        const apiUrl = getApiUrl();
+        const response = await axios.post(
+          `${apiUrl}/api/payment/createcheckoutsession`,
+          req.body,
+          {
+            headers: {
+              authorization: req.headers.authorization,
+              cookie: req.headers.cookie,
+            },
+          },
+        );
+
+        res.json(response.data);
+      } catch (error: any) {
+        console.log(`Error creating checkout session: ${error.message}`);
+        res.status(500).json({
+          error: "Failed to create checkout session",
+          message: error.message,
+        });
+      }
+    },
+  );
+
+  // Customer Portal endpoint
+  app.post(
+    "/api/payment/customerPortal",
+    async (req: Request, res: Response) => {
+      try {
+        const apiUrl = getApiUrl();
+        const response = await axios.post(
+          `${apiUrl}/api/payment/customerPortal`,
+          req.body,
+          {
+            headers: {
+              authorization: req.headers.authorization,
+              cookie: req.headers.cookie,
+            },
+          },
+        );
+
+        res.json(response.data);
+      } catch (error: any) {
+        console.log(`Error creating customer portal session: ${error.message}`);
+        res.status(500).json({
+          error: "Failed to create customer portal session",
+          message: error.message,
+        });
+      }
+    },
+  );
 
   // === CV API Routes ===
 

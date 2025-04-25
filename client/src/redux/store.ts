@@ -6,6 +6,9 @@ import userReducer from "./slices/userSlice";
 import cvBuilderReducer from "./slices/cvBuilderSlice";
 import jobSearchReducer from "./slices/jobSearchSlice";
 import uiReducer from "./slices/uiSlice";
+import configReducer from "./slices/configSlice";
+import appLoadingReducer from "./slices/appLoadingSlice";
+import userInfoReducer from "./slices/userInfoSlice";
 
 // Import API slices
 import { apiSlice } from "./api/apiSlice";
@@ -14,6 +17,8 @@ import { jobApi } from "./api/jobApiSlice";
 import { authApi } from "./api/authApiSlice";
 import { coverLetterApi } from "./api/coverLetterApiSlice";
 import { cvBuilderApiSlice } from "./api/cvBuilderApiSlice";
+import { configApiSlice } from "./api/configApiSlice";
+import { paymentApiSlice } from "./api/paymentApiSlice";
 
 // Configure store
 export const store = configureStore({
@@ -23,6 +28,9 @@ export const store = configureStore({
     cvBuilder: cvBuilderReducer,
     jobSearch: jobSearchReducer,
     ui: uiReducer,
+    config: configReducer,
+    appLoading: appLoadingReducer,
+    userInfo: userInfoReducer,
 
     // API reducers - each API slice has a unique reducerPath
     [apiSlice.reducerPath]: apiSlice.reducer,
@@ -30,6 +38,8 @@ export const store = configureStore({
     [jobApi.reducerPath]: jobApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [coverLetterApi.reducerPath]: coverLetterApi.reducer,
+    [configApiSlice.reducerPath]: configApiSlice.reducer,
+    [paymentApiSlice.reducerPath]: paymentApiSlice.reducer,
 
     // Custom endpoints injected into apiSlice use the same reducerPath
     // This is handled automatically by RTK Query
@@ -44,6 +54,8 @@ export const store = configureStore({
       authApi.middleware,
       coverLetterApi.middleware,
       cvBuilderApiSlice.middleware,
+      configApiSlice.middleware,
+      paymentApiSlice.middleware,
     ),
 });
 
