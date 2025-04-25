@@ -11,9 +11,18 @@ import {
   UserIcon,
   CompassIcon,
   SearchCheckIcon,
+  MoreVertical,
 } from "lucide-react";
 import { NavItem } from "@/types";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const navItems: NavItem[] = [
   {
@@ -26,87 +35,28 @@ const navItems: NavItem[] = [
     label: "Resume",
     icon: <FileEditIcon className="h-4 w-4" />,
   },
-  //   {
-  //     path: "/cv-review",
-  //     label: "CV Review",
-  //     icon: <FileSearchIcon className="h-4 w-4" />,
-  //   },
-  //   {
-  //     path: "/cv-matching",
-  //     label: "CV Matching",
-  //     icon: <LinkIcon className="h-4 w-4" />,
-  //   },
-  //   {
-  //     path: "/cover-letter",
-  //     label: "Cover Letter",
-  //     icon: <MailIcon className="h-4 w-4" />,
-  //   },
-];
-
-const accountItems: NavItem[] = [
   {
-    path: "/settings",
-    label: "Settings",
-    icon: <SettingsIcon className="h-4 w-4" />,
+    path: "/cover-letter",
+    label: "Cover Letter",
+    icon: <MailIcon className="h-4 w-4" />,
   },
-  // {
-  //   path: "/help",
-  //   label: "Help",
-  //   icon: <HelpCircleIcon className="h-4 w-4" />,
-  // },
 ];
 
 const SideMenu = () => {
   const [location] = useLocation();
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   return (
     <aside className="w-64 bg-white shadow-md flex flex-col z-10 h-screen">
-      <div className="p-6 border-b border-neutral-200">
-        <div className="flex items-center space-x-3">
-          <div className="relative">
-            <SearchCheckIcon className="h-10 w-10 relative z-10" />
-          </div>
-          <div>
-            <h1
-              className="font-black text-2xl tracking-widest text-neutral-800"
-              style={{ fontStretch: "extra-expanded" }}
-            >
-              Fitly
-            </h1>
-            <p className="text-xs text-primary font-medium -mt-0.5">
-              by Jooble
-            </p>
-          </div>
+      <div className="p-4 border-b border-neutral-100">
+        <div className="flex items-center">
+          <div className="text-blue-600 font-bold text-2xl mr-2">F</div>
+          <div className="text-neutral-800 font-bold text-2xl">fitly</div>
         </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          Find your career fit with ease
-        </p>
       </div>
 
-      <nav className="flex-1 py-6">
-        <div className="px-4 mb-4">
-          <span className="text-xs uppercase font-medium text-muted-foreground tracking-wider">
-            Navigation
-          </span>
-        </div>
-
+      <nav className="flex-1 py-4">
         {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            path={item.path}
-            label={item.label}
-            icon={item.icon}
-            isActive={location === item.path}
-          />
-        ))}
-
-        <div className="px-4 mt-8 mb-4">
-          <span className="text-xs uppercase font-medium text-muted-foreground tracking-wider">
-            Account
-          </span>
-        </div>
-
-        {accountItems.map((item) => (
           <NavLink
             key={item.path}
             path={item.path}
@@ -117,20 +67,64 @@ const SideMenu = () => {
         ))}
       </nav>
 
-      <Separator />
-      <div className="p-4">
-        <div className="flex items-center p-2">
-          <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center mr-3">
-            <UserIcon className="h-4 w-4 text-neutral-600" />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-neutral-800">John Doe</p>
-            <p className="text-xs text-muted-foreground">Premium Plan</p>
-          </div>
-          <button className="text-neutral-400 hover:text-neutral-600 transition-colors">
-            <LogOutIcon className="h-4 w-4" />
-          </button>
+      <div className="mt-auto">
+        {/* Upgrade to Premium section */}
+        <div className="bg-gray-50 mx-3 mb-3 rounded-md p-3">
+          <div className="text-sm font-medium text-gray-800 mb-1">Upgrade to Premium</div>
+          <div className="text-xs text-gray-600 mb-2">Description</div>
+          <Button 
+            className="w-full bg-blue-600 hover:bg-blue-700"
+            onClick={() => window.location.href = "/paywall"}
+          >
+            Upgrade
+          </Button>
         </div>
+
+        {/* Profile section */}
+        <Accordion
+          type="single" 
+          collapsible
+          className="border-t border-gray-200"
+        >
+          <AccordionItem value="profile" className="border-b-0">
+            <div className="px-4 py-2 flex items-center">
+              <div className="w-8 h-8 rounded-full bg-gray-300 overflow-hidden mr-3">
+                <img 
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-800">My profile</p>
+                <p className="text-xs text-gray-500">Free</p>
+              </div>
+              <AccordionTrigger className="p-0 hover:no-underline">
+                <MoreVertical className="h-5 w-5 text-gray-400" />
+              </AccordionTrigger>
+            </div>
+            <AccordionContent className="pt-0">
+              <div className="pl-4 pb-2">
+                <ul className="space-y-1">
+                  <li>
+                    <Link href="/settings">
+                      <div className="flex items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer">
+                        <SettingsIcon className="h-4 w-4 mr-3 text-gray-500" />
+                        Settings
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <button className="w-full flex items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                      <LogOutIcon className="h-4 w-4 mr-3 text-gray-500" />
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </aside>
   );
@@ -145,23 +139,18 @@ interface NavLinkProps {
 
 const NavLink = ({ path, label, icon, isActive }: NavLinkProps) => {
   return (
-    <div className={`relative mb-1 transition-all group`}>
-      <div
-        className={`absolute left-0 h-10 bg-primary-50 rounded-r-full transition-all duration-300 ${
-          isActive ? "w-full" : "w-0 group-hover:w-full"
-        }`}
-      />
+    <div className="mx-3 mb-1">
       <Link href={path}>
-        <a className="flex items-center h-10 px-6 text-sm font-medium relative z-10">
-          <span
-            className={`mr-3 ${isActive ? "text-primary" : "text-neutral-500"}`}
-          >
+        <div className={`flex items-center px-4 py-3 rounded-md text-sm cursor-pointer ${
+          isActive 
+            ? 'bg-gray-100 text-gray-900' 
+            : 'text-gray-800 hover:bg-gray-50'
+        }`}>
+          <span className="flex-shrink-0 mr-3 text-gray-500">
             {icon}
           </span>
-          <span className={isActive ? "text-neutral-800" : "text-neutral-600"}>
-            {label}
-          </span>
-        </a>
+          <span>{label}</span>
+        </div>
       </Link>
     </div>
   );
