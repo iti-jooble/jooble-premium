@@ -50,8 +50,7 @@ const SideMenu = () => {
     <aside className="w-64 bg-white shadow-md flex flex-col z-10 h-screen">
       <div className="p-4 border-b border-neutral-100">
         <div className="flex items-center">
-          <div className="text-blue-600 font-bold text-2xl mr-2">F</div>
-          <div className="text-neutral-800 font-bold text-2xl">fitly</div>
+          <img src="/images/logo.svg" alt="Fitly" />
         </div>
       </div>
 
@@ -70,11 +69,13 @@ const SideMenu = () => {
       <div className="mt-auto">
         {/* Upgrade to Premium section */}
         <div className="bg-gray-50 mx-3 mb-3 rounded-md p-3">
-          <div className="text-sm font-medium text-gray-800 mb-1">Upgrade to Premium</div>
+          <div className="text-sm font-medium text-gray-800 mb-1">
+            Upgrade to Premium
+          </div>
           <div className="text-xs text-gray-600 mb-2">Description</div>
-          <Button 
+          <Button
             className="w-full bg-blue-600 hover:bg-blue-700"
-            onClick={() => window.location.href = "/paywall"}
+            onClick={() => (window.location.href = "/paywall")}
           >
             Upgrade
           </Button>
@@ -82,15 +83,15 @@ const SideMenu = () => {
 
         {/* Profile section */}
         <Accordion
-          type="single" 
+          type="single"
           collapsible
           className="border-t border-gray-200"
         >
           <AccordionItem value="profile" className="border-b-0">
             <div className="px-4 py-2 flex items-center">
               <div className="w-8 h-8 rounded-full bg-gray-300 overflow-hidden mr-3">
-                <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                <img
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
@@ -141,14 +142,14 @@ const NavLink = ({ path, label, icon, isActive }: NavLinkProps) => {
   return (
     <div className="mx-3 mb-1">
       <Link href={path}>
-        <div className={`flex items-center px-4 py-3 rounded-md text-sm cursor-pointer ${
-          isActive 
-            ? 'bg-gray-100 text-gray-900' 
-            : 'text-gray-800 hover:bg-gray-50'
-        }`}>
-          <span className="flex-shrink-0 mr-3 text-gray-500">
-            {icon}
-          </span>
+        <div
+          className={`flex items-center px-4 py-3 rounded-md text-sm cursor-pointer ${
+            isActive
+              ? "bg-gray-100 text-gray-900"
+              : "text-gray-800 hover:bg-gray-50"
+          }`}
+        >
+          <span className="flex-shrink-0 mr-3 text-gray-500">{icon}</span>
           <span>{label}</span>
         </div>
       </Link>
