@@ -383,7 +383,7 @@ const JobSearch = () => {
             {t("jobSearch.title")}
           </h1>
           <p className="text-muted-foreground mt-2">
-            {t("jobSearch.subtitle")}
+            1512 {t("jobSearch.subtitle")}
           </p>
         </div>
       </div>

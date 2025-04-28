@@ -1,10 +1,10 @@
 import { FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { SearchIcon, MapPinIcon, Loader2 } from "lucide-react";
+import { SearchIcon, Loader2, XIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSearchForm } from "./hooks/useSearchForm";
+import { Badge } from "@/components/ui/badge";
 
 interface SearchFormProps {
   onSearch?: (data: { keywords: string; location: string }) => void;
@@ -24,6 +24,7 @@ export const SearchForm = ({
     setKeywords,
     setLocation,
     handleSearch,
+    resetForm,
     isSearching
   } = useSearchForm({
     onSearch,
@@ -34,43 +35,51 @@ export const SearchForm = ({
   const handleSubmit = (e: FormEvent) => {
     handleSearch(e);
   };
+
+  const handleKeywordRemove = (keyword: string) => {
+    // For simplicity, just clear keywords for now
+    setKeywords("");
+  };
   
   return (
-    <Card className="shadow-sm mb-6 border-border/40">
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative col-span-2">
-              <SearchIcon className="h-4 w-4 absolute left-3 top-3 text-muted-foreground" />
-              <Input 
-                placeholder={t("jobSearch.search.keywords")} 
-                className="pl-10"
-                value={formState.keywords}
-                onChange={(e) => setKeywords(e.target.value)}
-              />
-            </div>
-            <div className="relative">
-              <MapPinIcon className="h-4 w-4 absolute left-3 top-3 text-muted-foreground" />
-              <Input 
-                placeholder={t("jobSearch.search.location")} 
-                className="pl-10"
-                value={formState.location}
-                onChange={(e) => setLocation(e.target.value)} 
-              />
-            </div>
-            <Button type="submit" disabled={isSearching}>
-              {isSearching ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {t("common.labels.searching")}
-                </>
-              ) : (
-                t("jobSearch.search.searchButton")
-              )}
-            </Button>
+    <div className="bg-white rounded-full shadow-sm mb-6 p-2 flex items-center">
+      <form onSubmit={handleSubmit} className="flex-1 flex items-center">
+        <div className="flex-1 flex items-center px-3">
+          <SearchIcon className="h-5 w-5 text-muted-foreground mr-2" />
+          <div className="flex flex-wrap gap-2 items-center">
+            {formState.keywords ? (
+              <Badge 
+                variant="outline" 
+                className="flex items-center gap-1 bg-background"
+              >
+                {formState.keywords}
+                <XIcon 
+                  className="h-3 w-3 cursor-pointer" 
+                  onClick={() => handleKeywordRemove(formState.keywords)}
+                />
+              </Badge>
+            ) : null}
+            <Input 
+              placeholder="Add job title" 
+              className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 pl-0"
+              value={formState.keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+            />
           </div>
-        </form>
-      </CardContent>
-    </Card>
+        </div>
+        <Button 
+          type="submit" 
+          disabled={isSearching}
+          size="icon"
+          className="rounded-full h-12 w-12"
+        >
+          {isSearching ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <SearchIcon className="h-5 w-5" />
+          )}
+        </Button>
+      </form>
+    </div>
   );
 };
