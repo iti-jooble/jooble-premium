@@ -248,7 +248,7 @@ const JobSearch = () => {
   };
 
   return (
-    <div className="p-6 sm:p-8 animate-in fade-in duration-300 min-h-screen">
+    <div className="p-6 sm:p-8 animate-in fade-in duration-300 min-h-screen bg-[#f7f6f2]">
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
