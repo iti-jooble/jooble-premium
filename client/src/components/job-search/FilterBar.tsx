@@ -1,105 +1,76 @@
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import {
-  BriefcaseIcon,
-  ChevronDownIcon,
-  DollarSignIcon,
-  CalendarIcon,
-  BuildingIcon,
-  XIcon
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export const FilterBar = () => {
   const { t } = useTranslation();
   
   return (
-    <div className="mb-6 flex flex-wrap gap-3">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="flex items-center">
-            <BriefcaseIcon className="h-4 w-4 mr-2" />
-            {t("jobSearch.filters.jobType")}
-            <ChevronDownIcon className="h-4 w-4 ml-2" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuGroup>
-            {["Full-time", "Part-time", "Contract", "Internship", "Remote"].map((type) => (
-              <DropdownMenuItem key={type} className="flex items-center">
-                <div className="flex items-center space-x-2">
-                  <input type="checkbox" id={`type-${type}`} className="rounded" />
-                  <label htmlFor={`type-${type}`}>{type}</label>
-                </div>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="flex items-center">
-            <BuildingIcon className="h-4 w-4 mr-2" />
-            {t("jobSearch.filters.experienceLevel")}
-            <ChevronDownIcon className="h-4 w-4 ml-2" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuGroup>
-            {["Entry Level", "Mid Level", "Senior Level", "Manager", "Executive"].map((level) => (
-              <DropdownMenuItem key={level} className="flex items-center">
-                <div className="flex items-center space-x-2">
-                  <input type="checkbox" id={`level-${level}`} className="rounded" />
-                  <label htmlFor={`level-${level}`}>{level}</label>
-                </div>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="flex items-center">
-            <DollarSignIcon className="h-4 w-4 mr-2" />
-            {t("jobSearch.filters.salary")}
-            <ChevronDownIcon className="h-4 w-4 ml-2" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-72 p-4">
-          <div className="space-y-4">
-            <h4 className="font-medium text-sm">{t("jobSearch.filters.salary")}</h4>
-            <Slider defaultValue={[100000]} max={200000} step={10000} className="my-6" />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>$0</span>
-              <span>$100,000</span>
-              <span>$200,000+</span>
+    <div className="w-80 bg-white rounded-lg shadow-sm p-4">
+      <h2 className="text-lg font-medium mb-4">Filters</h2>
+      
+      <Accordion type="multiple" defaultValue={["location", "experience", "job-type"]}>
+        {/* Location Filter */}
+        <AccordionItem value="location">
+          <AccordionTrigger className="py-3">Location</AccordionTrigger>
+          <AccordionContent>
+            <div className="py-2">
+              <Input placeholder="Enter location" className="mb-2" />
+              <div className="space-y-2 mt-3">
+                {["Remote", "New York", "San Francisco", "London", "Berlin"].map((location) => (
+                  <div key={location} className="flex items-center space-x-2">
+                    <Checkbox id={`location-${location}`} />
+                    <Label htmlFor={`location-${location}`} className="text-sm font-normal">
+                      {location}
+                    </Label>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="pt-2 flex justify-end">
-              <Button size="sm">{t("common.buttons.apply")}</Button>
+          </AccordionContent>
+        </AccordionItem>
+        
+        {/* Experience Level */}
+        <AccordionItem value="experience">
+          <AccordionTrigger className="py-3">Experience Level</AccordionTrigger>
+          <AccordionContent>
+            <div className="py-2 space-y-2">
+              {["Entry Level", "Mid Level", "Senior Level", "Manager", "Executive"].map((level) => (
+                <div key={level} className="flex items-center space-x-2">
+                  <Checkbox id={`level-${level}`} />
+                  <Label htmlFor={`level-${level}`} className="text-sm font-normal">
+                    {level}
+                  </Label>
+                </div>
+              ))}
             </div>
-          </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <Button variant="outline" size="sm" className="flex items-center">
-        <CalendarIcon className="h-4 w-4 mr-2" />
-        {t("jobSearch.filters.datePosted")}
-        <ChevronDownIcon className="h-4 w-4 ml-2" />
-      </Button>
-
-      <Button variant="outline" size="sm" className="ml-auto flex items-center">
-        {t("jobSearch.filters.clearButton")}
-        <XIcon className="h-4 w-4 ml-2" />
-      </Button>
+          </AccordionContent>
+        </AccordionItem>
+        
+        {/* Job Type */}
+        <AccordionItem value="job-type">
+          <AccordionTrigger className="py-3">Job Type</AccordionTrigger>
+          <AccordionContent>
+            <div className="py-2 space-y-2">
+              {["Full-time", "Part-time", "Contract", "Internship", "Temporary"].map((type) => (
+                <div key={type} className="flex items-center space-x-2">
+                  <Checkbox id={`type-${type}`} />
+                  <Label htmlFor={`type-${type}`} className="text-sm font-normal">
+                    {type}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };

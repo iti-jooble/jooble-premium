@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { JobCard, JobCardProps } from "./JobCard";
 
 interface JobListingsProps {
@@ -9,14 +8,7 @@ interface JobListingsProps {
 
 export const JobListings = ({ jobs, selectedJobId, onSelectJob }: JobListingsProps) => {
   return (
-    <div className="lg:col-span-5">
-      <h2 className="text-lg font-semibold mb-4 flex items-center">
-        <span>Job Listings</span>
-        <Badge variant="outline" className="ml-2">
-          {jobs.length} results
-        </Badge>
-      </h2>
-
+    <div className="flex-1 mr-4">
       <div className="space-y-2">
         {jobs.map((job) => (
           <JobCard 

@@ -1,10 +1,9 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
   MapPinIcon, 
   BriefcaseIcon, 
   DollarSignIcon, 
-  ClockIcon 
+  ClockIcon,
+  CalendarIcon
 } from "lucide-react";
 
 export interface JobCardProps {
@@ -24,43 +23,89 @@ export interface JobCardProps {
 
 export const JobCard = ({ job, isSelected, onClick }: JobCardProps) => {
   return (
-    <Card 
-      className={`shadow-sm border hover:border-primary/40 cursor-pointer transition-all ${
-        isSelected ? 'border-primary' : 'border-border/40'
+    <div 
+      className={`bg-white rounded-lg mb-3 cursor-pointer transition-all shadow-sm hover:shadow-md ${
+        isSelected ? 'ring-2 ring-primary' : ''
       }`}
       onClick={() => onClick(job)}
     >
-      <CardContent className="p-4">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-semibold text-lg">{job.title}</h3>
-            <div className="text-muted-foreground text-sm">{job.company}</div>
-          </div>
-          {job.isNew && (
-            <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-200">
-              New
-            </Badge>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-3">
-          <div className="flex items-center">
-            <MapPinIcon className="h-3 w-3 mr-1" />
-            <span>{job.location}</span>
-          </div>
-          <div className="flex items-center">
-            <BriefcaseIcon className="h-3 w-3 mr-1" />
-            <span>{job.type}</span>
-          </div>
-          <div className="flex items-center">
-            <DollarSignIcon className="h-3 w-3 mr-1" />
-            <span>{job.salary}</span>
-          </div>
-          <div className="flex items-center ml-auto">
-            <ClockIcon className="h-3 w-3 mr-1" />
-            <span>{job.posted}</span>
+      <div className="p-4 grid grid-cols-12 gap-4">
+        {/* Company Logo */}
+        <div className="col-span-1">
+          <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-800">
+            {job.company.charAt(0)}
           </div>
         </div>
-      </CardContent>
-    </Card>
+        
+        {/* Job Content */}
+        <div className="col-span-8">
+          {/* Company info and posted date */}
+          <div className="flex items-center text-sm text-muted-foreground mb-1">
+            <span>{job.company}</span>
+            <div className="mx-2 text-muted-foreground/30">•</div>
+            <span>Posted {job.posted}</span>
+          </div>
+          
+          {/* Job title */}
+          <h3 className="font-medium text-blue-600">{job.title}</h3>
+          
+          {/* Job details */}
+          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mt-2">
+            <div className="flex items-center">
+              <DollarSignIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+              <span>{job.salary}</span>
+            </div>
+            <div className="flex items-center">
+              <MapPinIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+              <span>{job.location}</span>
+            </div>
+            <div className="flex items-center">
+              <BriefcaseIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+              <span>{job.type}</span>
+            </div>
+            <div className="flex items-center">
+              <CalendarIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+              <span>5+ years exp</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Match Score */}
+        <div className="col-span-3 flex justify-end items-center">
+          <div className="relative w-20 h-20">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-xl font-bold">94</div>
+                <div className="text-xs text-muted-foreground">/ 100</div>
+              </div>
+            </div>
+            {/* Blue circular progress ring */}
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 48 48">
+              <circle 
+                cx="24" 
+                cy="24" 
+                r="20" 
+                fill="none" 
+                stroke="#e5e5e5" 
+                strokeWidth="4"
+              />
+              <circle 
+                cx="24" 
+                cy="24" 
+                r="20" 
+                fill="none" 
+                stroke="#4d6af9" 
+                strokeWidth="4" 
+                strokeDasharray="125.6" 
+                strokeDashoffset="7.54"
+              />
+            </svg>
+          </div>
+          <div className="text-center text-xs mt-2">
+            <div>Perfect match</div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };

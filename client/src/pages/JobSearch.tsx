@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/hooks/use-toast";
-import { SearchForm, JobListings, JobDetail } from "@/components/job-search";
+import { SearchForm, JobListings, FilterBar } from "@/components/job-search";
 import { JobCardProps } from "@/components/job-search/JobCard";
 
 // Define job types for our page
@@ -24,296 +24,168 @@ const stripDescriptions = (
   return jobs.map(({ description, ...rest }) => rest);
 };
 
-// Mock job data
+// Mock job data - using Duolingo for all entries as shown in the image
 const jobListings = [
   {
     id: "1",
-    title: "Senior Frontend Developer",
-    company: "TechCorp Inc.",
-    location: "San Francisco, CA (Remote)",
-    type: "Full-time",
-    salary: "$120,000 - $150,000",
-    posted: "2 days ago",
+    title: "Certified English Tutor (remote working)",
+    company: "Duolingo",
+    location: "New York, NY",
+    type: "Hybrid",
+    salary: "$59 per hour",
+    posted: "5 days ago",
     isNew: true,
     description: `
       <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">Join our team to build cutting-edge web applications using React, TypeScript, and modern frontend technologies. You'll be working alongside talented engineers and designers to create exceptional user experiences.</p>
+      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
       
       <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
       <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>5+ years of experience with JavaScript and modern frameworks</li>
-        <li>Strong knowledge of React, TypeScript, and state management</li>
-        <li>Experience with responsive design and cross-browser compatibility</li>
-        <li>Familiarity with RESTful APIs and GraphQL</li>
-        <li>Bachelor's degree in Computer Science or related field</li>
+        <li>5+ years of English teaching experience</li>
+        <li>TEFL, CELTA, or equivalent certification</li>
+        <li>Excellent communication skills</li>
+        <li>Experience with online teaching platforms</li>
+        <li>Bachelor's degree in Education, English, or related field</li>
       </ul>
       
       <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
       <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary and equity package</li>
-        <li>Comprehensive health, dental, and vision coverage</li>
-        <li>Flexible remote work policy</li>
-        <li>Professional development budget</li>
-        <li>Unlimited PTO policy</li>
+        <li>Competitive hourly rate</li>
+        <li>Flexible schedule</li>
+        <li>Professional development opportunities</li>
+        <li>Access to teaching resources</li>
+        <li>Supportive teaching community</li>
       </ul>
     `,
   },
   {
     id: "2",
-    title: "UX/UI Designer",
-    company: "Design Studio Ltd.",
-    location: "London, UK (Hybrid)",
-    type: "Full-time",
-    salary: "£50,000 - £65,000",
+    title: "Certified English Tutor (remote working)",
+    company: "Duolingo",
+    location: "New York, NY",
+    type: "Hybrid",
+    salary: "$59 per hour",
     posted: "5 days ago",
     isNew: true,
     description: `
       <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're looking for a passionate UX/UI Designer to create beautiful, intuitive interfaces for our clients. You'll lead design projects from concept to implementation, working closely with our product and development teams.</p>
+      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
       
       <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
       <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>3+ years of experience in UX/UI design</li>
-        <li>Proficiency with design tools like Figma, Sketch, and Adobe Creative Suite</li>
-        <li>Strong portfolio demonstrating user-centered design process</li>
-        <li>Experience conducting user research and usability testing</li>
-        <li>Excellent communication and presentation skills</li>
+        <li>5+ years of English teaching experience</li>
+        <li>TEFL, CELTA, or equivalent certification</li>
+        <li>Excellent communication skills</li>
+        <li>Experience with online teaching platforms</li>
+        <li>Bachelor's degree in Education, English, or related field</li>
       </ul>
       
       <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
       <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary</li>
-        <li>Private healthcare</li>
-        <li>Flexible working arrangements</li>
-        <li>25 days annual leave</li>
+        <li>Competitive hourly rate</li>
+        <li>Flexible schedule</li>
         <li>Professional development opportunities</li>
+        <li>Access to teaching resources</li>
+        <li>Supportive teaching community</li>
       </ul>
     `,
   },
   {
     id: "3",
-    title: "DevOps Engineer",
-    company: "Cloud Solutions Co.",
-    location: "Austin, TX (On-site)",
-    type: "Full-time",
-    salary: "$90,000 - $120,000",
-    posted: "1 week ago",
+    title: "Certified English Tutor (remote working)",
+    company: "Duolingo",
+    location: "New York, NY",
+    type: "Hybrid",
+    salary: "$59 per hour",
+    posted: "5 days ago",
     isNew: false,
     description: `
       <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're seeking a DevOps Engineer to help us build and maintain our cloud infrastructure. You'll be responsible for automating deployments, monitoring systems, and ensuring high availability of our services.</p>
+      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
       
       <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
       <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>3+ years of experience in a DevOps role</li>
-        <li>Strong knowledge of AWS or Azure cloud services</li>
-        <li>Experience with containerization (Docker, Kubernetes)</li>
-        <li>Proficiency with CI/CD pipelines</li>
-        <li>Scripting skills (Python, Bash)</li>
+        <li>5+ years of English teaching experience</li>
+        <li>TEFL, CELTA, or equivalent certification</li>
+        <li>Excellent communication skills</li>
+        <li>Experience with online teaching platforms</li>
+        <li>Bachelor's degree in Education, English, or related field</li>
       </ul>
       
       <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
       <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary</li>
-        <li>Health, dental, and vision insurance</li>
-        <li>401(k) matching</li>
-        <li>Quarterly bonuses</li>
-        <li>Regular team events</li>
+        <li>Competitive hourly rate</li>
+        <li>Flexible schedule</li>
+        <li>Professional development opportunities</li>
+        <li>Access to teaching resources</li>
+        <li>Supportive teaching community</li>
       </ul>
     `,
   },
   {
     id: "4",
-    title: "Senior Frontend Developer",
-    company: "TechCorp Inc.",
-    location: "San Francisco, CA (Remote)",
-    type: "Full-time",
-    salary: "$120,000 - $150,000",
-    posted: "2 days ago",
+    title: "Certified English Tutor (remote working)",
+    company: "Duolingo",
+    location: "New York, NY",
+    type: "Hybrid",
+    salary: "$59 per hour",
+    posted: "5 days ago",
     isNew: false,
     description: `
       <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">Join our team to build cutting-edge web applications using React, TypeScript, and modern frontend technologies. You'll be working alongside talented engineers and designers to create exceptional user experiences.</p>
+      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
 
       <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
       <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>5+ years of experience with JavaScript and modern frameworks</li>
-        <li>Strong knowledge of React, TypeScript, and state management</li>
-        <li>Experience with responsive design and cross-browser compatibility</li>
-        <li>Familiarity with RESTful APIs and GraphQL</li>
-        <li>Bachelor's degree in Computer Science or related field</li>
+        <li>5+ years of English teaching experience</li>
+        <li>TEFL, CELTA, or equivalent certification</li>
+        <li>Excellent communication skills</li>
+        <li>Experience with online teaching platforms</li>
+        <li>Bachelor's degree in Education, English, or related field</li>
       </ul>
 
       <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
       <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary and equity package</li>
-        <li>Comprehensive health, dental, and vision coverage</li>
-        <li>Flexible remote work policy</li>
-        <li>Professional development budget</li>
-        <li>Unlimited PTO policy</li>
+        <li>Competitive hourly rate</li>
+        <li>Flexible schedule</li>
+        <li>Professional development opportunities</li>
+        <li>Access to teaching resources</li>
+        <li>Supportive teaching community</li>
       </ul>
     `,
   },
   {
     id: "5",
-    title: "UX/UI Designer",
-    company: "Design Studio Ltd.",
-    location: "London, UK (Hybrid)",
-    type: "Full-time",
-    salary: "£50,000 - £65,000",
+    title: "Certified English Tutor (remote working)",
+    company: "Duolingo",
+    location: "New York, NY",
+    type: "Hybrid",
+    salary: "$59 per hour",
     posted: "5 days ago",
     isNew: false,
     description: `
       <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're looking for a passionate UX/UI Designer to create beautiful, intuitive interfaces for our clients. You'll lead design projects from concept to implementation, working closely with our product and development teams.</p>
+      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
 
       <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
       <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>3+ years of experience in UX/UI design</li>
-        <li>Proficiency with design tools like Figma, Sketch, and Adobe Creative Suite</li>
-        <li>Strong portfolio demonstrating user-centered design process</li>
-        <li>Experience conducting user research and usability testing</li>
-        <li>Excellent communication and presentation skills</li>
+        <li>5+ years of English teaching experience</li>
+        <li>TEFL, CELTA, or equivalent certification</li>
+        <li>Excellent communication skills</li>
+        <li>Experience with online teaching platforms</li>
+        <li>Bachelor's degree in Education, English, or related field</li>
       </ul>
 
       <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
       <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary</li>
-        <li>Private healthcare</li>
-        <li>Flexible working arrangements</li>
-        <li>25 days annual leave</li>
+        <li>Competitive hourly rate</li>
+        <li>Flexible schedule</li>
         <li>Professional development opportunities</li>
+        <li>Access to teaching resources</li>
+        <li>Supportive teaching community</li>
       </ul>
     `,
-  },
-  {
-    id: "6",
-    title: "DevOps Engineer",
-    company: "Cloud Solutions Co.",
-    location: "Austin, TX (On-site)",
-    type: "Full-time",
-    salary: "$90,000 - $120,000",
-    posted: "1 week ago",
-    isNew: false,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're seeking a DevOps Engineer to help us build and maintain our cloud infrastructure. You'll be responsible for automating deployments, monitoring systems, and ensuring high availability of our services.</p>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>3+ years of experience in a DevOps role</li>
-        <li>Strong knowledge of AWS or Azure cloud services</li>
-        <li>Experience with containerization (Docker, Kubernetes)</li>
-        <li>Proficiency with CI/CD pipelines</li>
-        <li>Scripting skills (Python, Bash)</li>
-      </ul>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary</li>
-        <li>Health, dental, and vision insurance</li>
-        <li>401(k) matching</li>
-        <li>Quarterly bonuses</li>
-        <li>Regular team events</li>
-      </ul>
-    `,
-  },
-  {
-    id: "7",
-    title: "Senior Frontend Developer",
-    company: "TechCorp Inc.",
-    location: "San Francisco, CA (Remote)",
-    type: "Full-time",
-    salary: "$120,000 - $150,000",
-    posted: "2 days ago",
-    isNew: false,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">Join our team to build cutting-edge web applications using React, TypeScript, and modern frontend technologies. You'll be working alongside talented engineers and designers to create exceptional user experiences.</p>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>5+ years of experience with JavaScript and modern frameworks</li>
-        <li>Strong knowledge of React, TypeScript, and state management</li>
-        <li>Experience with responsive design and cross-browser compatibility</li>
-        <li>Familiarity with RESTful APIs and GraphQL</li>
-        <li>Bachelor's degree in Computer Science or related field</li>
-      </ul>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary and equity package</li>
-        <li>Comprehensive health, dental, and vision coverage</li>
-        <li>Flexible remote work policy</li>
-        <li>Professional development budget</li>
-        <li>Unlimited PTO policy</li>
-      </ul>
-    `,
-  },
-  {
-    id: "8",
-    title: "UX/UI Designer",
-    company: "Design Studio Ltd.",
-    location: "London, UK (Hybrid)",
-    type: "Full-time",
-    salary: "£50,000 - £65,000",
-    posted: "5 days ago",
-    isNew: false,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're looking for a passionate UX/UI Designer to create beautiful, intuitive interfaces for our clients. You'll lead design projects from concept to implementation, working closely with our product and development teams.</p>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>3+ years of experience in UX/UI design</li>
-        <li>Proficiency with design tools like Figma, Sketch, and Adobe Creative Suite</li>
-        <li>Strong portfolio demonstrating user-centered design process</li>
-        <li>Experience conducting user research and usability testing</li>
-        <li>Excellent communication and presentation skills</li>
-      </ul>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary</li>
-        <li>Private healthcare</li>
-        <li>Flexible working arrangements</li>
-        <li>25 days annual leave</li>
-        <li>Professional development opportunities</li>
-      </ul>
-    `,
-  },
-  {
-    id: "9",
-    title: "DevOps Engineer",
-    company: "Cloud Solutions Co.",
-    location: "Austin, TX (On-site)",
-    type: "Full-time",
-    salary: "$90,000 - $120,000",
-    posted: "1 week ago",
-    isNew: false,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're seeking a DevOps Engineer to help us build and maintain our cloud infrastructure. You'll be responsible for automating deployments, monitoring systems, and ensuring high availability of our services.</p>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>3+ years of experience in a DevOps role</li>
-        <li>Strong knowledge of AWS or Azure cloud services</li>
-        <li>Experience with containerization (Docker, Kubernetes)</li>
-        <li>Proficiency with CI/CD pipelines</li>
-        <li>Scripting skills (Python, Bash)</li>
-      </ul>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive salary</li>
-        <li>Health, dental, and vision insurance</li>
-        <li>401(k) matching</li>
-        <li>Quarterly bonuses</li>
-        <li>Regular team events</li>
-      </ul>
-    `,
-  },
+  }
 ];
 
 interface JobSearchParams {
@@ -391,17 +263,14 @@ const JobSearch = () => {
       {/* Search Form */}
       <SearchForm onSearch={handleSearch} />
 
-      {/* Filters */}
-      {/* <FilterBar /> */}
-
-      {/* Job Listings and Detail View */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Main Content with Job Listings and Filters */}
+      <div className="flex">
         <JobListings
           jobs={stripDescriptions(filteredJobs)}
           selectedJobId={selectedJob?.id || null}
           onSelectJob={handleJobSelect}
         />
-        <JobDetail selectedJob={selectedJob} />
+        <FilterBar />
       </div>
     </div>
   );
