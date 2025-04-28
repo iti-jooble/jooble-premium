@@ -148,41 +148,47 @@ const JobDetails = () => {
           </Card>
 
           {/* Resume Match Card */}
-          <Card className="p-6 relative overflow-hidden">
-            <div className="flex items-start gap-6">
-              {/* A4 icon */}
-              <div className="flex-shrink-0 relative">
-                <div className="bg-blue-500 text-white px-2 py-1 text-xs font-bold rounded-md absolute -top-1 -left-1 z-10">
-                  A4 - 3
-                </div>
-                <div className="w-24 h-28 bg-white border border-gray-300 rounded shadow-sm flex items-center justify-center relative overflow-hidden">
-                  <div className="w-20 h-24 bg-white border border-gray-200 p-1 transform -rotate-3">
-                    <div className="w-full h-1 bg-blue-200 mb-1"></div>
-                    <div className="w-full h-1 bg-blue-200 mb-1"></div>
-                    <div className="w-1/2 h-1 bg-blue-200"></div>
-                  </div>
-                  <div className="w-20 h-24 bg-white border border-gray-200 p-1 absolute top-1 left-2 transform rotate-3">
-                    <div className="w-full h-1 bg-blue-200 mb-1"></div>
-                    <div className="w-full h-1 bg-blue-200 mb-1"></div>
-                    <div className="w-1/2 h-1 bg-blue-200"></div>
-                  </div>
+          <Card className="p-6 bg-[#faf9f6] rounded-lg overflow-hidden">
+            <div className="flex">
+              {/* Resume images */}
+              <div className="flex-shrink-0 w-1/3">
+                <div className="relative transform -rotate-6 ml-2">
+                  <img 
+                    src="https://images.pexels.com/photos/3760093/pexels-photo-3760093.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    alt="Resume" 
+                    className="w-24 h-36 object-cover object-top border-4 border-white shadow-md"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="96" height="144" viewBox="0 0 96 144" fill="white"><rect width="96" height="144" fill="white" /><line x1="10" y1="30" x2="86" y2="30" stroke="%23eee" stroke-width="4"/><line x1="10" y1="50" x2="86" y2="50" stroke="%23eee" stroke-width="4"/><line x1="10" y1="70" x2="60" y2="70" stroke="%23eee" stroke-width="4"/><rect x="10" y="10" width="16" height="16" fill="%23eee" rx="8"/></svg>';
+                    }}
+                  />
+                  <img 
+                    src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    alt="Resume 2" 
+                    className="w-24 h-36 object-cover object-top border-4 border-white shadow-md absolute -top-3 left-4 transform rotate-12"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="96" height="144" viewBox="0 0 96 144" fill="white"><rect width="96" height="144" fill="white" /><line x1="10" y1="30" x2="86" y2="30" stroke="%23eee" stroke-width="4"/><line x1="10" y1="50" x2="86" y2="50" stroke="%23eee" stroke-width="4"/><line x1="10" y1="70" x2="60" y2="70" stroke="%23eee" stroke-width="4"/><rect x="10" y="10" width="16" height="16" fill="%23eee" rx="8"/></svg>';
+                    }}
+                  />
                 </div>
               </div>
 
+              {/* Text Content */}
               <div className="flex-1">
-                <h3 className="font-bold text-gray-800">
-                  Response chance without Fitly
+                <h3 className="text-2xl font-bold text-gray-800">
+                  Response chance<br />without Fitly
                 </h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className="text-gray-700 mt-2 mb-1">
                   Your resume doesn't highlight your strengths well enough for this job.
                 </p>
               </div>
 
               {/* Score Circle */}
               <div className="flex-shrink-0">
-                <div className="relative w-16 h-16">
+                <div className="relative w-28 h-28">
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center text-2xl font-bold">34</div>
+                    <div className="text-center text-4xl font-black">34</div>
                   </div>
                   {/* Red circular progress ring */}
                   <svg
@@ -202,21 +208,22 @@ const JobDetails = () => {
                       cy="24"
                       r="20"
                       fill="none"
-                      stroke="#ef4444"
+                      stroke="#cc3232"
                       strokeWidth="4"
                       strokeDasharray="125.6"
-                      strokeDashoffset="82.9"
+                      strokeDashoffset="83"
+                      className="stroke-current"
                     />
                   </svg>
                 </div>
-                <div className="flex items-center text-xs text-red-500 font-medium mt-1 justify-center">
-                  <XCircle size={14} className="mr-1" /> Need improve
+                <div className="flex items-center text-sm text-red-600 font-medium mt-1 justify-center">
+                  <span className="mr-1">😔</span> Need improve
                 </div>
               </div>
             </div>
 
             <Button 
-              className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium"
+              className="w-full mt-8 py-6 bg-blue-600 hover:bg-blue-700 text-white text-lg font-medium rounded-md"
             >
               Fit my docs
             </Button>
