@@ -14,8 +14,19 @@ import {
   DownloadIcon
 } from "lucide-react";
 
-// Import mock job data (in a real app, this would come from an API)
-import { jobListings } from "./JobSearch";
+// In a real app, this would be fetched from an API
+// For now we're using the same job data that's defined in JobSearch.tsx
+type JobWithDescription = {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  salary: string;
+  posted: string;
+  isNew: boolean;
+  description: string;
+};
 
 interface ResumeMatchScore {
   category: string;
@@ -26,15 +37,74 @@ const JobDetails = () => {
   const { t } = useTranslation();
   const params = useParams();
   const [, setLocation] = useLocation();
-  const [job, setJob] = useState<any>(null);
+  const [job, setJob] = useState<JobWithDescription | null>(null);
   const [loading, setLoading] = useState(true);
 
   const jobId = params.jobId;
 
+  // Mock job data - this would come from an API in a real app
+  const mockJobs: JobWithDescription[] = [
+    {
+      id: "1",
+      title: "Certified English Tutor (remote working)",
+      company: "Duolingo",
+      location: "New York, NY",
+      type: "Hybrid",
+      salary: "$59 per hour",
+      posted: "5 days ago",
+      isNew: true,
+      description: `We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.`
+    },
+    {
+      id: "2",
+      title: "Python developer",
+      company: "Duolingo",
+      location: "New York, NY",
+      type: "Hybrid",
+      salary: "$59 per hour",
+      posted: "5 days ago",
+      isNew: true,
+      description: `We're looking for skilled Python developers to join our backend team. You'll be responsible for developing and maintaining our API services and core application logic.`
+    },
+    {
+      id: "3",
+      title: "Frontend developer",
+      company: "Duolingo",
+      location: "New York, NY",
+      type: "Hybrid",
+      salary: "$59 per hour",
+      posted: "5 days ago",
+      isNew: false,
+      description: `We're looking for frontend developers with React experience to join our web team. You'll be responsible for building engaging user interfaces for our learning platform.`
+    },
+    {
+      id: "4",
+      title: "Engineering manager",
+      company: "Duolingo",
+      location: "New York, NY",
+      type: "Hybrid",
+      salary: "$59 per hour",
+      posted: "5 days ago",
+      isNew: false,
+      description: `We're looking for an engineering manager to lead our core platform team. You'll be responsible for guiding a team of engineers, setting technical direction, and ensuring successful project delivery.`
+    },
+    {
+      id: "5",
+      title: "UX/UI Designer",
+      company: "Duolingo",
+      location: "New York, NY",
+      type: "Hybrid",
+      salary: "$59 per hour",
+      posted: "5 days ago",
+      isNew: false,
+      description: `We're looking for a skilled UX/UI designer to join our product team. You'll be responsible for creating beautiful interfaces and user flows for our language learning app.`
+    }
+  ];
+
   useEffect(() => {
     // In a real app, this would be an API call
     if (jobId) {
-      const foundJob = jobListings.find((job) => job.id === jobId);
+      const foundJob = mockJobs.find((job) => job.id === jobId);
       setJob(foundJob || null);
     }
     setLoading(false);

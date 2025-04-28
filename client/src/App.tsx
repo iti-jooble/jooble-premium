@@ -50,6 +50,9 @@ const PaywallPage = loadable(() => import("@/pages/PaywallPage"), {
 const JobSearch = loadable(() => import("@/pages/JobSearch"), {
   fallback: <PageLoadingIndicator />,
 });
+const JobDetails = loadable(() => import("@/pages/JobDetails"), {
+  fallback: <PageLoadingIndicator />,
+});
 
 function Router() {
   return (
@@ -62,6 +65,7 @@ function Router() {
           <Route path="/cv-builder">{() => <CvBuilderCreate />}</Route>
           <Route path="/cv-review">{() => <CvReview />}</Route>
           <Route path="/jobs">{() => <JobSearch />}</Route>
+          <Route path="/job-details/:jobId">{() => <JobDetails />}</Route>
           <Route path="/paywall">{() => <PaywallPage />}</Route>
           <Route path="/cv-matching">{() => <CvMatching />}</Route>
           <Route path="/cover-letter">{() => <CoverLetter />}</Route>
