@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
 import { toast } from "@/hooks/use-toast";
 import { SearchForm, JobListings, FilterBar } from "@/components/job-search";
 import { JobCardProps } from "@/components/job-search/JobCard";
@@ -25,7 +26,7 @@ const stripDescriptions = (
 };
 
 // Mock job data - using Duolingo for all entries as shown in the image
-const jobListings = [
+export const jobListings = [
   {
     id: "1",
     title: "Certified English Tutor (remote working)",
@@ -195,17 +196,15 @@ interface JobSearchParams {
 
 const JobSearch = () => {
   const { t } = useTranslation();
+  const [, setLocation] = useLocation();
   const [selectedJob, setSelectedJob] = useState<
     (typeof jobListings)[0] | null
   >(null);
   const [filteredJobs, setFilteredJobs] = useState(jobListings);
 
   const handleJobSelect = (job: JobCardProps["job"]) => {
-    // Find the full job data including description
-    const fullJobData = jobListings.find((j) => j.id === job.id);
-    if (fullJobData) {
-      setSelectedJob(fullJobData);
-    }
+    // Navigate to the job details page
+    setLocation(`/job-details/${job.id}`);
   };
 
   const handleSearch = (searchParams: JobSearchParams) => {
