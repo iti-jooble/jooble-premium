@@ -11,43 +11,58 @@ import {
 
 export const FilterBar = () => {
   const { t } = useTranslation();
-  
+
   return (
     <div className="w-72 ml-6">
-      <h2 className="text-xl font-semibold mb-5">Filters</h2>
-      
+      <h2 className="text-xl font-semibold mb-4">{t("Filters")}</h2>
       <Accordion type="multiple" defaultValue={[]}>
         {/* Location Filter */}
-        <AccordionItem value="location" className="bg-white rounded-xl shadow-sm mb-4 border-none">
-          <AccordionTrigger className="px-5 py-5 rounded-xl hover:no-underline">
-            <h3 className="text-lg font-medium">Location</h3>
+        <AccordionItem
+          value="location"
+          className="bg-white rounded-xl shadow-sm mb-2 border-none"
+        >
+          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
+            <h3 className="text-md font-bold">{t("Location")}</h3>
           </AccordionTrigger>
-          <AccordionContent className="px-5 pb-5 pt-2">
-            <Input placeholder="Enter location" className="mb-3" />
+          <AccordionContent className="px-4 pb-4 pt-2">
+            <Input placeholder={t("Enter location")} className="mb-3" />
             <div className="space-y-2">
-              {["Remote", "New York", "San Francisco", "Chicago", "Austin"].map((location) => (
-                <div key={location} className="flex items-center space-x-2">
-                  <Checkbox id={`location-${location}`} />
-                  <Label htmlFor={`location-${location}`} className="text-sm font-normal">
-                    {location}
-                  </Label>
-                </div>
-              ))}
+              <div className="flex items-center space-x-2">
+                <Checkbox id="location-remote" />
+                <Label
+                  htmlFor="location-remote"
+                  className="text-sm font-normal"
+                >
+                  Remote
+                </Label>
+              </div>
             </div>
           </AccordionContent>
         </AccordionItem>
-        
+
         {/* Experience Level */}
-        <AccordionItem value="experience" className="bg-white rounded-xl shadow-sm mb-4 border-none">
-          <AccordionTrigger className="px-5 py-5 rounded-xl hover:no-underline">
-            <h3 className="text-lg font-medium">Experience Level</h3>
+        <AccordionItem
+          value="experience"
+          className="bg-white rounded-xl shadow-sm mb-2 border-none"
+        >
+          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
+            <h3 className="text-md font-bold">{t("Experience Level")}</h3>
           </AccordionTrigger>
-          <AccordionContent className="px-5 pb-5 pt-2">
+          <AccordionContent className="px-4 pb-4 pt-2">
             <div className="space-y-2">
-              {["Entry Level", "Mid Level", "Senior Level", "Manager", "Executive"].map((level) => (
+              {[
+                "Entry Level",
+                "Mid Level",
+                "Senior Level",
+                "Manager",
+                "Executive",
+              ].map((level) => (
                 <div key={level} className="flex items-center space-x-2">
                   <Checkbox id={`level-${level}`} />
-                  <Label htmlFor={`level-${level}`} className="text-sm font-normal">
+                  <Label
+                    htmlFor={`level-${level}`}
+                    className="text-sm font-normal"
+                  >
                     {level}
                   </Label>
                 </div>
@@ -55,18 +70,31 @@ export const FilterBar = () => {
             </div>
           </AccordionContent>
         </AccordionItem>
-        
+
         {/* Job Type */}
-        <AccordionItem value="job-type" className="bg-white rounded-xl shadow-sm mb-4 border-none">
-          <AccordionTrigger className="px-5 py-5 rounded-xl hover:no-underline">
-            <h3 className="text-lg font-medium">Job Type</h3>
+        <AccordionItem
+          value="job-type"
+          className="bg-white rounded-xl shadow-sm mb-2 border-none"
+        >
+          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
+            <h3 className="text-md font-bold">{t("Job Type")}</h3>
           </AccordionTrigger>
-          <AccordionContent className="px-5 pb-5 pt-2">
+          <AccordionContent className="px-4 pb-4 pt-2">
             <div className="space-y-2">
-              {["Full-time", "Part-time", "Contract", "Internship", "Hybrid", "Remote"].map((type) => (
+              {[
+                "Full-time",
+                "Part-time",
+                "Contract",
+                "Internship",
+                "Hybrid",
+                "Remote",
+              ].map((type) => (
                 <div key={type} className="flex items-center space-x-2">
                   <Checkbox id={`type-${type}`} />
-                  <Label htmlFor={`type-${type}`} className="text-sm font-normal">
+                  <Label
+                    htmlFor={`type-${type}`}
+                    className="text-sm font-normal"
+                  >
                     {type}
                   </Label>
                 </div>

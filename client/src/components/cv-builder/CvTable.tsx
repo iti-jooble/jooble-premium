@@ -163,9 +163,9 @@ export const CvTable = ({
                       <div className="w-10 h-10 bg-primary/10 rounded-md flex items-center justify-center mr-3 group-hover:bg-primary/20 transition-colors">
                         <FileTextIcon className="h-5 w-5 text-primary" />
                       </div>
-                      <span className="group-hover:text-primary transition-colors">
+                      <h3 className="text-primary-blue group-hover:underline transition-all font-bold">
                         {cv.title}
-                      </span>
+                      </h3>
                     </div>
                   </TableCell>
                   <TableCell className="py-4">

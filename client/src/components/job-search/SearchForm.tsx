@@ -12,26 +12,26 @@ interface SearchFormProps {
   initialLocation?: string;
 }
 
-export const SearchForm = ({ 
+export const SearchForm = ({
   onSearch,
   initialKeywords = "",
-  initialLocation = "" 
+  initialLocation = "",
 }: SearchFormProps) => {
   const { t } = useTranslation();
-  
-  const { 
+
+  const {
     formState,
     setKeywords,
     setLocation,
     handleSearch,
     resetForm,
-    isSearching
+    isSearching,
   } = useSearchForm({
     onSearch,
     initialKeywords,
-    initialLocation
+    initialLocation,
   });
-  
+
   const handleSubmit = (e: FormEvent) => {
     handleSearch(e);
   };
@@ -40,7 +40,7 @@ export const SearchForm = ({
     // For simplicity, just clear keywords for now
     setKeywords("");
   };
-  
+
   return (
     <div className="bg-white rounded-full shadow-sm mb-6 p-2 flex items-center">
       <form onSubmit={handleSubmit} className="flex-1 flex items-center">
@@ -48,30 +48,30 @@ export const SearchForm = ({
           <SearchIcon className="h-5 w-5 text-muted-foreground mr-2" />
           <div className="flex flex-wrap gap-2 items-center">
             {formState.keywords ? (
-              <Badge 
-                variant="outline" 
+              <Badge
+                variant="outline"
                 className="flex items-center gap-1 bg-background"
               >
                 {formState.keywords}
-                <XIcon 
-                  className="h-3 w-3 cursor-pointer" 
+                <XIcon
+                  className="h-3 w-3 cursor-pointer"
                   onClick={() => handleKeywordRemove(formState.keywords)}
                 />
               </Badge>
             ) : null}
-            <Input 
-              placeholder="Add job title" 
+            <Input
+              placeholder="Add job title"
               className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 pl-0"
               value={formState.keywords}
               onChange={(e) => setKeywords(e.target.value)}
             />
           </div>
         </div>
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           disabled={isSearching}
           size="icon"
-          className="rounded-full h-12 w-12"
+          className="rounded-full h-12 w-12 bg-primary-blue hover:bg-blue-700"
         >
           {isSearching ? (
             <Loader2 className="h-5 w-5 animate-spin" />

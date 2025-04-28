@@ -61,13 +61,15 @@ const SideMenu = () => {
 
       <div className="mt-auto">
         {/* Upgrade to Premium section */}
-        <div className="bg-primary-background mx-3 mb-3 rounded-md p-3">
-          <div className="text-sm font-medium text-gray-800 mb-1">
+        <div className="bg-primary-background mx-3 mb-3 rounded-xl p-3">
+          <div className="text-md font-bold text-gray-800 mb-1">
             Upgrade to Premium
           </div>
-          <div className="text-xs text-gray-600 mb-2">Description</div>
+          <div className="text-xs text-gray-600 mb-2">
+            Get access to exclusive job features by upgrading to premium.
+          </div>
           <Button
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full bg-primary-blue hover:bg-blue-700"
             onClick={() => (window.location.href = "/paywall")}
           >
             Upgrade
@@ -95,7 +97,7 @@ const SideMenu = () => {
                     />
                   </div>
                   <div className="flex flex-col items-start">
-                    <p className="text-sm font-medium text-gray-800">
+                    <p className="text-sm font-bold text-gray-900">
                       My profile
                     </p>
                     <p className="text-xs text-gray-500">Free</p>
@@ -143,13 +145,13 @@ const NavLink = ({ path, label, icon, isActive }: NavLinkProps) => {
     <div className="mx-3 mb-1">
       <Link href={path}>
         <div
-          className={`flex items-center px-4 py-3 rounded-md text-sm cursor-pointer ${
+          className={`flex items-center px-4 py-3 rounded-xl text-md font-bold cursor-pointer ${
             isActive
               ? "bg-primary-background text-gray-900"
               : "text-gray-800 hover:bg-primary-background"
           }`}
         >
-          <span className="flex-shrink-0 mr-3 text-gray-500">{icon}</span>
+          <span className="flex-shrink-0 mr-3 text-gray-900">{icon}</span>
           <span>{label}</span>
         </div>
       </Link>

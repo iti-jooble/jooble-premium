@@ -60,7 +60,7 @@ const jobListings = [
   },
   {
     id: "2",
-    title: "Certified English Tutor (remote working)",
+    title: "Python developer",
     company: "Duolingo",
     location: "New York, NY",
     type: "Hybrid",
@@ -92,7 +92,7 @@ const jobListings = [
   },
   {
     id: "3",
-    title: "Certified English Tutor (remote working)",
+    title: "Frontend developer",
     company: "Duolingo",
     location: "New York, NY",
     type: "Hybrid",
@@ -124,7 +124,7 @@ const jobListings = [
   },
   {
     id: "4",
-    title: "Certified English Tutor (remote working)",
+    title: "Engineering manager",
     company: "Duolingo",
     location: "New York, NY",
     type: "Hybrid",
@@ -185,7 +185,7 @@ const jobListings = [
         <li>Supportive teaching community</li>
       </ul>
     `,
-  }
+  },
 ];
 
 interface JobSearchParams {
@@ -248,7 +248,7 @@ const JobSearch = () => {
   };
 
   return (
-    <div className="p-6 sm:p-8 animate-in fade-in duration-300 min-h-screen bg-[#f7f6f2]">
+    <div className="p-6 sm:p-8 animate-in fade-in duration-300 min-h-screen max-w-[964px] m-auto">
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
