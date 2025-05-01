@@ -51,7 +51,12 @@ export const appLoadingSlice = createSlice({
 });
 
 // Action creators
-export const { setLoading, setInitialRequestComplete, setInitialRequestError, setInitData } = appLoadingSlice.actions;
+export const {
+  setLoading,
+  setInitialRequestComplete,
+  setInitialRequestError,
+  setInitData,
+} = appLoadingSlice.actions;
 
 // Thunk for loading initial data
 export const loadInitialData = () => async (dispatch: any) => {
@@ -59,7 +64,7 @@ export const loadInitialData = () => async (dispatch: any) => {
   dispatch(setInitialRequestError(null));
 
   try {
-    const response = await apiRequest("GET", "/api/init");
+    const response = await apiRequest("POST", "/api/init");
     const data = await response.json();
     dispatch(setInitData(data));
     dispatch(setInitialRequestComplete(true));
@@ -70,4 +75,4 @@ export const loadInitialData = () => async (dispatch: any) => {
   }
 };
 
-export default appLoadingSlice.reducer; 
+export default appLoadingSlice.reducer;

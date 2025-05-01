@@ -13,15 +13,18 @@ export const FilterBar = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="w-72 ml-6">
+    <div className="md:col-span-1">
       <h2 className="text-xl font-semibold mb-4">{t("Filters")}</h2>
       <Accordion type="multiple" defaultValue={[]}>
         {/* Location Filter */}
         <AccordionItem
           value="location"
-          className="bg-white rounded-xl shadow-sm mb-2 border-none"
+          className="bg-white rounded-xl shadow-sm mb-2 border-none hover:shadow-md"
         >
-          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
+          <AccordionTrigger
+            withChevron={false}
+            className="px-4 py-4 rounded-xl hover:no-underline"
+          >
             <h3 className="text-md font-bold">{t("Location")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">
@@ -43,9 +46,12 @@ export const FilterBar = () => {
         {/* Experience Level */}
         <AccordionItem
           value="experience"
-          className="bg-white rounded-xl shadow-sm mb-2 border-none"
+          className="bg-white rounded-xl shadow-sm mb-2 border-none hover:shadow-md"
         >
-          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
+          <AccordionTrigger
+            withChevron={false}
+            className="px-4 py-4 rounded-xl hover:no-underline"
+          >
             <h3 className="text-md font-bold">{t("Experience Level")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">
@@ -74,9 +80,12 @@ export const FilterBar = () => {
         {/* Job Type */}
         <AccordionItem
           value="job-type"
-          className="bg-white rounded-xl shadow-sm mb-2 border-none"
+          className="bg-white rounded-xl shadow-sm mb-2 border-none hover:shadow-md"
         >
-          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
+          <AccordionTrigger
+            withChevron={false}
+            className="px-4 py-4 rounded-xl hover:no-underline"
+          >
             <h3 className="text-md font-bold">{t("Job Type")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">

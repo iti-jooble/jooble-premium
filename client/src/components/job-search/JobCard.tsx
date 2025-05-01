@@ -29,9 +29,9 @@ export const JobCard = ({ job, isSelected, onClick }: JobCardProps) => {
       }`}
       onClick={() => onClick(job)}
     >
-      <div className="p-4 grid grid-cols-12 gap-4">
+      <div className="grid grid-cols-12 gap-4">
         {/* Job Content */}
-        <div className="col-span-9">
+        <div className="col-span-9 p-6">
           {/* Company info and posted date */}
           <div className="flex items-center text-sm mb-1">
             <div className="w-10 h-10 rounded-lg mr-4 bg-green-100 flex items-center justify-center text-muted-foreground text-green-800">
@@ -70,7 +70,7 @@ export const JobCard = ({ job, isSelected, onClick }: JobCardProps) => {
         </div>
 
         {/* Match Score */}
-        <div className="col-span-3 flex justify-center items-end flex-col">
+        <div className="col-span-3 flex justify-center items-center flex-col p-6 border-l border-gray-200">
           <div className="relative w-20 h-20">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">

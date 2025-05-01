@@ -11,18 +11,25 @@ export const configApiSlice = createApi({
   endpoints: (builder) => ({
     // Get all configs
     getConfigs: builder.query<IConfig, void>({
-      query: () => "init",
+      query: () => ({
+        url: "/init",
+        method: "POST",
+      }),
       providesTags: ["Config"],
       transformResponse: (response: any) => {
         // Update userInfo in the store
         if (response.userInfo) {
           // Dispatch the action to update userInfo
-          configApiSlice.util.updateQueryData('getConfigs', undefined, (draft) => {
-            return {
-              ...draft,
-              userInfo: response.userInfo
-            };
-          });
+          configApiSlice.util.updateQueryData(
+            "getConfigs",
+            undefined,
+            (draft) => {
+              return {
+                ...draft,
+                userInfo: response.userInfo,
+              };
+            },
+          );
         }
         return response;
       },
@@ -30,4 +37,4 @@ export const configApiSlice = createApi({
   }),
 });
 
-export const { useGetConfigsQuery } = configApiSlice; 
+export const { useGetConfigsQuery } = configApiSlice;

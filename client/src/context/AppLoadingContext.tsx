@@ -69,7 +69,7 @@ export const InitialRequestProvider: React.FC<InitialRequestProviderProps> = ({
     try {
       // Make the initial API request to get essential application data
       // apiRequest already throws if response is not ok
-      const response = await apiRequest("GET", "/api/init");
+      const response = await apiRequest("POST", "/api/init");
       const data = (await response.json()) as AppInitData;
 
       // Store the initialization data

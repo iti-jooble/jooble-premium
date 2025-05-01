@@ -65,7 +65,7 @@ const CvBuilder = () => {
   };
 
   return (
-    <div className="p-6 sm:p-8 animate-in fade-in duration-300 max-w-[964px] m-auto">
+    <div className="py-6 animate-in fade-in duration-300 max-w-[964px] m-auto">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">

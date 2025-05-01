@@ -247,7 +247,7 @@ const JobSearch = () => {
   };
 
   return (
-    <div className="p-6 sm:p-8 animate-in fade-in duration-300 min-h-screen max-w-[964px] m-auto">
+    <div className="py-6 animate-in fade-in duration-300 min-h-screen max-w-[964px] m-auto">
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
@@ -263,7 +263,7 @@ const JobSearch = () => {
       <SearchForm onSearch={handleSearch} />
 
       {/* Main Content with Job Listings and Filters */}
-      <div className="flex">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <JobListings
           jobs={stripDescriptions(filteredJobs)}
           selectedJobId={selectedJob?.id || null}
