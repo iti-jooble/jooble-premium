@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import loadable from "@loadable/component";
 import SideMenu from "@/components/layout/SideMenu";
 import Content from "@/components/layout/Content";
+import { useAppSelector } from "@/redux/store";
 import {
   InitialRequestProvider,
   useAppLoading,
@@ -15,6 +16,7 @@ import {
   GlobalLoadingScreen,
   PageLoadingIndicator,
 } from "@/components/loading/GlobalLoadingScreen";
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 // Lazy load pages for code splitting
 const NotFound = loadable(() => import("@/pages/not-found"), {
@@ -54,7 +56,15 @@ const JobDetails = loadable(() => import("@/pages/JobDetails"), {
   fallback: <PageLoadingIndicator />,
 });
 
-function Router() {
+// Auth Pages
+const LoginPage = loadable(() => import("@/pages/auth/LoginPage"), {
+  fallback: <PageLoadingIndicator />,
+});
+const RegisterPage = loadable(() => import("@/pages/auth/RegisterPage"), {
+  fallback: <PageLoadingIndicator />,
+});
+
+function ProtectedApp() {
   return (
     <div className="flex h-screen">
       <SideMenu />
@@ -76,6 +86,32 @@ function Router() {
         </Switch>
       </Content>
     </div>
+  );
+}
+
+function Router() {
+  // Check authentication state
+  const { isAuthenticated } = useAppSelector((state) => state.user);
+  
+  return (
+    <Switch>
+      {/* Auth routes - accessible when not logged in */}
+      <Route path="/auth/login">{() => 
+        isAuthenticated ? <Redirect to="/" /> : <LoginPage />
+      }</Route>
+      <Route path="/auth/register">{() => 
+        isAuthenticated ? <Redirect to="/" /> : <RegisterPage />
+      }</Route>
+      
+      {/* Protected routes - require authentication */}
+      <Route>
+        {() => (
+          <ProtectedRoute>
+            <ProtectedApp />
+          </ProtectedRoute>
+        )}
+      </Route>
+    </Switch>
   );
 }
 
