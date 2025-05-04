@@ -1,23 +1,25 @@
-import { useGetConfigsQuery } from "../redux/api/configApiSlice";
 import { useCreateCheckoutSessionMutation } from "../redux/api/paymentApiSlice";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircleIcon, SparklesIcon, FileTextIcon, Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { IPaywallPricing } from "@/types/state/config.types";
+import { useAppSelector } from "@/redux/store";
+import {
+  CheckCircleIcon,
+  SparklesIcon,
+  FileTextIcon,
+  Loader2,
+} from "lucide-react";
+import { PaywallPrice } from "@/types/state/bootstrap.types";
 import { toast } from "sonner";
 
 export default function PaywallPage() {
-  const { data: config, isLoading, error } = useGetConfigsQuery();
-  const [createCheckoutSession, { isLoading: isCreatingSession }] = useCreateCheckoutSessionMutation();
-  const navigate = useNavigate();
+  const [createCheckoutSession, { isLoading: isCreatingSession }] =
+    useCreateCheckoutSessionMutation();
+  const { paywall } = useAppSelector((state) => state.bootstrap.configs) || {};
 
   const handleChoosePlan = async (priceId: string) => {
     try {
       const successUrl = `${window.location.origin}`;
       const cancelUrl = `${window.location.origin}`;
-
-      console.log("priceId", priceId);
 
       const response = await createCheckoutSession({
         priceId,
@@ -25,42 +27,13 @@ export default function PaywallPage() {
         cancelUrl,
       }).unwrap();
 
-      console.log("response");
-      console.log(response.redirectUrl);
-      // Redirect to the payment page
       window.location.href = response.redirectUrl;
     } catch (err) {
       toast.error("Failed to create payment session. Please try again.");
-      console.error("Payment session creation failed:", err);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-lg font-semibold mb-2">Error Loading Plans</h2>
-          <p className="text-muted-foreground mb-4">
-            There was a problem loading the subscription plans. Please try again later.
-          </p>
-          <Button onClick={() => window.location.reload()}>
-            Retry
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const paywallConfig = config?.configs?.paywall;
-  const prices = paywallConfig?.prices || [];
+  const prices = paywall?.prices || [];
 
   if (!prices.length) {
     return (
@@ -78,13 +51,15 @@ export default function PaywallPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">Upgrade to Premium</h1>
+        <h1 className="text-3xl font-bold text-center mb-8">
+          Upgrade to Premium
+        </h1>
         <p className="text-center text-muted-foreground mb-12">
           Unlock all features and get the most out of your job search
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {prices.map((price: IPaywallPricing) => (
+          {prices.map((price: PaywallPrice) => (
             <Card key={price.priceId} className="relative overflow-hidden">
               <CardContent className="p-6">
                 <div className="mb-4">
@@ -96,7 +71,9 @@ export default function PaywallPage() {
                   <span className="text-3xl font-bold">
                     {price.amount} {price.currency}
                   </span>
-                  <span className="text-muted-foreground">/{price.interval}</span>
+                  <span className="text-muted-foreground">
+                    /{price.interval}
+                  </span>
                 </div>
 
                 <ul className="space-y-3 mb-6">
@@ -114,8 +91,8 @@ export default function PaywallPage() {
                   </li>
                 </ul>
 
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   onClick={() => handleChoosePlan(price.priceId)}
                   disabled={isCreatingSession}
                 >
@@ -135,4 +112,4 @@ export default function PaywallPage() {
       </div>
     </div>
   );
-} 
+}

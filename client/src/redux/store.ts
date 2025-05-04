@@ -6,18 +6,14 @@ import userReducer from "./slices/userSlice";
 import cvBuilderReducer from "./slices/cvBuilderSlice";
 import jobSearchReducer from "./slices/jobSearchSlice";
 import uiReducer from "./slices/uiSlice";
-import configReducer from "./slices/configSlice";
-import appLoadingReducer from "./slices/appLoadingSlice";
-import userInfoReducer from "./slices/userInfoSlice";
+import bootstrapReducer from "./slices/bootstrapSlice";
 
 // Import API slices
-import { apiSlice } from "./api/apiSlice";
 import { cvApiSlice } from "./api/cvApiSlice";
 import { jobApi } from "./api/jobApiSlice";
-import { authApi } from "./api/authApiSlice";
+import { authApiSlice } from "./api/authApiSlice";
 import { coverLetterApi } from "./api/coverLetterApiSlice";
-import { cvBuilderApiSlice } from "./api/cvBuilderApiSlice";
-import { configApiSlice } from "./api/configApiSlice";
+import { bootstrapApiSlice } from "./api/bootstrapApiSlice";
 import { paymentApiSlice } from "./api/paymentApiSlice";
 
 // Configure store
@@ -28,17 +24,14 @@ export const store = configureStore({
     cvBuilder: cvBuilderReducer,
     jobSearch: jobSearchReducer,
     ui: uiReducer,
-    config: configReducer,
-    appLoading: appLoadingReducer,
-    userInfo: userInfoReducer,
+    bootstrap: bootstrapReducer,
 
     // API reducers - each API slice has a unique reducerPath
-    [apiSlice.reducerPath]: apiSlice.reducer,
     [cvApiSlice.reducerPath]: cvApiSlice.reducer,
     [jobApi.reducerPath]: jobApi.reducer,
-    [authApi.reducerPath]: authApi.reducer,
+    [authApiSlice.reducerPath]: authApiSlice.reducer,
     [coverLetterApi.reducerPath]: coverLetterApi.reducer,
-    [configApiSlice.reducerPath]: configApiSlice.reducer,
+    [bootstrapApiSlice.reducerPath]: bootstrapApiSlice.reducer,
     [paymentApiSlice.reducerPath]: paymentApiSlice.reducer,
 
     // Custom endpoints injected into apiSlice use the same reducerPath
@@ -52,12 +45,11 @@ export const store = configureStore({
 
     // Create an array of API middleware to add
     const apiMiddleware = [
-      apiSlice.middleware,
       cvApiSlice.middleware,
       jobApi.middleware,
-      authApi.middleware,
+      authApiSlice.middleware,
       coverLetterApi.middleware,
-      configApiSlice.middleware,
+      bootstrapApiSlice.middleware,
       paymentApiSlice.middleware,
     ];
 

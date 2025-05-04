@@ -3,20 +3,13 @@ import { BrowserRouter } from "react-router-dom";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { Button } from "@/components/ui/button";
 import loadable from "@loadable/component";
 import SideMenu from "@/components/layout/SideMenu";
 import Content from "@/components/layout/Content";
 import { useAppSelector } from "@/redux/store";
-import {
-  InitialRequestProvider,
-  useAppLoading,
-} from "@/context/AppLoadingContext";
-import {
-  GlobalLoadingScreen,
-  PageLoadingIndicator,
-} from "@/components/loading/GlobalLoadingScreen";
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { BootstrapWrapper } from "@/context/BootstrapWrapper";
+import { PageLoadingIndicator } from "@/components/loading/GlobalLoadingScreen";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Lazy load pages for code splitting
 const NotFound = loadable(() => import("@/pages/not-found"), {
@@ -91,18 +84,18 @@ function ProtectedApp() {
 
 function Router() {
   // Check authentication state
-  const { isAuthenticated } = useAppSelector((state) => state.user);
-  
+  const { isAuthorized } = useAppSelector((state) => state.user);
+
   return (
     <Switch>
       {/* Auth routes - accessible when not logged in */}
-      <Route path="/auth/login">{() => 
-        isAuthenticated ? <Redirect to="/" /> : <LoginPage />
-      }</Route>
-      <Route path="/auth/register">{() => 
-        isAuthenticated ? <Redirect to="/" /> : <RegisterPage />
-      }</Route>
-      
+      <Route path="/auth/login">
+        {() => (isAuthorized ? <Redirect to="/" /> : <LoginPage />)}
+      </Route>
+      <Route path="/auth/register">
+        {() => (isAuthorized ? <Redirect to="/" /> : <RegisterPage />)}
+      </Route>
+
       {/* Protected routes - require authentication */}
       <Route>
         {() => (
@@ -115,107 +108,13 @@ function Router() {
   );
 }
 
-function AppContent() {
-  const {
-    isInitialLoading,
-    initialRequestError,
-    retryInitialRequest,
-    initData,
-  } = useAppLoading();
-
-  // During initial loading, show the full-page loader
-  if (isInitialLoading) {
-    return <GlobalLoadingScreen fullPage={true} />;
-  }
-
-  // If there was an error and we don't have cached data
-  if (initialRequestError && !initData) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <div className="max-w-md text-center p-6 bg-card rounded-lg shadow-lg border border-border">
-          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-destructive/10 flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-destructive"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </div>
-          <h2 className="text-lg font-semibold mb-2">
-            Failed to Load Application
-          </h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            There was a problem connecting to the server. Please check your
-            internet connection and try again.
-          </p>
-          <Button onClick={() => retryInitialRequest()} className="mt-2">
-            Retry
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // If maintenance mode is enabled
-  if (initData?.appConfig?.maintenance) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <div className="max-w-md text-center p-6 bg-card rounded-lg shadow-lg border border-border">
-          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-amber-100 flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-amber-500"
-            >
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-          </div>
-          <h2 className="text-lg font-semibold mb-2">Maintenance Mode</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            The Job Seeker's Dashboard is currently undergoing scheduled
-            maintenance. Please check back later.
-          </p>
-          <Button
-            onClick={() => retryInitialRequest()}
-            className="mt-2"
-            variant="outline"
-          >
-            Refresh
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // All good, render the application
-  return <Router />;
-}
-
 function App() {
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <InitialRequestProvider>
-          <AppContent />
-        </InitialRequestProvider>
+        <BootstrapWrapper>
+          <Router />
+        </BootstrapWrapper>
         <Toaster />
       </QueryClientProvider>
     </BrowserRouter>

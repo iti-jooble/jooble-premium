@@ -1,5 +1,3 @@
-import { SpringValue } from '@react-spring/web';
-
 export interface IUseCarouselProps {
   infinite?: boolean;
   swipable?: boolean;

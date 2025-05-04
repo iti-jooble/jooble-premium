@@ -2,14 +2,15 @@ import { Link, useLocation } from "wouter";
 import {
   FileEditIcon,
   SearchIcon,
-  MailIcon,
   SettingsIcon,
   LogOutIcon,
   MoreVertical,
 } from "lucide-react";
 import { NavItem } from "@/types";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useAppDispatch } from "@/redux/store";
+import { logout as logoutLocaly } from "@/redux/slices/userSlice";
+import { useLogoutMutation } from "@/redux/api/authApiSlice";
 import {
   Accordion,
   AccordionContent,
@@ -37,7 +38,13 @@ const navItems: NavItem[] = [
 
 const SideMenu = () => {
   const [location] = useLocation();
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const [logoutByServer] = useLogoutMutation();
+
+  const logout = () => {
+    dispatch(logoutLocaly());
+    logoutByServer();
+  };
 
   return (
     <aside className="w-64 bg-white shadow-md flex flex-col z-10 h-screen">
@@ -118,7 +125,10 @@ const SideMenu = () => {
                     </Link>
                   </li>
                   <li>
-                    <button className="w-full flex items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 rounded-md">
+                    <button
+                      className="w-full flex items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                      onClick={logout}
+                    >
                       <LogOutIcon className="h-4 w-4 mr-3 text-gray-500" />
                       Logout
                     </button>

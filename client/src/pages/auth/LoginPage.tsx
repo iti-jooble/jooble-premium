@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import { useLocation } from 'wouter';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useAppDispatch } from '@/redux/store';
-import { login } from '@/redux/slices/userSlice';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -14,16 +12,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import AuthLayout from '@/components/auth/AuthLayout';
+} from "@/components/ui/form";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import AuthLayout from "@/components/auth/AuthLayout";
+import GoogleAuthButton from "@/components/auth/GoogleAuthButton";
+import { useManualAuth, useGoogleAuth } from "@/hooks/useAuth";
 
 // Validation schema
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
 });
 
 // Form data type
@@ -31,75 +30,34 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
   const [, setLocation] = useLocation();
-  const dispatch = useAppDispatch();
-  const { toast } = useToast();
+
   const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, login, error } = useManualAuth();
+  const {
+    authorize,
+    error: googleError,
+    isLoading: isGoogleLoading,
+  } = useGoogleAuth();
 
   // Initialize form
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
-
-  // Handle form submission
-  const onSubmit = async (data: LoginFormData) => {
-    setLoginError(null);
-    setIsLoading(true);
-    
-    try {
-      // This is a mock login - in a real app, this would call an API
-      // For now we'll just simulate a successful login
-      setTimeout(() => {
-        // Simulate a successful login
-        dispatch(
-          login({
-            token: 'mock-jwt-token',
-            user: {
-              id: '123',
-              email: data.email,
-              firstName: 'John',
-              lastName: 'Doe',
-              isPremium: false,
-            },
-          })
-        );
-        
-        toast({
-          title: 'Login successful',
-          description: 'Welcome back!',
-        });
-        
-        // Redirect to home page
-        setLocation('/');
-        setIsLoading(false);
-      }, 1000);
-      
-      // To simulate a login error, uncomment the following and comment the above
-      /*
-      setLoginError('Invalid email or password. Please try again.');
-      setIsLoading(false);
-      */
-    } catch (error) {
-      setLoginError('An unexpected error occurred. Please try again.');
-      setIsLoading(false);
-    }
-  };
 
   return (
     <AuthLayout
       footer={
         <p>
-          By logging in, you agree to the Fitly{' '}
-          <a href="#" className="text-blue-600 hover:underline">
+          By logging in, you agree to the Fitly{" "}
+          <a href="#" className="text-primary-blue hover:underline">
             Privacy Policy
-          </a>{' '}
-          and{' '}
-          <a href="#" className="text-blue-600 hover:underline">
+          </a>{" "}
+          and{" "}
+          <a href="#" className="text-primary-blue hover:underline">
             Terms of Service
           </a>
         </p>
@@ -109,45 +67,49 @@ const LoginPage = () => {
         <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
         <p className="text-gray-600 mt-1">Log in to access your account</p>
       </div>
-      
-      {loginError && (
+
+      {(error || googleError) && (
         <Alert variant="destructive" className="mb-4">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{loginError}</AlertDescription>
+          <AlertDescription>{error ?? googleError}</AlertDescription>
         </Alert>
       )}
-      
+
+      <GoogleAuthButton onClick={authorize} isLoading={isGoogleLoading} />
+
+      <div className="relative flex items-center justify-center mb-4">
+        <div className="flex-grow border-t border-gray-300"></div>
+        <span className="flex-shrink mx-4 text-gray-600 text-sm">
+          Or with email
+        </span>
+        <div className="flex-grow border-t border-gray-300"></div>
+      </div>
+
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(login)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input 
-                    placeholder="Enter your email" 
-                    {...field} 
-                    autoComplete="email"
-                  />
+                  <Input placeholder="Email" {...field} autoComplete="email" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
                       {...field}
                       autoComplete="current-password"
                     />
@@ -168,26 +130,26 @@ const LoginPage = () => {
               </FormItem>
             )}
           />
-          
-          <Button 
-            type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700"
+
+          <Button
+            type="submit"
+            className="w-full bg-primary-blue hover:bg-blue-700"
             disabled={isLoading}
           >
-            {isLoading ? 'Logging in...' : 'Log in'}
+            {isLoading ? "Logging in..." : "Log in"}
           </Button>
         </form>
       </Form>
-      
+
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <a
             href="/auth/register"
-            className="text-blue-600 hover:text-blue-800 font-semibold"
+            className="text-primary-blue hover:text-blue-800 font-semibold"
             onClick={(e) => {
               e.preventDefault();
-              setLocation('/auth/register');
+              setLocation("/auth/register");
             }}
           >
             Sign up

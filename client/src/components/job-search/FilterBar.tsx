@@ -21,10 +21,7 @@ export const FilterBar = () => {
           value="location"
           className="bg-white rounded-xl shadow-sm mb-2 border-none hover:shadow-md"
         >
-          <AccordionTrigger
-            withChevron={false}
-            className="px-4 py-4 rounded-xl hover:no-underline"
-          >
+          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
             <h3 className="text-md font-bold">{t("Location")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">
@@ -48,10 +45,7 @@ export const FilterBar = () => {
           value="experience"
           className="bg-white rounded-xl shadow-sm mb-2 border-none hover:shadow-md"
         >
-          <AccordionTrigger
-            withChevron={false}
-            className="px-4 py-4 rounded-xl hover:no-underline"
-          >
+          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
             <h3 className="text-md font-bold">{t("Experience Level")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">
@@ -82,10 +76,7 @@ export const FilterBar = () => {
           value="job-type"
           className="bg-white rounded-xl shadow-sm mb-2 border-none hover:shadow-md"
         >
-          <AccordionTrigger
-            withChevron={false}
-            className="px-4 py-4 rounded-xl hover:no-underline"
-          >
+          <AccordionTrigger className="px-4 py-4 rounded-xl hover:no-underline">
             <h3 className="text-md font-bold">{t("Job Type")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">

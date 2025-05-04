@@ -1,9 +1,6 @@
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { createServer, type Server } from "http";
-import axios from "axios";
-import { log } from "./vite";
 import { createApiProxy } from "./apiProxy";
-import { getApiUrl } from "./helpers";
 import { EXTERNAL_RESPONSE_TYPES } from "./constants";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -43,6 +40,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Duplicate CV
   app.post("/api/cvs/:id/duplicate", createApiProxy());
+
+  // === Auth API Routes ===
+
+  // Login
+  app.post("/api/auth/login", createApiProxy());
+
+  // Register
+  app.post("/api/auth/register", createApiProxy());
+
+  // Auth with Google
+  app.post("/api/auth/bygoogle", createApiProxy());
+
+  // Logout
+  app.post("/api/auth/logout", createApiProxy());
 
   app.get(
     "/api/cvs/:id/download",

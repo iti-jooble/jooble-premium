@@ -123,7 +123,7 @@ const JobDetails = () => {
   }
 
   return (
-    <div className="py-6 max-w-[964px] mx-auto">
+    <div className="p-6 max-w-[1012px] mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left Column (2/3 width) */}
         <div className="md:col-span-2 space-y-6">

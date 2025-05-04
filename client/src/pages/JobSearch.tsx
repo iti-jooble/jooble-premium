@@ -247,7 +247,7 @@ const JobSearch = () => {
   };
 
   return (
-    <div className="py-6 animate-in fade-in duration-300 min-h-screen max-w-[964px] m-auto">
+    <div className="p-6 animate-in fade-in duration-300 min-h-screen max-w-[1012px] m-auto">
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">

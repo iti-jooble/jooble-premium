@@ -1,20 +1,22 @@
-/**
- * Types for the user state slice
- */
+export enum SUBSCRIPTION_TYPES {
+  FREE = 0,
+  PREMIUM = 1,
+}
 
-/**
- * Interface defining the user state in Redux
- */
 export interface UserState {
   id: string | null;
   firstName: string | null;
   lastName: string | null;
   email: string | null;
-  token: string | null;
+  status: number | null;
   isPremium: boolean;
-  isAuthenticated: boolean;
+  isAuthorized: boolean;
+  subscription: {
+    type: SUBSCRIPTION_TYPES;
+    expirationDate: string;
+  };
   preferences: {
-    theme: 'light' | 'dark' | 'system';
+    theme: "light" | "dark" | "system";
     language: string;
   };
 }

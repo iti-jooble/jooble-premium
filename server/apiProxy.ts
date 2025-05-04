@@ -26,7 +26,7 @@ export const createApiProxy = ({
         responseType: responseType,
       });
 
-      setResponseHeaders(res, response.headers);
+      setResponseHeaders(res, req, response.headers);
 
       if (responseType === EXTERNAL_RESPONSE_TYPES.FILE) {
         res.setHeader("Content-Type", response.headers["content-type"]);

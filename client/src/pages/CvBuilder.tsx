@@ -109,7 +109,7 @@ const CvBuilder = () => {
           </CardContent>
         </Card>
       ) : cvList.length === 0 ? (
-        <Card className="shadow-lg border-0 bg-gradient-to-br from-background to-muted/50">
+        <Card className="shadow-md border-0 bg-gradient-to-br from-background to-muted/50">
           <CardContent className="p-10 flex flex-col items-center justify-center text-center">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 ring-4 ring-primary/5">
               <FileEditIcon className="h-10 w-10 text-primary" />
