@@ -46,9 +46,7 @@ export const useGoogleAuth = () => {
 
       await dispatch(
         authByGoogle({
-          token:
-            response.access_token ||
-            "ya29.a0AZYkNZjKiUHCtgT44m_LWfh-ghE94qLBMAFD7gNToRgazrXT7Uv3hjdIxbIZwtIMuGuqsvgJUzQ_vs1OkMGf_XoOGCI_G_Qn1n_Cx5OWV4oscr_1xYdq1TzTYsS_b4Z1q5OX-mJ3iC14CGjijziYnv2XawcuVan9l1DBApO8WlAaCgYKAQ8SARYSFQHGX2Mik4Pi6XZREwqjzNQ_SALI-g0178",
+          token: response.access_token,
           source: 1100,
         }),
       );
