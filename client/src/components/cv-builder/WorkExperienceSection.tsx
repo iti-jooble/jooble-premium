@@ -303,7 +303,7 @@ export function ExperienceSection({
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select year" />
                         </SelectTrigger>
                       </FormControl>
@@ -333,7 +333,7 @@ export function ExperienceSection({
                         disabled={form.watch("isCurrent")}
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="h-12">
                             <SelectValue placeholder="Select year" />
                           </SelectTrigger>
                         </FormControl>

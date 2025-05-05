@@ -88,7 +88,7 @@ export default function PickTemplate() {
                   </div>
 
                   {template.id === selectedTemplateId && (
-                    <Button size="lg" onClick={handleContinue}>
+                    <Button size="sm" onClick={handleContinue}>
                       <Check className="mr-2 h-4 w-4" />
                       {t("pickTemplate.use", "Use")}
                     </Button>

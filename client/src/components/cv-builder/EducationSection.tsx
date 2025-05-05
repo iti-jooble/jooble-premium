@@ -256,7 +256,7 @@ export function EducationSection({
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                       </FormControl>
@@ -286,7 +286,7 @@ export function EducationSection({
                       defaultValue={field.value || ""}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                       </FormControl>

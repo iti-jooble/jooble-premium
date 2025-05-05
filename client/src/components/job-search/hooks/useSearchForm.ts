@@ -15,7 +15,7 @@ interface UseSearchFormReturn {
   formState: SearchFormState;
   setKeywords: (value: string) => void;
   setLocation: (value: string) => void;
-  handleSearch: (e: FormEvent) => void;
+  handleSearch: (e: FormEvent, overrideFormData?: SearchFormState) => void;
   resetForm: () => void;
   isSearching: boolean;
 }
@@ -32,12 +32,12 @@ export const useSearchForm = ({
 
   // Handler for form submission
   const handleSearch = useCallback(
-    (e: FormEvent) => {
+    (e: FormEvent, overrideFormData?: SearchFormState) => {
       e.preventDefault();
       setIsSearching(true);
 
       // Create form data object
-      const formData: SearchFormState = {
+      const formData: SearchFormState = overrideFormData || {
         keywords: keywords.trim(),
         location: location.trim(),
       };

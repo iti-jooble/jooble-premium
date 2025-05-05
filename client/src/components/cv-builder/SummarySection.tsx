@@ -158,7 +158,7 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
         />
 
         <div className="flex justify-end mt-4">
-          <Button type="submit" size="sm" disabled={isSaving}>
+          <Button type="submit" disabled={isSaving}>
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </div>

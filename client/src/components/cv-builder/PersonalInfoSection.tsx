@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -75,9 +74,9 @@ export function PersonalInfoSection({
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">First Name</FormLabel>
+                <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="John" {...field} className="h-9" />
+                  <Input placeholder="John" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -89,9 +88,9 @@ export function PersonalInfoSection({
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">Last Name</FormLabel>
+                <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Doe" {...field} className="h-9" />
+                  <Input placeholder="Doe" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -104,13 +103,12 @@ export function PersonalInfoSection({
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">Email</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
                   type="email"
                   placeholder="john.doe@example.com"
                   {...field}
-                  className="h-9"
                 />
               </FormControl>
               <FormMessage />
@@ -123,14 +121,14 @@ export function PersonalInfoSection({
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm">Phone Number</FormLabel>
+              <FormLabel>Phone Number</FormLabel>
               <FormControl>
                 <div className="flex">
                   <div className="flex items-center justify-center bg-gray-100 border border-gray-300 rounded-l-md px-3">
                     <span className="text-gray-500 text-sm">+33</span>
                   </div>
                   <Input
-                    className="rounded-l-none h-9"
+                    className="rounded-l-none"
                     placeholder="612345678"
                     {...field}
                   />
@@ -147,9 +145,9 @@ export function PersonalInfoSection({
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">City</FormLabel>
+                <FormLabel>City</FormLabel>
                 <FormControl>
-                  <Input placeholder="Paris" {...field} className="h-9" />
+                  <Input placeholder="Paris" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -161,13 +159,13 @@ export function PersonalInfoSection({
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">Country</FormLabel>
+                <FormLabel>Country</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger className="h-9">
+                    <SelectTrigger className="h-12">
                       <SelectValue placeholder="Select a country" />
                     </SelectTrigger>
                   </FormControl>
@@ -185,7 +183,7 @@ export function PersonalInfoSection({
         </div>
 
         <div className="flex justify-end mt-4">
-          <Button type="submit" size="sm" disabled={isSaving}>
+          <Button type="submit" disabled={isSaving}>
             {isSaving ? "Saving..." : "Save"}
           </Button>
         </div>

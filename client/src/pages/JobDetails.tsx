@@ -29,6 +29,19 @@ const JobDetails = () => {
 
   const jobId = params.jobId;
 
+  const skills = [
+    "Figma",
+    "Adobe Photoshop",
+    "Adobe Illustrator",
+    "Sketch",
+    "Adobe XD",
+    "InVision",
+    "Miro",
+    "Notion",
+    "FigJam",
+    "Loom",
+  ];
+
   // Mock job data - this would come from an API in a real app
   const mockJobs: JobWithDescription[] = [
     {
@@ -157,7 +170,7 @@ const JobDetails = () => {
             </div>
 
             {/* Resume Match Card */}
-            <div className="p-8 bg-primary-background rounded-lg overflow-hidden rounded-xl">
+            <div className="mb-3 p-8 bg-primary-background rounded-lg overflow-hidden rounded-xl">
               <div className="flex items-center">
                 {/* Resume images */}
                 <div className="flex-shrink-0 w-[120px]">
@@ -220,7 +233,7 @@ const JobDetails = () => {
             </div>
 
             {/* Summary Section */}
-            <div className="p-6">
+            <div className="py-3">
               <h2 className="text-lg font-bold mb-4">Summary</h2>
               <p className="text-muted-foreground">
                 We are looking for a proactive team player who can make a
@@ -230,110 +243,22 @@ const JobDetails = () => {
             </div>
 
             {/* Toolstack Section */}
-            <div className="p-6">
-              <h2 className="text-lg font-bold mb-4">Toolstack</h2>
+            <div className="py-3">
+              <h2 className="text-lg font-bold mb-4">Skills</h2>
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">F</span>
+                {skills.map((skill, i) => (
+                  <div
+                    key={`${skill}-${i}`}
+                    className="flex items-center bg-white border border-gray-200 rounded-full px-3 py-2"
+                  >
+                    <span>{skill}</span>
                   </div>
-                  Figma
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-blue-800 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">P</span>
-                  </div>
-                  Adobe Photoshop
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">I</span>
-                  </div>
-                  Adobe Illustrator
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-teal-500 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">S</span>
-                  </div>
-                  Sketch
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">X</span>
-                  </div>
-                  Adobe XD
-                </Badge>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-pink-500 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">I</span>
-                  </div>
-                  InVision
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">M</span>
-                  </div>
-                  Miro
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-gray-800 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">N</span>
-                  </div>
-                  Notion
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-purple-400 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">F</span>
-                  </div>
-                  FigJam
-                </Badge>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">L</span>
-                  </div>
-                  Loom
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">G</span>
-                  </div>
-                  Google Analytics
-                </Badge>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-blue-400 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">G</span>
-                  </div>
-                  Google Forms
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-teal-600 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">C</span>
-                  </div>
-                  ChatGPT
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-blue-400 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">T</span>
-                  </div>
-                  Typeform
-                </Badge>
-                <Badge className="bg-gray-100 border-none text-gray-800 font-normal px-3 py-1 rounded-full flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-white">U</span>
-                  </div>
-                  UserTesting
-                </Badge>
+                ))}
               </div>
             </div>
 
             {/* Responsibilities Section */}
-            <div className="p-6">
+            <div className="py-3">
               <h2 className="text-lg font-bold mb-4">Responsibilities</h2>
               <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
                 <li>
