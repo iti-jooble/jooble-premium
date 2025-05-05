@@ -40,8 +40,8 @@ export const FilterBar = () => {
   ]);
 
   // Slider states
-  const [yearsOfExperience, setYearsOfExperience] = useState([3]);
-  const [salaryRange, setSalaryRange] = useState([23000]);
+  const [yearsOfExperience, setYearsOfExperience] = useState([0, 3]);
+  const [salaryRange, setSalaryRange] = useState([0, 23000]);
   const maxSalary = 200000;
   const maxYears = 15;
 
@@ -53,7 +53,7 @@ export const FilterBar = () => {
     );
     
     // Format the salary range filter value
-    const formattedSalaryRange = `$0 – $${salaryRange[0].toLocaleString()}+/year`;
+    const formattedSalaryRange = `$${salaryRange[0].toLocaleString()} – $${salaryRange[1].toLocaleString()}+/year`;
     
     // Add the new salary range filter
     setSelectedFilters([
@@ -69,7 +69,7 @@ export const FilterBar = () => {
     );
     
     // Format the years of experience filter value
-    const formattedYears = `${yearsOfExperience[0]} years`;
+    const formattedYears = `${yearsOfExperience[0]} – ${yearsOfExperience[1]} years`;
     
     // Add the new years of experience filter
     setSelectedFilters([
@@ -274,10 +274,10 @@ export const FilterBar = () => {
           <AccordionContent className="px-4 pb-4 pt-2">
             <div className="space-y-4">
               <div className="text-md">
-                {yearsOfExperience[0]} years
+                {yearsOfExperience[0]} – {yearsOfExperience[1]} years
               </div>
               <Slider
-                defaultValue={[3]}
+                defaultValue={[0, 3]}
                 max={maxYears}
                 min={0}
                 step={1}
@@ -304,10 +304,10 @@ export const FilterBar = () => {
           <AccordionContent className="px-4 pb-4 pt-2">
             <div className="space-y-4">
               <div className="text-md">
-                Salary Range: ${0} – ${salaryRange[0].toLocaleString()}+/year
+                Salary Range: ${salaryRange[0].toLocaleString()} – ${salaryRange[1].toLocaleString()}+/year
               </div>
               <Slider
-                defaultValue={[23000]}
+                defaultValue={[0, 23000]}
                 max={maxSalary}
                 min={0}
                 step={1000}
