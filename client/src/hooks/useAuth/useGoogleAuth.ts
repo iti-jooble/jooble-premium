@@ -29,7 +29,10 @@ export const useGoogleAuth = () => {
     setLocation("/");
   };
 
-  const authCallback = async (response) => {
+  const authCallback = async (response: {
+    error: string;
+    access_token: string;
+  }) => {
     if (response.error) {
       handleError();
       return;
