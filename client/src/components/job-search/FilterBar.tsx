@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 // Define filter types
 type FilterCategory = 
@@ -30,7 +30,6 @@ export const FilterBar = () => {
   const { t } = useTranslation();
   const [selectedFilters, setSelectedFilters] = useState<Filter[]>([
     { category: 'location', value: 'New York' },
-    { category: 'location', value: 'London' },
     { category: 'jobType', value: 'Full-time' },
     { category: 'jobType', value: 'Part-time' },
     { category: 'locationType', value: 'Onsite' },
@@ -39,11 +38,95 @@ export const FilterBar = () => {
     { category: 'salaryRange', value: '$0 – $23,000+/year' },
   ]);
 
+  // Location search states
+  const [locationInput, setLocationInput] = useState('');
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+  const locationInputRef = useRef<HTMLInputElement>(null);
+  const locationSuggestionsRef = useRef<HTMLDivElement>(null);
+
+  // Mock location suggestions function - would be replaced with API call
+  const getLocationSuggestions = (input: string): string[] => {
+    if (!input.trim()) return [];
+    
+    // Sample locations - would come from API
+    const locations = [
+      'New York, NY, USA',
+      'New Orleans, LA, USA',
+      'Newark, NJ, USA',
+      'Newcastle, UK',
+      'London, UK',
+      'Los Angeles, CA, USA',
+      'San Francisco, CA, USA',
+      'Seattle, WA, USA',
+      'Berlin, Germany',
+      'Tokyo, Japan',
+      'Sydney, Australia',
+      'Toronto, Canada',
+      'Paris, France',
+      'Amsterdam, Netherlands',
+      'Singapore'
+    ];
+    
+    const filteredLocations = locations.filter(location => 
+      location.toLowerCase().includes(input.toLowerCase())
+    );
+    
+    // Add user input as the last suggestion if it's not in the list
+    if (input.trim() && !filteredLocations.includes(input)) {
+      return [...filteredLocations, input];
+    }
+    
+    return filteredLocations;
+  };
+
+  // Update suggestions when input changes
+  useEffect(() => {
+    setLocationSuggestions(getLocationSuggestions(locationInput));
+  }, [locationInput]);
+
+  // Handle selecting a location
+  const handleLocationSelect = (location: string) => {
+    // First remove any existing location filters
+    const filtersWithoutLocation = selectedFilters.filter(
+      f => f.category !== 'location'
+    );
+    
+    // Add the new location filter
+    setSelectedFilters([
+      ...filtersWithoutLocation,
+      { category: 'location', value: location }
+    ]);
+    
+    // Reset input and hide suggestions
+    setLocationInput('');
+    setShowLocationSuggestions(false);
+  };
+
   // Slider states
   const [yearsOfExperience, setYearsOfExperience] = useState([0, 3]);
   const [salaryRange, setSalaryRange] = useState([0, 23000]);
   const maxSalary = 200000;
   const maxYears = 15;
+  
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        locationSuggestionsRef.current && 
+        !locationSuggestionsRef.current.contains(event.target as Node) &&
+        locationInputRef.current && 
+        !locationInputRef.current.contains(event.target as Node)
+      ) {
+        setShowLocationSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Update selected filters when sliders change
   useEffect(() => {
@@ -139,23 +222,38 @@ export const FilterBar = () => {
             <h3 className="text-md font-bold">{t("Location")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">
-            <Input placeholder={t("Enter location")} className="mb-3" />
-            <div className="space-y-2">
-              {["New York", "London", "San Francisco", "Remote", "Berlin"].map((location) => (
-                <div key={location} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`location-${location}`} 
-                    checked={isFilterSelected({ category: 'location', value: location })}
-                    onCheckedChange={() => toggleFilter({ category: 'location', value: location })}
-                  />
-                  <Label
-                    htmlFor={`location-${location}`}
-                    className="text-sm font-normal"
-                  >
-                    {location}
-                  </Label>
+            <div className="relative">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  ref={locationInputRef}
+                  placeholder={t("Search for a location")}
+                  className="pl-8"
+                  value={locationInput}
+                  onChange={(e) => setLocationInput(e.target.value)}
+                  onFocus={() => setShowLocationSuggestions(true)}
+                />
+              </div>
+              
+              {/* Location suggestions dropdown */}
+              {showLocationSuggestions && locationSuggestions.length > 0 && (
+                <div 
+                  ref={locationSuggestionsRef}
+                  className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto"
+                >
+                  <ul className="py-1">
+                    {locationSuggestions.map((suggestion, index) => (
+                      <li 
+                        key={`${suggestion}-${index}`}
+                        className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleLocationSelect(suggestion)}
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ))}
+              )}
             </div>
           </AccordionContent>
         </AccordionItem>
