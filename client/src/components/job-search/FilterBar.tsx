@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import {
   Accordion,
   AccordionContent,
@@ -38,8 +39,52 @@ export const FilterBar = () => {
     { category: 'salaryRange', value: '$0 – $23,000+/year' },
   ]);
 
+  // Slider states
+  const [yearsOfExperience, setYearsOfExperience] = useState([3]);
+  const [salaryRange, setSalaryRange] = useState([23000]);
+  const maxSalary = 200000;
+  const maxYears = 15;
+
+  // Update selected filters when sliders change
+  useEffect(() => {
+    // Remove any existing salary range filters
+    const filtersWithoutSalary = selectedFilters.filter(
+      f => f.category !== 'salaryRange'
+    );
+    
+    // Format the salary range filter value
+    const formattedSalaryRange = `$0 – $${salaryRange[0].toLocaleString()}+/year`;
+    
+    // Add the new salary range filter
+    setSelectedFilters([
+      ...filtersWithoutSalary,
+      { category: 'salaryRange', value: formattedSalaryRange }
+    ]);
+  }, [salaryRange]);
+
+  useEffect(() => {
+    // Remove any existing years of experience filters
+    const filtersWithoutYears = selectedFilters.filter(
+      f => f.category !== 'yearsOfExperience'
+    );
+    
+    // Format the years of experience filter value
+    const formattedYears = `${yearsOfExperience[0]} years`;
+    
+    // Add the new years of experience filter
+    setSelectedFilters([
+      ...filtersWithoutYears,
+      { category: 'yearsOfExperience', value: formattedYears }
+    ]);
+  }, [yearsOfExperience]);
+
   // Function to toggle a filter
   const toggleFilter = (filter: Filter) => {
+    // Don't toggle slider-based filters this way
+    if (filter.category === 'salaryRange' || filter.category === 'yearsOfExperience') {
+      return;
+    }
+
     const exists = selectedFilters.some(
       (f) => f.category === filter.category && f.value === filter.value
     );
@@ -227,28 +272,23 @@ export const FilterBar = () => {
             <h3 className="text-md font-bold">{t("Years of Experience")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">
-            <div className="space-y-2">
-              {[
-                "1 year",
-                "2 years",
-                "3 years",
-                "5+ years",
-                "10+ years",
-              ].map((years) => (
-                <div key={years} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`years-${years}`} 
-                    checked={isFilterSelected({ category: 'yearsOfExperience', value: years })}
-                    onCheckedChange={() => toggleFilter({ category: 'yearsOfExperience', value: years })}
-                  />
-                  <Label
-                    htmlFor={`years-${years}`}
-                    className="text-sm font-normal"
-                  >
-                    {years}
-                  </Label>
-                </div>
-              ))}
+            <div className="space-y-4">
+              <div className="text-md">
+                {yearsOfExperience[0]} years
+              </div>
+              <Slider
+                defaultValue={[3]}
+                max={maxYears}
+                min={0}
+                step={1}
+                value={yearsOfExperience}
+                onValueChange={setYearsOfExperience}
+                className="py-4"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>0</span>
+                <span>{maxYears}+ years</span>
+              </div>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -262,29 +302,23 @@ export const FilterBar = () => {
             <h3 className="text-md font-bold">{t("Salary Range")}</h3>
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4 pt-2">
-            <div className="space-y-2">
-              {[
-                "$0 – $23,000+/year",
-                "$23,000 – $45,000/year",
-                "$45,000 – $65,000/year",
-                "$65,000 – $85,000/year",
-                "$85,000 – $105,000/year",
-                "$105,000+/year",
-              ].map((range) => (
-                <div key={range} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`salary-${range}`} 
-                    checked={isFilterSelected({ category: 'salaryRange', value: range })}
-                    onCheckedChange={() => toggleFilter({ category: 'salaryRange', value: range })}
-                  />
-                  <Label
-                    htmlFor={`salary-${range}`}
-                    className="text-sm font-normal"
-                  >
-                    {range}
-                  </Label>
-                </div>
-              ))}
+            <div className="space-y-4">
+              <div className="text-md">
+                Salary Range: ${0} – ${salaryRange[0].toLocaleString()}+/year
+              </div>
+              <Slider
+                defaultValue={[23000]}
+                max={maxSalary}
+                min={0}
+                step={1000}
+                value={salaryRange}
+                onValueChange={setSalaryRange}
+                className="py-4"
+              />
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>$0</span>
+                <span>${maxSalary.toLocaleString()}+</span>
+              </div>
             </div>
           </AccordionContent>
         </AccordionItem>

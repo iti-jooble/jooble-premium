@@ -1,7 +1,7 @@
 import { FormEvent, useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SearchIcon, Loader2, XIcon } from "lucide-react";
+import { SearchIcon, Loader2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSearchForm } from "./hooks/useSearchForm";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ interface SearchFormProps {
 // In a real app, this would come from an API call
 const getServerSuggestions = (input: string): string[] => {
   if (!input.trim()) return [];
-  
+
   const allSuggestions = [
     "Software Engineer",
     "Software Developer",
@@ -34,10 +34,10 @@ const getServerSuggestions = (input: string): string[] => {
     "Java Developer",
     "Ruby Developer",
   ];
-  
+
   return allSuggestions
-    .filter(suggestion => 
-      suggestion.toLowerCase().includes(input.toLowerCase())
+    .filter((suggestion) =>
+      suggestion.toLowerCase().includes(input.toLowerCase()),
     )
     .slice(0, 5); // Limit to 5 suggestions
 };
@@ -71,16 +71,16 @@ export const SearchForm = ({
   // Update suggestions when input changes
   useEffect(() => {
     const serverSuggestions = getServerSuggestions(inputValue);
-    
+
     // Create the full set of suggestions
     let allSuggestions = [...serverSuggestions];
-    
+
     // Add the user's exact input if it's not already in the suggestions
     // and it's not empty
     if (inputValue.trim() && !serverSuggestions.includes(inputValue)) {
       allSuggestions.push(inputValue);
     }
-    
+
     setSuggestions(allSuggestions);
   }, [inputValue]);
 
@@ -88,9 +88,9 @@ export const SearchForm = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        dropdownRef.current && 
+        dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node) &&
-        inputRef.current && 
+        inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
         setShowDropdown(false);
@@ -105,14 +105,17 @@ export const SearchForm = ({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
+
     // If there are selected phrases, join them for the search
     if (selectedPhrases.length > 0) {
       const joinedKeywords = selectedPhrases.join(", ");
       setKeywords(joinedKeywords);
-      
+
       // Pass the updated keywords in the handleSearch call
-      handleSearch(e, { keywords: joinedKeywords, location: formState.location });
+      handleSearch(e, {
+        keywords: joinedKeywords,
+        location: formState.location,
+      });
     } else {
       handleSearch(e);
     }
@@ -133,11 +136,11 @@ export const SearchForm = ({
     if (!selectedPhrases.includes(suggestion)) {
       setSelectedPhrases([...selectedPhrases, suggestion]);
     }
-    
+
     // Clear the input and hide dropdown
     setInputValue("");
     setShowDropdown(false);
-    
+
     // Focus back on the input
     if (inputRef.current) {
       inputRef.current.focus();
@@ -145,7 +148,7 @@ export const SearchForm = ({
   };
 
   const handlePhraseRemove = (phrase: string) => {
-    setSelectedPhrases(selectedPhrases.filter(p => p !== phrase));
+    setSelectedPhrases(selectedPhrases.filter((p) => p !== phrase));
   };
 
   return (
@@ -153,7 +156,7 @@ export const SearchForm = ({
       <form onSubmit={handleSubmit} className="flex-1 flex items-center">
         <div className="flex-1 flex items-center px-3 relative">
           <SearchIcon className="h-5 w-5 text-muted-foreground mr-2" />
-          <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex flex-wrap gap-2 items-center w-full relative">
             {selectedPhrases.map((phrase, index) => (
               <Badge
                 key={`${phrase}-${index}`}
@@ -161,25 +164,31 @@ export const SearchForm = ({
                 className="flex items-center gap-1 bg-background"
               >
                 {phrase}
-                <XIcon
-                  className="h-3 w-3 cursor-pointer"
+                <button
                   onClick={() => handlePhraseRemove(phrase)}
-                />
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X size={16} />
+                </button>
               </Badge>
             ))}
-            <div className="relative flex-1">
+            <div className="flex-1 min-w-[180px]">
               <Input
                 ref={inputRef}
-                placeholder={selectedPhrases.length ? "Add another job title" : "Add job title"}
+                placeholder={
+                  selectedPhrases.length
+                    ? "Add another job title"
+                    : "Add job title"
+                }
                 className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 pl-0"
                 value={inputValue}
                 onChange={handleInputChange}
                 onFocus={handleInputFocus}
               />
               {showDropdown && suggestions.length > 0 && (
-                <div 
+                <div
                   ref={dropdownRef}
-                  className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg"
+                  className="absolute z-10 mt-2 w-full left-0 bg-white border border-gray-200 rounded-md shadow-lg"
                 >
                   <ul className="py-1">
                     {suggestions.map((suggestion, index) => (
