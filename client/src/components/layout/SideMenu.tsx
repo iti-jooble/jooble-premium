@@ -17,7 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useState } from "react";
+
 import { openModal } from "@/redux/slices/uiSlice";
 import { ModalType } from "@/constants/modals";
 

@@ -10,6 +10,7 @@ import { useAppSelector } from "@/redux/store";
 import { BootstrapWrapper } from "@/context/BootstrapWrapper";
 import { PageLoadingIndicator } from "@/components/loading/GlobalLoadingScreen";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import ModalProvider from "@/components/providers/ModalProvider";
 
 // Lazy load pages for code splitting
 const NotFound = loadable(() => import("@/pages/not-found"), {
@@ -114,6 +115,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <BootstrapWrapper>
           <Router />
+          <ModalProvider />
         </BootstrapWrapper>
         <Toaster />
       </QueryClientProvider>
