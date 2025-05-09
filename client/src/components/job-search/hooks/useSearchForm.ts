@@ -1,70 +1,53 @@
 import { useState, useCallback, FormEvent } from "react";
 
 interface SearchFormState {
-  keywords: string;
-  location: string;
+  keywords: string[];
 }
 
 interface UseSearchFormProps {
   onSearch?: (data: SearchFormState) => void;
-  initialKeywords?: string;
-  initialLocation?: string;
+  initialKeywords?: string[];
 }
 
 interface UseSearchFormReturn {
-  formState: SearchFormState;
-  setKeywords: (value: string) => void;
-  setLocation: (value: string) => void;
-  handleSearch: (e: FormEvent, overrideFormData?: SearchFormState) => void;
+  keywords: string[];
+  setKeywords: (value: string[]) => void;
+  handleSearch: () => void;
   resetForm: () => void;
   isSearching: boolean;
 }
 
 export const useSearchForm = ({
   onSearch,
-  initialKeywords = "",
-  initialLocation = "",
+  initialKeywords = [],
 }: UseSearchFormProps = {}): UseSearchFormReturn => {
   // Form state
-  const [keywords, setKeywords] = useState<string>(initialKeywords);
-  const [location, setLocation] = useState<string>(initialLocation);
+  const [keywords, setKeywords] = useState<string[]>(initialKeywords);
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
   // Handler for form submission
-  const handleSearch = useCallback(
-    (e: FormEvent, overrideFormData?: SearchFormState) => {
-      e.preventDefault();
-      setIsSearching(true);
+  const handleSearch = useCallback(() => {
+    setIsSearching(true);
 
-      // Create form data object
-      const formData: SearchFormState = overrideFormData || {
-        keywords: keywords.trim(),
-        location: location.trim(),
-      };
+    // Call the onSearch callback if provided
+    if (onSearch) {
+      onSearch({ keywords });
+    }
 
-      // Call the onSearch callback if provided
-      if (onSearch) {
-        onSearch(formData);
-      }
-
-      // Reset loading state after search (in real app, this would be in the callback)
-      setTimeout(() => {
-        setIsSearching(false);
-      }, 500);
-    },
-    [keywords, location, onSearch]
-  );
+    // Reset loading state after search (in real app, this would be in the callback)
+    setTimeout(() => {
+      setIsSearching(false);
+    }, 500);
+  }, [keywords, onSearch]);
 
   // Reset form to initial values
   const resetForm = useCallback(() => {
     setKeywords(initialKeywords);
-    setLocation(initialLocation);
-  }, [initialKeywords, initialLocation]);
+  }, [initialKeywords]);
 
   return {
-    formState: { keywords, location },
+    keywords,
     setKeywords,
-    setLocation,
     handleSearch,
     resetForm,
     isSearching,

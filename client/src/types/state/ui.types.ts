@@ -8,7 +8,7 @@
 export interface Toast {
   id: string;
   message: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: "success" | "error" | "warning" | "info";
   duration?: number;
 }
 
@@ -37,5 +37,4 @@ export interface UiState {
   toasts: Toast[];
   activeModals: Modal[];
   sidebarCollapsed: boolean;
-  colorScheme: 'light' | 'dark' | 'system';
 }

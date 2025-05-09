@@ -27,7 +27,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { createOrUpdateCv, downloadCv } from "@/redux/thunks";
 import cvData from "@/components/cv-builder/Templates/cvData.json";
 import { CvSource } from "@/types/enums/cv.enums";
-import { getCurrentCvSelector } from "@/redux/slices/cvBuilderSlice";
+import { cvSelectors } from "@/redux/selectors";
 import { getCvScoreDescription } from "@/lib/cvScoreUtils";
 import {
   PersonalInfo,
@@ -75,7 +75,7 @@ const CvBuilderCreate = () => {
   const searchParams = new URLSearchParams(searchString);
   const templateIdFromSearch = searchParams.get("templateId");
 
-  const currentCv = useAppSelector(getCurrentCvSelector);
+  const currentCv = useAppSelector(cvSelectors.getCurrentCvSelector);
 
   const { title, userInfo, id, score = 0, templateId = 2 } = localCv || {};
 

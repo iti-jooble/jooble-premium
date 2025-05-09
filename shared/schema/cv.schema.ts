@@ -1,15 +1,5 @@
 import { z } from "zod";
 
-// User types
-export const userSchema = z.object({
-  id: z.string(),
-  username: z.string(),
-  email: z.string().email().optional(),
-  fullName: z.string().optional(),
-});
-
-export type User = z.infer<typeof userSchema>;
-
 // CV types
 export const personalInfoSchema = z.object({
   firstName: z.string(),

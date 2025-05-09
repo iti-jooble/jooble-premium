@@ -20,6 +20,9 @@ const initialState: BootstrapState = {
 export const bootstrapSlice = createSlice({
   name: "appLoading",
   initialState,
+  selectors: {
+    getConfigsSelector: (state) => state.configs,
+  },
   reducers: {
     setBotstrapLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -54,5 +57,7 @@ export const bootstrapSlice = createSlice({
 
 export const { setBotstrapLoading, setBotstrapError, setBotstrapConfigs } =
   bootstrapSlice.actions;
+
+export const selectors = bootstrapSlice.selectors;
 
 export default bootstrapSlice.reducer;

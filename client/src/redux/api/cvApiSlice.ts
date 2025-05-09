@@ -11,8 +11,7 @@ import {
 export const cvApiSlice = createApi({
   reducerPath: "cvApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/",
-    // Credentials include ensures cookies are sent for authentication
+    baseUrl: "/api",
     credentials: "include",
   }),
   tagTypes: ["CvBuilder", "CV"],

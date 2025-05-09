@@ -12,7 +12,7 @@ export const bootstrapApiSlice = createApi({
   endpoints: (builder) => ({
     init: builder.mutation<
       {
-        userInfo: UserState;
+        user: UserState;
         configs: BootstrapConfigs;
       },
       void

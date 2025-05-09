@@ -1,15 +1,14 @@
 /**
  * Types for the Job API
  */
-import { Job } from '../state/jobSearch.types';
+import { Job } from "@shared/schema";
 
 /**
  * Interface for get jobs response
  */
-export interface GetJobsResponse {
+export interface SearchJobsResponse {
   jobs: Job[];
-  total: number;
-  page: number;
+  totalJobsCount: number;
   hasMore: boolean;
 }
 
@@ -18,29 +17,6 @@ export interface GetJobsResponse {
  */
 export interface GetJobResponse {
   job: Job;
-}
-
-/**
- * Interface for search jobs request
- */
-export interface SearchJobsRequest {
-  keywords?: string;
-  location?: string;
-  page?: number;
-  limit?: number;
-  jobType?: string[];
-  datePosted?: string;
-  minSalary?: number;
-  maxSalary?: number;
-  experienceLevel?: string[];
-}
-
-/**
- * Interface for saved job response
- */
-export interface SavedJobResponse {
-  success: boolean;
-  jobId: string;
 }
 
 /**
@@ -57,19 +33,4 @@ export interface MatchCVResponse {
     overallMatch: number;
   };
   improvementSuggestions: string[];
-}
-
-/**
- * Interface for generate job tips request
- */
-export interface GenerateJobTipsRequest {
-  cvId: string;
-  jobId: string;
-}
-
-/**
- * Interface for generate job tips response
- */
-export interface GenerateJobTipsResponse {
-  tips: string[];
 }

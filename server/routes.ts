@@ -60,6 +60,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     createApiProxy({ responseType: EXTERNAL_RESPONSE_TYPES.FILE }),
   );
 
+  // === Job Search API Routes ===
+
+  // Get job listings
+  app.post("/api/jobs/search", createApiProxy());
+
+  // === User API Routes ===
+
+  // Update user preferences
+  app.put("/api/user/preferences", createApiProxy());
+
   const httpServer = createServer(app);
   return httpServer;
 }

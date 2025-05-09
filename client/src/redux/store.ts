@@ -10,11 +10,11 @@ import bootstrapReducer from "./slices/bootstrapSlice";
 
 // Import API slices
 import { cvApiSlice } from "./api/cvApiSlice";
-import { jobApi } from "./api/jobApiSlice";
+import { jobApiSlice } from "./api/jobApiSlice";
 import { authApiSlice } from "./api/authApiSlice";
-import { coverLetterApi } from "./api/coverLetterApiSlice";
 import { bootstrapApiSlice } from "./api/bootstrapApiSlice";
 import { paymentApiSlice } from "./api/paymentApiSlice";
+import { userApiSlice } from "./api/userApiSlice";
 
 // Configure store
 export const store = configureStore({
@@ -28,11 +28,11 @@ export const store = configureStore({
 
     // API reducers - each API slice has a unique reducerPath
     [cvApiSlice.reducerPath]: cvApiSlice.reducer,
-    [jobApi.reducerPath]: jobApi.reducer,
+    [jobApiSlice.reducerPath]: jobApiSlice.reducer,
     [authApiSlice.reducerPath]: authApiSlice.reducer,
-    [coverLetterApi.reducerPath]: coverLetterApi.reducer,
     [bootstrapApiSlice.reducerPath]: bootstrapApiSlice.reducer,
     [paymentApiSlice.reducerPath]: paymentApiSlice.reducer,
+    [userApiSlice.reducerPath]: userApiSlice.reducer,
 
     // Custom endpoints injected into apiSlice use the same reducerPath
     // This is handled automatically by RTK Query
@@ -46,11 +46,11 @@ export const store = configureStore({
     // Create an array of API middleware to add
     const apiMiddleware = [
       cvApiSlice.middleware,
-      jobApi.middleware,
+      jobApiSlice.middleware,
       authApiSlice.middleware,
-      coverLetterApi.middleware,
       bootstrapApiSlice.middleware,
       paymentApiSlice.middleware,
+      userApiSlice.middleware,
     ];
 
     // Return the combined middleware

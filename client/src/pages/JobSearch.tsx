@@ -1,249 +1,54 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
-import { toast } from "@/hooks/use-toast";
-import { SearchForm, JobListings, FilterBar } from "@/components/job-search";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { jobsSelectors, userSelectors } from "@/redux/selectors";
+import {
+  refreshJobs,
+  updatePreferences,
+  initJobs,
+  loadMore,
+} from "@/redux/thunks";
 import { JobCardProps } from "@/components/job-search/JobCard";
-
-// Define job types for our page
-type JobWithDescription = {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  salary: string;
-  posted: string;
-  isNew: boolean;
-  description: string;
-};
-
-// Function to get jobs without description for compatibility with JobListings
-const stripDescriptions = (
-  jobs: JobWithDescription[],
-): JobCardProps["job"][] => {
-  return jobs.map(({ description, ...rest }) => rest);
-};
+import { SearchForm, JobListings, FilterBar } from "@/components/job-search";
+import { useLayoutEffect } from "react";
 
 // Mock job data - using Duolingo for all entries as shown in the image
-export const jobListings = [
-  {
-    id: "1",
-    title: "Certified English Tutor (remote working)",
-    company: "Duolingo",
-    location: "New York, NY",
-    type: "Hybrid",
-    salary: "$59 per hour",
-    posted: "5 days ago",
-    isNew: true,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
-      
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>5+ years of English teaching experience</li>
-        <li>TEFL, CELTA, or equivalent certification</li>
-        <li>Excellent communication skills</li>
-        <li>Experience with online teaching platforms</li>
-        <li>Bachelor's degree in Education, English, or related field</li>
-      </ul>
-      
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive hourly rate</li>
-        <li>Flexible schedule</li>
-        <li>Professional development opportunities</li>
-        <li>Access to teaching resources</li>
-        <li>Supportive teaching community</li>
-      </ul>
-    `,
-  },
-  {
-    id: "2",
-    title: "Python developer",
-    company: "Duolingo",
-    location: "New York, NY",
-    type: "Hybrid",
-    salary: "$59 per hour",
-    posted: "5 days ago",
-    isNew: true,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
-      
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>5+ years of English teaching experience</li>
-        <li>TEFL, CELTA, or equivalent certification</li>
-        <li>Excellent communication skills</li>
-        <li>Experience with online teaching platforms</li>
-        <li>Bachelor's degree in Education, English, or related field</li>
-      </ul>
-      
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive hourly rate</li>
-        <li>Flexible schedule</li>
-        <li>Professional development opportunities</li>
-        <li>Access to teaching resources</li>
-        <li>Supportive teaching community</li>
-      </ul>
-    `,
-  },
-  {
-    id: "3",
-    title: "Frontend developer",
-    company: "Duolingo",
-    location: "New York, NY",
-    type: "Hybrid",
-    salary: "$59 per hour",
-    posted: "5 days ago",
-    isNew: false,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
-      
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>5+ years of English teaching experience</li>
-        <li>TEFL, CELTA, or equivalent certification</li>
-        <li>Excellent communication skills</li>
-        <li>Experience with online teaching platforms</li>
-        <li>Bachelor's degree in Education, English, or related field</li>
-      </ul>
-      
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive hourly rate</li>
-        <li>Flexible schedule</li>
-        <li>Professional development opportunities</li>
-        <li>Access to teaching resources</li>
-        <li>Supportive teaching community</li>
-      </ul>
-    `,
-  },
-  {
-    id: "4",
-    title: "Engineering manager",
-    company: "Duolingo",
-    location: "New York, NY",
-    type: "Hybrid",
-    salary: "$59 per hour",
-    posted: "5 days ago",
-    isNew: false,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>5+ years of English teaching experience</li>
-        <li>TEFL, CELTA, or equivalent certification</li>
-        <li>Excellent communication skills</li>
-        <li>Experience with online teaching platforms</li>
-        <li>Bachelor's degree in Education, English, or related field</li>
-      </ul>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive hourly rate</li>
-        <li>Flexible schedule</li>
-        <li>Professional development opportunities</li>
-        <li>Access to teaching resources</li>
-        <li>Supportive teaching community</li>
-      </ul>
-    `,
-  },
-  {
-    id: "5",
-    title: "Certified English Tutor (remote working)",
-    company: "Duolingo",
-    location: "New York, NY",
-    type: "Hybrid",
-    salary: "$59 per hour",
-    posted: "5 days ago",
-    isNew: false,
-    description: `
-      <h4 class="text-lg font-semibold mb-3">About The Role</h4>
-      <p class="mb-3">We're looking for certified English tutors to join our remote teaching team. You'll be working with students from around the world, helping them improve their English language skills through our innovative platform.</p>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Requirements</h4>
-      <ul class="list-disc pl-5 mb-3 space-y-1">
-        <li>5+ years of English teaching experience</li>
-        <li>TEFL, CELTA, or equivalent certification</li>
-        <li>Excellent communication skills</li>
-        <li>Experience with online teaching platforms</li>
-        <li>Bachelor's degree in Education, English, or related field</li>
-      </ul>
-
-      <h4 class="text-lg font-semibold mb-3 mt-5">Benefits</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Competitive hourly rate</li>
-        <li>Flexible schedule</li>
-        <li>Professional development opportunities</li>
-        <li>Access to teaching resources</li>
-        <li>Supportive teaching community</li>
-      </ul>
-    `,
-  },
-];
-
-interface JobSearchParams {
-  keywords: string;
-  location: string;
-}
+export const jobListings = [];
 
 const JobSearch = () => {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
-  const [selectedJob, setSelectedJob] = useState<
-    (typeof jobListings)[0] | null
-  >(null);
-  const [filteredJobs, setFilteredJobs] = useState(jobListings);
+  const dispatch = useAppDispatch();
+  const jobs = useAppSelector(jobsSelectors.getJobsSelector);
+  const totalJobsCount = useAppSelector(
+    jobsSelectors.getTotalJobsCountSelector,
+  );
+  const { isInitialized, isLoading, error } = useAppSelector(
+    jobsSelectors.getJobSearchState,
+  );
+  const { keywords } = useAppSelector(userSelectors.getUserPreferencesSelector);
+
+  const hasMoreJobs = jobs.length < totalJobsCount;
 
   const handleJobSelect = (job: JobCardProps["job"]) => {
-    // Navigate to the job details page
-    setLocation(`/job-details/${job.id}`);
+    setLocation(`/job-details/${job.uid}`);
   };
 
-  const handleSearch = (searchParams: JobSearchParams) => {
-    // In a real app, this would call an API with the search parameters
-    // For now, we'll just filter our mock data
-    const { keywords, location } = searchParams;
-
-    const filtered = jobListings.filter((job) => {
-      const matchesKeywords =
-        keywords === "" ||
-        job.title.toLowerCase().includes(keywords.toLowerCase()) ||
-        job.company.toLowerCase().includes(keywords.toLowerCase()) ||
-        job.description.toLowerCase().includes(keywords.toLowerCase());
-
-      const matchesLocation =
-        location === "" ||
-        job.location.toLowerCase().includes(location.toLowerCase());
-
-      return matchesKeywords && matchesLocation;
-    });
-
-    setFilteredJobs(filtered);
-
-    if (filtered.length === 0) {
-      toast({
-        title: t("jobSearch.noResults.title"),
-        description: t("jobSearch.noResults.description"),
-      });
-    } else {
-      toast({
-        title: t("jobSearch.resultsFound.title", { count: filtered.length }),
-        description: t("jobSearch.resultsFound.description", {
-          count: filtered.length,
-        }),
-      });
-
-      // Reset selected job when search results change
-      setSelectedJob(null);
+  useLayoutEffect(() => {
+    console.log("Initializing jobs...");
+    if (!isInitialized && !isLoading && !error) {
+      dispatch(initJobs());
     }
+  }, [isInitialized, isLoading]);
+
+  const handleSearch = async ({ keywords }: { keywords: string[] }) => {
+    await dispatch(updatePreferences({ keywords }));
+
+    await dispatch(refreshJobs());
+  };
+
+  const handleLoadMore = () => {
+    dispatch(loadMore());
   };
 
   return (
@@ -254,20 +59,21 @@ const JobSearch = () => {
             {t("jobSearch.title")}
           </h1>
           <p className="text-muted-foreground mt-2">
-            1512 {t("jobSearch.subtitle")}
+            {totalJobsCount} {t("jobSearch.subtitle")}
           </p>
         </div>
       </div>
 
       {/* Search Form */}
-      <SearchForm onSearch={handleSearch} />
+      <SearchForm onSearch={handleSearch} initialKeywords={keywords} />
 
       {/* Main Content with Job Listings and Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6">
         <JobListings
-          jobs={stripDescriptions(filteredJobs)}
-          selectedJobId={selectedJob?.id || null}
+          jobs={jobs}
+          isLoading={isLoading}
           onSelectJob={handleJobSelect}
+          onLoadMore={hasMoreJobs ? handleLoadMore : undefined}
         />
         <FilterBar />
       </div>

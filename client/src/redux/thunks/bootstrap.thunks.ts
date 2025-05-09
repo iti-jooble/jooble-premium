@@ -15,7 +15,7 @@ export const runBootstrap = createAsyncThunk<BootstrapConfigs, void>(
         throw new Error("Failed to initialize application");
       }
 
-      dispatch(setUser(response.data.userInfo));
+      dispatch(setUser(response.data.user));
 
       return response.data.configs;
     } catch (error: any) {

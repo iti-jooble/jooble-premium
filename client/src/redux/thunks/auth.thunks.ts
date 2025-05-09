@@ -4,6 +4,7 @@ import {
   AuthByGoogleCredentials,
   RegisterData,
 } from "@/types/api/auth.types";
+import { AppDispatch } from "@/redux/store";
 import { UserState } from "../../types/state/user.types";
 import { authApiSlice } from "../api/authApiSlice";
 import { setUser } from "../slices/userSlice";

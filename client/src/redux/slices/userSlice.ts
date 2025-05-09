@@ -14,15 +14,29 @@ const initialState: UserState = {
     expirationDate: "",
   },
   preferences: {
-    theme: "system",
-    language: "en",
+    salaryRange: {
+      lowerBound: 0,
+      upperBound: 0,
+    },
+    jobTypes: [],
+    experienceLevels: [],
+    experienceYears: 0,
+    keywords: [],
+    location: null,
+    locationTypes: [],
   },
+  language: "en",
 };
 
-// Create the slice
 const userSlice = createSlice({
   name: "user",
   initialState,
+  selectors: {
+    getUserSelector: (state) => state,
+    getUserPreferencesSelector: (state) => state.preferences || {},
+    getUserSubscriptionSelector: (state) => state.subscription,
+    isAuthorizedSelector: (state) => state.isAuthorized,
+  },
   reducers: {
     setUser: (state, action: PayloadAction<Partial<UserState>>) => {
       return {
@@ -40,7 +54,7 @@ const userSlice = createSlice({
       state.isPremium = false;
     },
 
-    updatePreferences: (
+    updatePreferencesLocaly: (
       state,
       action: PayloadAction<Partial<UserState["preferences"]>>,
     ) => {
@@ -64,7 +78,9 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, logout, updatePreferences, updateSubscription } =
+export const { setUser, logout, updatePreferencesLocaly, updateSubscription } =
   userSlice.actions;
+
+export const selectors = userSlice.selectors;
 
 export default userSlice.reducer;

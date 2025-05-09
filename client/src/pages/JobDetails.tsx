@@ -1,33 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams, useLocation } from "wouter";
+import { useParams, useLocation, Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle } from "lucide-react";
-
-// In a real app, this would be fetched from an API
-// For now we're using the same job data that's defined in JobSearch.tsx
-type JobWithDescription = {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  salary: string;
-  posted: string;
-  isNew: boolean;
-  description: string;
-};
+import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { setSelectedJob } from "@/redux/slices/jobSearchSlice";
+import { jobsSelectors } from "@/redux/selectors";
 
 const JobDetails = () => {
   const { t } = useTranslation();
   const params = useParams();
+  const dispatch = useAppDispatch();
   const [, setLocation] = useLocation();
-  const [job, setJob] = useState<JobWithDescription | null>(null);
+  const job = useAppSelector(jobsSelectors.getSelectedJobSelector);
   const [loading, setLoading] = useState(true);
 
-  const jobId = params.jobId;
+  useLayoutEffect(() => {
+    if (params.jobId) {
+      dispatch(setSelectedJob(params.jobId));
+    }
+
+    setLoading(false);
+  }, [params.jobId]);
 
   const skills = [
     "Figma",
@@ -42,97 +37,12 @@ const JobDetails = () => {
     "Loom",
   ];
 
-  // Mock job data - this would come from an API in a real app
-  const mockJobs: JobWithDescription[] = [
-    {
-      id: "1",
-      title: "Sr. Product Designer",
-      company: "Duolingo",
-      location: "New York, NY",
-      type: "Full-time",
-      salary: "$59 per hour",
-      posted: "5 days ago",
-      isNew: true,
-      description:
-        "We are looking for a proactive team player who can make a difference in his/her role within our community as we have an immediate opening for a full-time/part-time Data Entry Operator.",
-    },
-    {
-      id: "2",
-      title: "Python developer",
-      company: "Duolingo",
-      location: "New York, NY",
-      type: "Full-time",
-      salary: "$59 per hour",
-      posted: "5 days ago",
-      isNew: true,
-      description:
-        "We're looking for skilled Python developers to join our backend team. You'll be responsible for developing and maintaining our API services and core application logic.",
-    },
-    {
-      id: "3",
-      title: "Frontend developer",
-      company: "Duolingo",
-      location: "New York, NY",
-      type: "Full-time",
-      salary: "$59 per hour",
-      posted: "5 days ago",
-      isNew: false,
-      description:
-        "We're looking for frontend developers with React experience to join our web team. You'll be responsible for building engaging user interfaces for our learning platform.",
-    },
-    {
-      id: "4",
-      title: "Engineering manager",
-      company: "Duolingo",
-      location: "New York, NY",
-      type: "Full-time",
-      salary: "$59 per hour",
-      posted: "5 days ago",
-      isNew: false,
-      description:
-        "We're looking for an engineering manager to lead our core platform team. You'll be responsible for guiding a team of engineers, setting technical direction, and ensuring successful project delivery.",
-    },
-    {
-      id: "5",
-      title: "UX/UI Designer",
-      company: "Duolingo",
-      location: "New York, NY",
-      type: "Full-time",
-      salary: "$59 per hour",
-      posted: "5 days ago",
-      isNew: false,
-      description:
-        "We're looking for a skilled UX/UI designer to join our product team. You'll be responsible for creating beautiful interfaces and user flows for our language learning app.",
-    },
-  ];
-
-  useEffect(() => {
-    // In a real app, this would be an API call
-    if (jobId) {
-      const foundJob = mockJobs.find((job) => job.id === jobId);
-      setJob(foundJob || null);
-    }
-    setLoading(false);
-  }, [jobId]);
-
   if (loading) {
     return <div className="p-8 flex justify-center">Loading...</div>;
   }
 
   if (!job) {
-    return (
-      <div className="p-8">
-        <Card className="p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Job Not Found</h2>
-          <p className="mb-6">
-            Sorry, we couldn't find the job you're looking for.
-          </p>
-          <Button onClick={() => setLocation("/jobs")}>
-            Back to Job Search
-          </Button>
-        </Card>
-      </div>
-    );
+    return <Redirect to="/" />;
   }
 
   return (
@@ -158,13 +68,13 @@ const JobDetails = () => {
               </div>
               <div className="flex-1">
                 <div className="text-sm text-muted-foreground mb-1">
-                  {job.company} is looking for
+                  {job.company?.name} is looking for
                 </div>
                 <h1 className="text-2xl font-bold text-gray-800 mb-1">
-                  {job.title}
+                  {job.position}
                 </h1>
                 <div className="text-sm text-muted-foreground">
-                  Posted {job.posted} · 153 people clicked apply
+                  Posted {job.dateCaption}
                 </div>
               </div>
             </div>

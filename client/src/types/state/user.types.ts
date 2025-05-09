@@ -3,20 +3,32 @@ export enum SUBSCRIPTION_TYPES {
   PREMIUM = 1,
 }
 
-export interface UserState {
+export interface User {
   id: string | null;
   firstName: string | null;
   lastName: string | null;
   email: string | null;
-  status: number | null;
-  isPremium: boolean;
   isAuthorized: boolean;
   subscription: {
     type: SUBSCRIPTION_TYPES;
     expirationDate: string;
   };
   preferences: {
-    theme: "light" | "dark" | "system";
-    language: string;
+    keywords: string[];
+    location: string | null;
+    jobTypes: number[];
+    salaryRange: {
+      lowerBound: number | null;
+      upperBound: number | null;
+    };
+    experienceLevels: string[];
+    locationTypes: string[];
+    experienceYears: number;
   };
+  language: string;
+}
+
+export interface UserState extends User {
+  status: number | null;
+  isPremium: boolean;
 }

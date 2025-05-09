@@ -7,8 +7,6 @@ import {
   deleteCv,
   duplicateCv,
 } from "../thunks/cvBuilder.thunks";
-import { CvSource } from "@/types/api/cvBuilder.types";
-import uniqueId from "lodash/uniqueId";
 
 const initialState: ICVBuilderState = {
   currentCvId: 0,
@@ -25,67 +23,17 @@ const cvBuilderSlice = createSlice({
   selectors: {
     getCurrentCvSelector: (state) =>
       state.cvList.find((cv) => cv.id === state.currentCvId),
+    getCvBuilderStateSelector: (state) => state,
   },
   reducers: {
-    // Set the current CV ID
     setCurrentCvId: (state, action: PayloadAction<number | null>) => {
       state.currentCvId = action.payload;
     },
 
-    // Create a new CV
-    createCvLocaly: (
-      state,
-      action: PayloadAction<{ source?: number; templateId?: number } | null>,
-    ) => {
-      const isNewCvExists = state.cvList.some((cv) => cv.id === 0);
-
-      if (isNewCvExists) {
-        state.currentCvId = 0;
-        return;
-      }
-
-      const newCv = {
-        id: 0,
-        dateCreated: new Date().toISOString(),
-        source: action.payload?.source ?? CvSource.MANUAL,
-        score: 0,
-        title: "New CV",
-        templateId: action.payload?.templateId ?? 2,
-        userInfo: {
-          personalInfo: {
-            firstName: "",
-            lastName: "",
-            email: "",
-            phone: "",
-            city: "",
-            country: "",
-          },
-          summary: "",
-          skills: [],
-          experience: [],
-          education: [],
-        },
-      };
-      state.cvList.push(newCv);
-      state.currentCvId = newCv.id;
-    },
-
-    updateCvTemplateIdLocaly: (
-      state,
-      action: PayloadAction<{ cvId: number; templateId: number }>,
-    ) => {
-      const cv = state.cvList.find((cv) => cv.id === action.payload.cvId);
-      if (cv) {
-        cv.templateId = action.payload.templateId;
-      }
-    },
-
-    // Set saving state
     setIsSaving: (state, action: PayloadAction<boolean>) => {
       state.isSaving = action.payload;
     },
 
-    // Reset the CV builder state
     resetCvBuilder: () => initialState,
   },
   extraReducers: (builder) => {
@@ -166,14 +114,9 @@ const cvBuilderSlice = createSlice({
   },
 });
 
-export const {
-  setCurrentCvId,
-  setIsSaving,
-  resetCvBuilder,
-  createCvLocaly,
-  updateCvTemplateIdLocaly,
-} = cvBuilderSlice.actions;
+export const { setCurrentCvId, setIsSaving, resetCvBuilder } =
+  cvBuilderSlice.actions;
 
-export const { getCurrentCvSelector } = cvBuilderSlice.selectors;
+export const selectors = cvBuilderSlice.selectors;
 
 export default cvBuilderSlice.reducer;

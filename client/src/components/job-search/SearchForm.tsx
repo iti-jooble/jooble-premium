@@ -7,9 +7,8 @@ import { useSearchForm } from "./hooks/useSearchForm";
 import { Badge } from "@/components/ui/badge";
 
 interface SearchFormProps {
-  onSearch?: (data: { keywords: string; location: string }) => void;
-  initialKeywords?: string;
-  initialLocation?: string;
+  onSearch?: (data: { keywords: string[] }) => Promise<void>;
+  initialKeywords?: string[];
 }
 
 // Mock server suggestions based on input
@@ -44,28 +43,19 @@ const getServerSuggestions = (input: string): string[] => {
 
 export const SearchForm = ({
   onSearch,
-  initialKeywords = "",
-  initialLocation = "",
+  initialKeywords = [],
 }: SearchFormProps) => {
   const { t } = useTranslation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [selectedPhrases, setSelectedPhrases] = useState<string[]>([]);
+  const [selectedPhrases] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const {
-    formState,
-    setKeywords,
-    setLocation,
-    handleSearch,
-    resetForm,
-    isSearching,
-  } = useSearchForm({
+  const { setKeywords, handleSearch, isSearching, keywords } = useSearchForm({
     onSearch,
     initialKeywords,
-    initialLocation,
   });
 
   // Update suggestions when input changes
@@ -106,19 +96,7 @@ export const SearchForm = ({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    // If there are selected phrases, join them for the search
-    if (selectedPhrases.length > 0) {
-      const joinedKeywords = selectedPhrases.join(", ");
-      setKeywords(joinedKeywords);
-
-      // Pass the updated keywords in the handleSearch call
-      handleSearch(e, {
-        keywords: joinedKeywords,
-        location: formState.location,
-      });
-    } else {
-      handleSearch(e);
-    }
+    handleSearch();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,8 +111,8 @@ export const SearchForm = ({
 
   const handleSuggestionClick = (suggestion: string) => {
     // Add the suggestion to selected phrases if not already there
-    if (!selectedPhrases.includes(suggestion)) {
-      setSelectedPhrases([...selectedPhrases, suggestion]);
+    if (!keywords.includes(suggestion)) {
+      setKeywords([...keywords, suggestion]);
     }
 
     // Clear the input and hide dropdown
@@ -147,8 +125,8 @@ export const SearchForm = ({
     }
   };
 
-  const handlePhraseRemove = (phrase: string) => {
-    setSelectedPhrases(selectedPhrases.filter((p) => p !== phrase));
+  const handleKeywordRemove = (phrase: string) => {
+    setKeywords(keywords.filter((p) => p !== phrase));
   };
 
   return (
@@ -157,15 +135,15 @@ export const SearchForm = ({
         <div className="flex-1 flex items-center px-3 relative">
           <SearchIcon className="h-5 w-5 text-muted-foreground mr-2" />
           <div className="flex flex-wrap gap-2 items-center w-full relative">
-            {selectedPhrases.map((phrase, index) => (
+            {keywords.map((keyword, index) => (
               <Badge
-                key={`${phrase}-${index}`}
+                key={`${keyword}-${index}`}
                 variant="outline"
                 className="flex items-center gap-1 bg-background"
               >
-                {phrase}
+                {keyword}
                 <button
-                  onClick={() => handlePhraseRemove(phrase)}
+                  onClick={() => handleKeywordRemove(keyword)}
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <X size={16} />

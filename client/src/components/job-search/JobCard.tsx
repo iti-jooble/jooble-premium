@@ -1,24 +1,17 @@
+import { Job } from "@shared/schema";
 import {
   MapPinIcon,
   BriefcaseIcon,
-  DollarSignIcon,
-  ClockIcon,
+  Building2Icon,
   CalendarIcon,
+  WalletIcon,
+  TrophyIcon,
 } from "lucide-react";
 
 export interface JobCardProps {
-  job: {
-    id: string;
-    title: string;
-    company: string;
-    location: string;
-    type: string;
-    salary: string;
-    posted: string;
-    isNew?: boolean;
-  };
-  isSelected: boolean;
-  onClick: (job: JobCardProps["job"]) => void;
+  job: Job;
+  isSelected?: boolean;
+  onClick: (job: Job) => void;
 }
 
 export const JobCard = ({ job, isSelected, onClick }: JobCardProps) => {
@@ -35,37 +28,63 @@ export const JobCard = ({ job, isSelected, onClick }: JobCardProps) => {
           {/* Company info and posted date */}
           <div className="flex items-center text-sm mb-1">
             <div className="w-10 h-10 rounded-lg mr-4 bg-green-100 flex items-center justify-center text-muted-foreground text-green-800">
-              {job.company.charAt(0)}
+              {job.company?.name?.charAt(0)}
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-bold">{job.company}</span>
+              <span className="text-sm font-bold">{job.company?.name}</span>
               <span className="text-sm text-muted-foreground">
-                Posted {job.posted}
+                Posted {job.dateCaption}
               </span>
             </div>
           </div>
 
           {/* Job title */}
-          <h3 className="font-bold text-primary-blue text-lg">{job.title}</h3>
+          <h3 className="font-bold text-primary-blue text-lg">
+            {job.position}
+          </h3>
 
           {/* Job details */}
           <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground mt-2">
-            <div className="flex items-center">
-              <DollarSignIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
-              <span>{job.salary}</span>
-            </div>
-            <div className="flex items-center">
-              <MapPinIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
-              <span>{job.location}</span>
-            </div>
-            <div className="flex items-center">
-              <BriefcaseIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
-              <span>{job.type}</span>
-            </div>
-            <div className="flex items-center">
-              <CalendarIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
-              <span>5+ years exp</span>
-            </div>
+            {(job.salary || job.estimatedSalary) && (
+              <div className="flex items-center">
+                <WalletIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+                <span>{job.salary ?? job.estimatedSalary}</span>
+              </div>
+            )}
+            {(job.jobType || job.fitlyJobCard?.basicInfo.workFormat) && (
+              <div className="flex items-center">
+                <BriefcaseIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+                <span>
+                  {job.jobType ?? job.fitlyJobCard?.basicInfo.workFormat}
+                </span>
+              </div>
+            )}
+            {!!job.fitlyJobCard?.basicInfo.seniorityLevel && (
+              <div className="flex items-center">
+                <TrophyIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+                <span>{job.fitlyJobCard?.basicInfo.seniorityLevel}</span>
+              </div>
+            )}
+            {!!job.location.name && (
+              <div className="flex items-center">
+                <MapPinIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+                <span>{job.location.name}</span>
+              </div>
+            )}
+            {!!job.fitlyJobCard?.basicInfo.workLocationType && (
+              <div className="flex items-center">
+                <Building2Icon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+                <span>{job.fitlyJobCard?.basicInfo.workLocationType}</span>
+              </div>
+            )}
+            {!!job.fitlyJobCard?.basicInfo.yearsOfExperience && (
+              <div className="flex items-center">
+                <CalendarIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
+                <span>
+                  {job.fitlyJobCard?.basicInfo.yearsOfExperience}+ years exp
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

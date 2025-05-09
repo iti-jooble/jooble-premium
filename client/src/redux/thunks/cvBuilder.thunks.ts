@@ -133,7 +133,6 @@ export const deleteCv = createAsyncThunk<void, number>(
   "cvBuilder/deleteCv",
   async (id, { dispatch, rejectWithValue }) => {
     try {
-      // Use the mutation hook directly from the API slice
       const result = await dispatch(cvApiSlice.endpoints.deleteCV.initiate(id));
 
       if (result.error) {
@@ -155,7 +154,6 @@ export const duplicateCv = createAsyncThunk<void, number>(
   "cvBuilder/duplicateCv",
   async (payload, { dispatch, rejectWithValue }) => {
     try {
-      // Use the mutation hook directly from the API slice
       const result = await dispatch(
         cvApiSlice.endpoints.duplicateCV.initiate(payload),
       );

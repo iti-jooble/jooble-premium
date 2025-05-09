@@ -1,181 +1,132 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { 
-  JobSearchState,
-  Job,
-  JobFilter,
-  JobSearchParams
-} from '../../types/state/jobSearch.types';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { JobSearchState } from "../../types/state/jobSearch.types";
+import { Job } from "@shared/schema";
+import { refreshJobs, initJobs, loadMore } from "../thunks";
 
-// Initial state
 const initialState: JobSearchState = {
   jobs: [],
   selectedJobId: null,
-  loading: false,
+  isInitialized: false,
+  isLoading: false,
   error: null,
-  searchParams: {
-    keywords: '',
-    location: '',
-  },
-  filters: {
-    jobType: [],
-    datePosted: '',
-    salaryRange: null,
-    experienceLevel: [],
-  },
-  savedJobs: [],
-  totalResults: 0,
+  totalJobsCount: 0,
   currentPage: 1,
   resultsPerPage: 10,
-  hasMoreResults: false,
+  hasMore: false,
 };
 
-// Create the slice
 const jobSearchSlice = createSlice({
-  name: 'jobSearch',
+  name: "jobSearch",
   initialState,
+  selectors: {
+    getSelectedJobSelector: (state) =>
+      state.jobs.find((job) => job.uid === state.selectedJobId),
+    getJobsSelector: (state) => state.jobs,
+    getTotalJobsCountSelector: (state) => state.totalJobsCount,
+    getJobSearchState: (state) => ({
+      isLoading: state.isLoading,
+      isInitialized: state.isInitialized,
+      error: state.error,
+    }),
+    getCurrentPageSelector: (state) => state.currentPage,
+  },
   reducers: {
-    // Set job listings
     setJobs: (state, action: PayloadAction<Job[]>) => {
       state.jobs = action.payload;
     },
-    
-    // Add new jobs (for infinite scrolling/pagination)
+
     appendJobs: (state, action: PayloadAction<Job[]>) => {
       state.jobs = [...state.jobs, ...action.payload];
     },
-    
-    // Set selected job
+
     setSelectedJob: (state, action: PayloadAction<string | null>) => {
       state.selectedJobId = action.payload;
     },
-    
-    // Update search parameters
-    setSearchParams: (state, action: PayloadAction<{ keywords?: string; location?: string }>) => {
-      state.searchParams = {
-        ...state.searchParams,
-        ...action.payload
-      };
-      // Reset pagination when search params change
-      state.currentPage = 1;
-    },
-    
-    // Update filters
-    setFilters: (state, action: PayloadAction<Partial<JobFilter>>) => {
-      state.filters = {
-        ...state.filters,
-        ...action.payload
-      };
-      // Reset pagination when filters change
-      state.currentPage = 1;
-    },
-    
-    // Reset filters
-    resetFilters: (state) => {
-      state.filters = {
-        jobType: [],
-        datePosted: '',
-        salaryRange: null,
-        experienceLevel: [],
-      };
-      // Reset pagination when filters change
-      state.currentPage = 1;
-    },
-    
-    // Set loading state
+
     setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+      state.isLoading = action.payload;
     },
-    
-    // Set error
+
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    
-    // Toggle saved job
-    toggleSavedJob: (state, action: PayloadAction<string>) => {
-      const jobId = action.payload;
-      
-      if (state.savedJobs.includes(jobId)) {
-        state.savedJobs = state.savedJobs.filter(id => id !== jobId);
-        
-        // Also update the job in the listing if it exists
-        const jobIndex = state.jobs.findIndex(job => job.id === jobId);
-        if (jobIndex !== -1) {
-          state.jobs[jobIndex].isSaved = false;
-        }
-      } else {
-        state.savedJobs.push(jobId);
-        
-        // Also update the job in the listing if it exists
-        const jobIndex = state.jobs.findIndex(job => job.id === jobId);
-        if (jobIndex !== -1) {
-          state.jobs[jobIndex].isSaved = true;
-        }
-      }
-    },
-    
-    // Set saved jobs
-    setSavedJobs: (state, action: PayloadAction<string[]>) => {
-      state.savedJobs = action.payload;
-      
-      // Update all jobs in the listing
-      state.jobs.forEach(job => {
-        job.isSaved = state.savedJobs.includes(job.id);
-      });
-    },
-    
-    // Set pagination information
-    setPaginationInfo: (state, action: PayloadAction<{
-      totalResults: number;
-      currentPage: number;
-      resultsPerPage: number;
-      hasMoreResults: boolean;
-    }>) => {
-      const { totalResults, currentPage, resultsPerPage, hasMoreResults } = action.payload;
-      state.totalResults = totalResults;
+
+    setPaginationInfo: (
+      state,
+      action: PayloadAction<{
+        totalJobsCount: number;
+        currentPage: number;
+        resultsPerPage: number;
+        hasMoreResults: boolean;
+      }>,
+    ) => {
+      const { totalJobsCount, currentPage, resultsPerPage, hasMoreResults } =
+        action.payload;
+      state.totalJobsCount = totalJobsCount;
       state.currentPage = currentPage;
       state.resultsPerPage = resultsPerPage;
-      state.hasMoreResults = hasMoreResults;
+      state.hasMore = hasMoreResults;
     },
-    
-    // Load more results (pagination)
-    loadMoreResults: (state) => {
-      state.currentPage += 1;
+
+    setCurrentPage: (state, action: PayloadAction<number>) => {
+      state.currentPage = action.payload;
     },
-    
-    // Reset search and filters
+
     resetSearch: (state) => {
-      state.searchParams = {
-        keywords: '',
-        location: '',
-      };
-      state.filters = {
-        jobType: [],
-        datePosted: '',
-        salaryRange: null,
-        experienceLevel: [],
-      };
+      state.isInitialized = false;
       state.currentPage = 1;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(refreshJobs.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(refreshJobs.fulfilled, (state, action) => {
+      state.jobs = action.payload.jobs;
+      state.hasMore = action.payload.hasMore;
+      state.totalJobsCount = action.payload.totalJobsCount;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(refreshJobs.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message || null;
+    });
+
+    builder.addCase(loadMore.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(loadMore.fulfilled, (state, action) => {
+      state.jobs = [...state.jobs, ...action.payload.jobs];
+      state.hasMore = action.payload.hasMore;
+      state.totalJobsCount = action.payload.totalJobsCount;
+      state.isLoading = false;
+      state.error = null;
+    });
+    builder.addCase(loadMore.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error.message || null;
+    });
+
+    builder.addCase(initJobs.fulfilled, (state) => {
+      state.isInitialized = true;
+    });
+  },
 });
 
-// Export actions
+export const selectors = jobSearchSlice.selectors;
+
 export const {
   setJobs,
   appendJobs,
   setSelectedJob,
-  setSearchParams,
-  setFilters,
-  resetFilters,
   setLoading,
   setError,
-  toggleSavedJob,
-  setSavedJobs,
   setPaginationInfo,
-  loadMoreResults,
+  setCurrentPage,
   resetSearch,
 } = jobSearchSlice.actions;
 
-// Export reducer
 export default jobSearchSlice.reducer;
