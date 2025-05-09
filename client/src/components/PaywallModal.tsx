@@ -12,9 +12,10 @@ interface PaywallModalProps {
 }
 
 export const PaywallModal: React.FC<PaywallModalProps> = ({
-  open,
-  onOpenChange,
+  modalId,
+  preSelectedPlan,
 }) => {
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState<string>("monthly");
   const payWallConfig = useAppSelector(
@@ -26,14 +27,19 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
       return;
     }
 
-    const defaultOption =
-      payWallConfig.prices.find((option) => option.isDefault) ||
-      payWallConfig.prices[0];
+    // Use preSelectedPlan if provided, otherwise use default option
+    if (preSelectedPlan) {
+      setSelectedOption(preSelectedPlan);
+    } else {
+      const defaultOption =
+        payWallConfig.prices.find((option) => option.isDefault) ||
+        payWallConfig.prices[0];
 
-    if (defaultOption) {
-      setSelectedOption(defaultOption.priceId);
+      if (defaultOption) {
+        setSelectedOption(defaultOption.priceId);
+      }
     }
-  }, []);
+  }, [preSelectedPlan, payWallConfig]);
 
   const features = [
     { text: "Jobs from <strong>all over the web</strong> in 1 place" },
@@ -62,10 +68,20 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
     // Handle payment process - to be implemented
     console.log("Proceeding with option:", selectedOption);
     // Here would integrate with a payment processor like Stripe
+    
+    // Close the modal after handling payment
+    dispatch(closeModal(modalId));
+  };
+  
+  // Handle closing the modal with the closeModal action
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      dispatch(closeModal(modalId));
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={true} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[984px] p-0 overflow-hidden border-none rounded-2xl sm:rounded-2xl">
         {!payWallConfig || !payWallConfig.prices ? (
           <div className="flex justify-center items-center h-full">

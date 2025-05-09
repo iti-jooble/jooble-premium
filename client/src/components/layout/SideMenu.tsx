@@ -18,7 +18,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useState } from "react";
-import PaywallModal from "@/components/PaywallModal";
+import { openModal } from "@/redux/slices/uiSlice";
+import { ModalType } from "@/constants/modals";
 
 const navItems: NavItem[] = [
   {
@@ -37,7 +38,6 @@ const SideMenu = () => {
   const [location] = useLocation();
   const dispatch = useAppDispatch();
   const [logoutByServer] = useLogoutMutation();
-  const [paywallOpen, setPaywallOpen] = useState(false);
 
   const logout = () => {
     dispatch(logoutLocaly());
@@ -45,7 +45,11 @@ const SideMenu = () => {
   };
 
   const handleUpgradeClick = () => {
-    setPaywallOpen(true);
+    // Open the paywall modal using Redux
+    dispatch(openModal({
+      type: ModalType.PAYWALL,
+      props: {}
+    }));
   };
 
   return (
@@ -83,9 +87,6 @@ const SideMenu = () => {
           >
             Upgrade
           </Button>
-
-          {/* Paywall Modal */}
-          <PaywallModal open={paywallOpen} onOpenChange={setPaywallOpen} />
         </div>
 
         {/* Profile section */}
