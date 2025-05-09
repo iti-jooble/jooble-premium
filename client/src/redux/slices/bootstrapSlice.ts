@@ -6,7 +6,7 @@ import {
 import { runBootstrap } from "@/redux/thunks";
 
 const initialState: BootstrapState = {
-  isLoading: false,
+  isLoading: true,
   error: null,
   configs: {
     google: {
@@ -18,10 +18,14 @@ const initialState: BootstrapState = {
 };
 
 export const bootstrapSlice = createSlice({
-  name: "appLoading",
+  name: "bootstrap",
   initialState,
   selectors: {
     getConfigsSelector: (state) => state.configs,
+    getBootstrapStateSelector: (state) => ({
+      isLoading: state.isLoading,
+      error: state.error,
+    }),
   },
   reducers: {
     setBotstrapLoading: (state, action: PayloadAction<boolean>) => {

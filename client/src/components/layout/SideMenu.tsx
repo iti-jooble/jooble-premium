@@ -17,6 +17,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useState } from "react";
+import PaywallModal from "@/components/PaywallModal";
 
 const navItems: NavItem[] = [
   {
@@ -40,10 +42,15 @@ const SideMenu = () => {
   const [location] = useLocation();
   const dispatch = useAppDispatch();
   const [logoutByServer] = useLogoutMutation();
+  const [paywallOpen, setPaywallOpen] = useState(false);
 
   const logout = () => {
     dispatch(logoutLocaly());
     logoutByServer();
+  };
+  
+  const handleUpgradeClick = () => {
+    setPaywallOpen(true);
   };
 
   return (
@@ -77,10 +84,16 @@ const SideMenu = () => {
           </div>
           <Button
             className="w-full bg-primary-blue hover:bg-blue-700"
-            onClick={() => (window.location.href = "/paywall")}
+            onClick={handleUpgradeClick}
           >
             Upgrade
           </Button>
+          
+          {/* Paywall Modal */}
+          <PaywallModal
+            open={paywallOpen}
+            onOpenChange={setPaywallOpen}
+          />
         </div>
 
         {/* Profile section */}

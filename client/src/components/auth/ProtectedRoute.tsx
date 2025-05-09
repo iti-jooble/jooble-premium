@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAppSelector } from "@/redux/store";
-import { GlobalLoadingScreen } from "@/components/loading/GlobalLoadingScreen";
+import { bootstrapSelectors, userSelectors } from "@/redux/selectors";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -9,19 +9,16 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [, setLocation] = useLocation();
-  const { isAuthorized } = useAppSelector((state) => state.user);
-
-  console.log("ProtectedRoute isAuthorized:", isAuthorized);
+  const { isLoading } = useAppSelector(
+    bootstrapSelectors.getBootstrapStateSelector,
+  );
+  const isAuthorized = useAppSelector(userSelectors.isAuthorizedSelector);
 
   useEffect(() => {
-    if (!isAuthorized) {
+    if (!isAuthorized && !isLoading) {
       setLocation("/auth/login");
     }
-  }, [isAuthorized]);
-
-  if (!isAuthorized) {
-    return <GlobalLoadingScreen />;
-  }
+  }, [isAuthorized, isLoading]);
 
   return <>{children}</>;
 };
