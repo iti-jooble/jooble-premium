@@ -1,59 +1,62 @@
-import React, { useState } from 'react';
-import { X, CheckCircle, Rocket, AlertCircle } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogClose,
-} from "@/components/ui/dialog";
-
-interface PriceOption {
-  id: string;
-  price: number;
-  period: string;
-  perDay: number;
-  isBestValue?: boolean;
-}
+import React, { useEffect, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { Rocket, CircleCheck, WatchIcon, ShieldCheckIcon } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useAppSelector, useAppDispatch } from "@/redux/store";
+import { bootstrapSelectors } from "@/redux/selectors";
+import { closeModal } from "@/redux/slices/uiSlice";
 
 interface PaywallModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  modalId: string;
+  preSelectedPlan?: string;
 }
 
-export const PaywallModal: React.FC<PaywallModalProps> = ({ open, onOpenChange }) => {
+export const PaywallModal: React.FC<PaywallModalProps> = ({
+  open,
+  onOpenChange,
+}) => {
+  const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState<string>("monthly");
-  
-  const priceOptions: PriceOption[] = [
-    {
-      id: "weekly",
-      price: 4.99,
-      period: "week",
-      perDay: 0.71,
-    },
-    {
-      id: "monthly",
-      price: 9.99,
-      period: "month",
-      perDay: 0.32,
-      isBestValue: true,
-    },
-    {
-      id: "quarterly",
-      price: 22.99,
-      period: "3 month",
-      perDay: 0.24,
-    },
-  ];
+  const payWallConfig = useAppSelector(
+    bootstrapSelectors.getPayWallConfigsSelector,
+  );
+
+  useEffect(() => {
+    if (!payWallConfig || !payWallConfig.prices) {
+      return;
+    }
+
+    const defaultOption =
+      payWallConfig.prices.find((option) => option.isDefault) ||
+      payWallConfig.prices[0];
+
+    if (defaultOption) {
+      setSelectedOption(defaultOption.priceId);
+    }
+  }, []);
 
   const features = [
-    { text: "Jobs from all over the web in 1 place" },
-    { text: "Unlimited AI-tailored resumes" },
-    { text: "Unlimited AI-tailored cover letters" },
-    { text: "Smart Match Score for every job" },
-    { text: "Resume Fit Score for every job" },
+    { text: "Jobs from <strong>all over the web</strong> in 1 place" },
+    { text: "<strong>Unlimited</strong> AI-tailored resumes" },
+    { text: "<strong>Unlimited</strong> AI-tailored cover letters" },
+    { text: "Smart <strong>Match Score</strong> for every job" },
+    { text: "Resume <strong>Fit Score</strong> for every job" },
     { text: "Instant PDF downloads" },
     { text: "AI Resume Builder" },
     { text: "Advanced job filters" },
   ];
+
+  const intervalMap: {
+    [key: number]: {
+      text: string;
+      days: number;
+    };
+  } = {
+    0: { text: "per week", days: 7 },
+    1: { text: "per month", days: 30 },
+    2: { text: "per 3 months", days: 90 },
+    3: { text: "per year", days: 365 },
+  };
 
   const handleContinue = () => {
     // Handle payment process - to be implemented
@@ -63,118 +66,123 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({ open, onOpenChange }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[950px] p-0 overflow-hidden border-none rounded-xl">
-        <div className="flex flex-col md:flex-row h-full">
-          {/* Left part - features */}
-          <div className="bg-[#f8f7f4] p-8 md:w-[45%] relative">
-            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <X className="h-5 w-5 text-gray-500" />
-              <span className="sr-only">Close</span>
-            </DialogClose>
+      <DialogContent className="sm:max-w-[984px] p-0 overflow-hidden border-none rounded-2xl sm:rounded-2xl">
+        {!payWallConfig || !payWallConfig.prices ? (
+          <div className="flex justify-center items-center h-full">
+            <div className="text-lg text-center font-semibold w-[80%]">
+              Something went wrong. Please try again later.
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col md:flex-row h-full">
+            {/* Left part - features */}
+            <div className="bg-[#F7F6F2] px-[56px] py-[72px] md:w-[50%] relative">
+              <div className="mt-8">
+                <h2 className="text-4xl font-bold text-[#1a2137] mb-2">
+                  Get 4x more interviews. Pay less than for coffee
+                </h2>
 
-            <div className="mt-8">
-              <h2 className="text-3xl font-bold text-[#1a2137] mb-2">
-                Get 4x more interviews. Pay less than for coffee
-              </h2>
+                <div className="space-y-3 mt-6">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex items-center">
+                      <CircleCheck
+                        className="h-7 w-7 text-blue-600 mr-2 flex-shrink-0"
+                        fill="#014EFE"
+                        color="white"
+                      />
+                      <div>
+                        <Trans
+                          i18nKey={feature.text}
+                          components={{ strong: <strong /> }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-              <div className="space-y-3 mt-6">
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-center">
-                    <CheckCircle className="h-6 w-6 text-blue-600 mr-2 flex-shrink-0" fill="#0043ff" color="white" />
-                    <div>
-                      {feature.text.includes("all over the web") ? (
-                        <span>
-                          Jobs from <strong>all over the web</strong> in 1 place
+            {/* Right part - pricing options */}
+            <div className="px-[56px] py-[72px] md:w-[50%] flex flex-col">
+              <h3 className="text-center text-[#1a2137] text-lg mb-8">
+                Select your option and proceed to checkout
+              </h3>
+
+              <div className="space-y-2 flex-grow">
+                {payWallConfig.prices.map((option) => (
+                  <div
+                    key={option.priceId}
+                    className={`border rounded-lg p-6 relative cursor-pointer ${
+                      selectedOption === option.priceId
+                        ? "border-blue-600"
+                        : "border-gray-200"
+                    } ${option.isDefault ? "border-blue-600" : ""}`}
+                    onClick={() => setSelectedOption(option.priceId)}
+                  >
+                    {option.isDefault && (
+                      <div className="absolute -top-px -right-px bg-blue-600 text-white px-3 py-1 rounded-tr-lg rounded-bl-lg text-sm font-bold">
+                        🔥 Best value
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center ">
+                      <div>
+                        <span className="text-2xl font-bold">
+                          €{option.amount.toString().split(".")[0]}
                         </span>
-                      ) : feature.text.includes("Match Score") ? (
                         <span>
-                          Smart <strong>Match Score</strong> for every job
+                          .{option.amount.toString().split(".")[1]} / per{" "}
+                          {t(intervalMap[option.interval].text)}
                         </span>
-                      ) : feature.text.includes("Fit Score") ? (
-                        <span>
-                          Resume <strong>Fit Score</strong> for every job
-                        </span>
-                      ) : (
-                        feature.text
-                      )}
+                        <div className="text-gray-500 text-sm">
+                          Only €
+                          {(
+                            option.amount / intervalMap[option.interval].days
+                          ).toFixed(2)}{" "}
+                          per day
+                        </div>
+                      </div>
+                      <div
+                        className={`h-5 w-5 rounded-full border ${
+                          selectedOption === option.priceId
+                            ? "border-blue-600 bg-blue-600"
+                            : "border-gray-300"
+                        } flex items-center justify-center`}
+                      >
+                        {selectedOption === option.priceId && (
+                          <div className="h-2 w-2 bg-white rounded-full"></div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
 
-          {/* Right part - pricing options */}
-          <div className="p-8 md:w-[55%] flex flex-col">
-            <h3 className="text-center text-[#1a2137] text-lg mb-6">
-              Select your option and proceed to checkout
-            </h3>
+              <button
+                onClick={handleContinue}
+                className="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg mt-10 text-center"
+              >
+                Continue
+              </button>
 
-            <div className="space-y-4 flex-grow">
-              {priceOptions.map((option) => (
-                <div 
-                  key={option.id}
-                  className={`border rounded-lg p-4 relative ${
-                    selectedOption === option.id
-                      ? "border-blue-600"
-                      : "border-gray-200"
-                  } ${option.isBestValue ? "border-blue-600" : ""}`}
-                >
-                  {option.isBestValue && (
-                    <div className="absolute -top-3 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                      🔥 Best value
-                    </div>
-                  )}
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <span className="text-2xl font-bold">€{option.price}</span>
-                      <span className="text-gray-600 ml-1">.99 / per {option.period}</span>
-                      <div className="text-gray-400 text-sm">
-                        Only €{option.perDay} per day
-                      </div>
-                    </div>
-                    <div 
-                      className={`h-5 w-5 rounded-full border ${
-                        selectedOption === option.id
-                          ? "border-blue-600 bg-blue-600" 
-                          : "border-gray-300"
-                      } flex items-center justify-center`}
-                      onClick={() => setSelectedOption(option.id)}
-                    >
-                      {selectedOption === option.id && (
-                        <div className="h-2 w-2 bg-white rounded-full"></div>
-                      )}
-                    </div>
-                  </div>
+              <div className="flex justify-center mt-6 gap-6">
+                <div className="flex items-center">
+                  <Rocket className="h-5 w-5 mr-2 text-blue-600" />
+                  <span>Instant access</span>
                 </div>
-              ))}
-            </div>
-
-            <button
-              onClick={handleContinue}
-              className="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg mt-6 text-center"
-            >
-              Continue
-            </button>
-
-            <div className="flex justify-center mt-6 gap-6 text-sm">
-              <div className="flex items-center">
-                <Rocket className="h-4 w-4 mr-2 text-blue-600" />
-                <span>Instant access.</span>
+                <div className="flex items-center">
+                  <WatchIcon className="h-5 w-5 mr-2 text-blue-600" />
+                  <span>Cancel anytime</span>
+                </div>
               </div>
-              <div className="flex items-center">
-                <AlertCircle className="h-4 w-4 mr-2 text-blue-600" />
-                <span>Cancel anytime.</span>
-              </div>
-            </div>
-            <div className="flex justify-center mt-2">
-              <div className="flex items-center">
-                <CheckCircle className="h-4 w-4 mr-2 text-blue-600" fill="#0043ff" color="white" />
-                <span>Money Back Guarantee.</span>
+              <div className="flex justify-center mt-2">
+                <div className="flex items-center">
+                  <ShieldCheckIcon className="h-5 w-5 mr-2 text-blue-600" />
+                  <span>Money Back Guarantee</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </DialogContent>
     </Dialog>
   );

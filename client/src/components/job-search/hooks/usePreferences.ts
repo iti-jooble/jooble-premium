@@ -73,7 +73,7 @@ export const getSelectedPreferences = (
               category,
               value,
               label: t(
-                `$${value.lowerBound || 0}-${value.upperBound || MAX_SALARY}/yearly`,
+                `$${value.lowerBound || 0}-${value.upperBound || MAX_SALARY}/monthly`,
               ),
             },
           ];

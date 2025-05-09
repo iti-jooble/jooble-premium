@@ -1,10 +1,10 @@
 export interface PaywallPrice {
   priceId: string;
   name: string;
-  description: string;
   amount: number;
   currency: string;
-  interval: string;
+  interval: number;
+  isDefault?: boolean;
 }
 
 export interface BootstrapConfigs {

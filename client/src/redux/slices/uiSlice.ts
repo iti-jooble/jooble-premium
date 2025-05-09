@@ -13,6 +13,11 @@ const initialState: UiState = {
 const uiSlice = createSlice({
   name: "ui",
   initialState,
+  selectors: {
+    getToastsSelector: (state) => state.toasts,
+    getActiveModalsSelector: (state) => state.activeModals,
+    getSidebarCollapsedSelector: (state) => state.sidebarCollapsed,
+  },
   reducers: {
     setGlobalLoading: (state, action: PayloadAction<boolean>) => {
       state.loading.global = action.payload;
@@ -83,5 +88,7 @@ export const {
   closeAllModals,
   toggleSidebar,
 } = uiSlice.actions;
+
+export const selectors = uiSlice.selectors;
 
 export default uiSlice.reducer;

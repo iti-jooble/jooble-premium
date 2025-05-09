@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { createApiProxy } from "./apiProxy";
 import { EXTERNAL_RESPONSE_TYPES } from "./constants";
+import { getBaseApiUrl, getFitlyApiUrl } from "./helpers";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint
@@ -12,7 +13,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Application initialization endpoint
   app.post(
     "/api/init",
-    createApiProxy({ targetUrl: "/api/FitlyBaseApi/BaseInit" }),
+    createApiProxy({
+      targetUrl: `${getFitlyApiUrl()}/api/FitlyBaseApi/BaseInit`,
+    }),
   );
 
   // === Payment API Routes ===
@@ -69,6 +72,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Update user preferences
   app.put("/api/user/preferences", createApiProxy());
+
+  // === AutoComplete API Routes ===
+  app.get(
+    "/api/autocomplete",
+    createApiProxy({ targetUrl: `${getBaseApiUrl()}/autocomplete` }),
+  );
 
   const httpServer = createServer(app);
   return httpServer;

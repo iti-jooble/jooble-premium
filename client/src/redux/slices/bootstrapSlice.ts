@@ -14,6 +14,32 @@ const initialState: BootstrapState = {
         "89713733914-4d6g2mqk6sop13c9ipthtktv7d19lbti.apps.googleusercontent.com",
       apiKey: "",
     },
+    paywall: {
+      prices: [
+        {
+          priceId: "price_1RGjBVPxm8OVscigy3QCeo2h",
+          name: "Weekly",
+          amount: 4.99,
+          currency: "€",
+          interval: 0,
+        },
+        {
+          priceId: "price_1RGjCbPxm8OVscigyLrrmu65",
+          name: "Monthly",
+          amount: 9.98,
+          currency: "€",
+          interval: 1,
+          isDefault: true,
+        },
+        {
+          priceId: "price_1RGjEGPxm8OVscigK2GPUQJx",
+          name: "3 Months",
+          amount: 22.81,
+          currency: "€",
+          interval: 2,
+        },
+      ],
+    },
   },
 };
 
@@ -26,6 +52,7 @@ export const bootstrapSlice = createSlice({
       isLoading: state.isLoading,
       error: state.error,
     }),
+    getPayWallConfigsSelector: (state) => state.configs.paywall,
   },
   reducers: {
     setBotstrapLoading: (state, action: PayloadAction<boolean>) => {
@@ -47,10 +74,10 @@ export const bootstrapSlice = createSlice({
       })
       .addCase(runBootstrap.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.configs = {
-          ...state.configs,
-          ...action.payload,
-        };
+        // state.configs = {
+        //   ...state.configs,
+        //   ...action.payload,
+        // };
       })
       .addCase(runBootstrap.rejected, (state, action) => {
         state.isLoading = false;

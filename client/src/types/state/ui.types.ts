@@ -17,7 +17,7 @@ export interface Toast {
  */
 export interface Modal {
   id: string;
-  type: string;
+  type: string; // Will use ModalType enum values from constants/modals.ts
   props?: Record<string, any>;
 }
 

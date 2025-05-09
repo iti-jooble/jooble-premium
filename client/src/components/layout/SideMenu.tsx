@@ -31,11 +31,6 @@ const navItems: NavItem[] = [
     label: "Resume",
     icon: <FileEditIcon className="h-4 w-4" />,
   },
-  // {
-  //   path: "/cover-letter",
-  //   label: "Cover Letter",
-  //   icon: <MailIcon className="h-4 w-4" />,
-  // },
 ];
 
 const SideMenu = () => {
@@ -48,7 +43,7 @@ const SideMenu = () => {
     dispatch(logoutLocaly());
     logoutByServer();
   };
-  
+
   const handleUpgradeClick = () => {
     setPaywallOpen(true);
   };
@@ -88,12 +83,9 @@ const SideMenu = () => {
           >
             Upgrade
           </Button>
-          
+
           {/* Paywall Modal */}
-          <PaywallModal
-            open={paywallOpen}
-            onOpenChange={setPaywallOpen}
-          />
+          <PaywallModal open={paywallOpen} onOpenChange={setPaywallOpen} />
         </div>
 
         {/* Profile section */}

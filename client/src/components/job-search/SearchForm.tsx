@@ -5,41 +5,12 @@ import { SearchIcon, Loader2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSearchForm } from "./hooks/useSearchForm";
 import { Badge } from "@/components/ui/badge";
+import { useAutocomplete, AUTOCOMPLETE_MODE } from "@/hooks/useAutocomplete";
 
 interface SearchFormProps {
   onSearch?: (data: { keywords: string[] }) => Promise<void>;
   initialKeywords?: string[];
 }
-
-// Mock server suggestions based on input
-// In a real app, this would come from an API call
-const getServerSuggestions = (input: string): string[] => {
-  if (!input.trim()) return [];
-
-  const allSuggestions = [
-    "Software Engineer",
-    "Software Developer",
-    "Frontend Developer",
-    "Backend Developer",
-    "Full Stack Developer",
-    "UI/UX Designer",
-    "Product Manager",
-    "Data Scientist",
-    "DevOps Engineer",
-    "React Developer",
-    "JavaScript Developer",
-    "Node.js Developer",
-    "Python Developer",
-    "Java Developer",
-    "Ruby Developer",
-  ];
-
-  return allSuggestions
-    .filter((suggestion) =>
-      suggestion.toLowerCase().includes(input.toLowerCase()),
-    )
-    .slice(0, 5); // Limit to 5 suggestions
-};
 
 export const SearchForm = ({
   onSearch,
@@ -48,7 +19,6 @@ export const SearchForm = ({
   const { t } = useTranslation();
   const [showDropdown, setShowDropdown] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedPhrases] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -58,20 +28,13 @@ export const SearchForm = ({
     initialKeywords,
   });
 
+  const [autocomplete, getAutocomplete, clearAutocomplete] = useAutocomplete({
+    mode: AUTOCOMPLETE_MODE.KEYWORD,
+  });
+
   // Update suggestions when input changes
   useEffect(() => {
-    const serverSuggestions = getServerSuggestions(inputValue);
-
-    // Create the full set of suggestions
-    let allSuggestions = [...serverSuggestions];
-
-    // Add the user's exact input if it's not already in the suggestions
-    // and it's not empty
-    if (inputValue.trim() && !serverSuggestions.includes(inputValue)) {
-      allSuggestions.push(inputValue);
-    }
-
-    setSuggestions(allSuggestions);
+    getAutocomplete({ query: inputValue });
   }, [inputValue]);
 
   // Close dropdown when clicking outside
@@ -116,8 +79,9 @@ export const SearchForm = ({
     }
 
     // Clear the input and hide dropdown
-    setInputValue("");
     setShowDropdown(false);
+    setInputValue("");
+    clearAutocomplete();
 
     // Focus back on the input
     if (inputRef.current) {
@@ -163,13 +127,16 @@ export const SearchForm = ({
                 onChange={handleInputChange}
                 onFocus={handleInputFocus}
               />
-              {showDropdown && suggestions.length > 0 && (
+              {showDropdown && inputValue && (
                 <div
                   ref={dropdownRef}
                   className="absolute z-10 mt-2 w-full left-0 bg-white border border-gray-200 rounded-md shadow-lg"
                 >
                   <ul className="py-1">
-                    {suggestions.map((suggestion, index) => (
+                    {[
+                      ...autocomplete.map(({ value }) => value),
+                      inputValue,
+                    ].map((suggestion, index) => (
                       <li
                         key={`${suggestion}-${index}`}
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"

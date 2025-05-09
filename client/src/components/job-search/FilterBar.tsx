@@ -16,6 +16,7 @@ import {
   MAX_YEARS_OF_EXPERIENCE,
   preferencesConfig,
 } from "./constants";
+import { useAutocomplete, AUTOCOMPLETE_MODE } from "@/hooks/useAutocomplete";
 import usePreferences from "./hooks/usePreferences";
 import { User } from "@/types/state/user.types";
 
@@ -30,6 +31,10 @@ export const FilterBar = () => {
     togglePreference,
     updatePreferences,
   } = usePreferences();
+
+  const [autocomplete, getAutocomplete, clearAutocomplete] = useAutocomplete({
+    mode: AUTOCOMPLETE_MODE.REGION,
+  });
 
   useEffect(() => {
     const experienceYears = selectedPreferences.find(
@@ -54,50 +59,20 @@ export const FilterBar = () => {
 
   // Location search states
   const [locationInput, setLocationInput] = useState("");
-  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const locationInputRef = useRef<HTMLInputElement>(null);
   const locationSuggestionsRef = useRef<HTMLDivElement>(null);
 
-  // Mock location suggestions function - would be replaced with API call
-  const getLocationSuggestions = (input: string): string[] => {
-    if (!input.trim()) return [];
-
-    // Sample locations - would come from API
-    const locations = [
-      "London",
-      "Manchester",
-      "Birmingham",
-      "Leeds",
-      "Glasgow",
-      "Liverpool",
-      "Bristol",
-      "Sheffield",
-      "Edinburgh",
-      "Cardiff",
-      "Belfast",
-      "Newcastle",
-    ];
-
-    const filteredLocations = locations.filter((location) =>
-      location.toLowerCase().includes(input.toLowerCase()),
-    );
-
-    return filteredLocations;
-  };
-
-  // Update suggestions when input changes
   useEffect(() => {
-    setLocationSuggestions(getLocationSuggestions(locationInput));
+    getAutocomplete({ query: locationInput });
   }, [locationInput]);
 
-  // Handle selecting a location
   const handleLocationSelect = (location: string) => {
     updatePreferences({ location });
 
-    // Reset input and hide suggestions
-    setLocationInput("");
     setShowLocationSuggestions(false);
+    clearAutocomplete();
+    setLocationInput("");
   };
 
   useEffect(() => {
@@ -182,19 +157,19 @@ export const FilterBar = () => {
               </div>
 
               {/* Location suggestions dropdown */}
-              {showLocationSuggestions && locationSuggestions.length > 0 && (
+              {showLocationSuggestions && autocomplete.length > 0 && (
                 <div
                   ref={locationSuggestionsRef}
                   className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto"
                 >
                   <ul className="py-1">
-                    {locationSuggestions.map((suggestion, index) => (
+                    {autocomplete.map((suggestion, index) => (
                       <li
                         key={`${suggestion}-${index}`}
                         className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleLocationSelect(suggestion)}
+                        onClick={() => handleLocationSelect(suggestion.value)}
                       >
-                        {suggestion}
+                        {suggestion.value}
                       </li>
                     ))}
                   </ul>
@@ -289,7 +264,7 @@ export const FilterBar = () => {
             <div>
               <div className="text-md">
                 ${salaryRange[0].toLocaleString()} – $
-                {salaryRange[1].toLocaleString()}+/year
+                {salaryRange[1].toLocaleString()}/monthly
               </div>
               <Slider
                 defaultValue={[0, MAX_SALARY]}

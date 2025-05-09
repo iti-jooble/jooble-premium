@@ -1,6 +1,10 @@
 import axios from "axios";
 import { log } from "./vite";
-import { getApiUrl, getRequestHeaders, setResponseHeaders } from "./helpers";
+import {
+  getFitlyApiUrl,
+  getRequestHeaders,
+  setResponseHeaders,
+} from "./helpers";
 import { EXTERNAL_RESPONSE_TYPES } from "./constants";
 
 /**
@@ -12,7 +16,7 @@ export const createApiProxy = ({
   responseType = EXTERNAL_RESPONSE_TYPES.JSON,
 }: { targetUrl?: string; responseType?: EXTERNAL_RESPONSE_TYPES } = {}) => {
   return async (req: Request, res: Response) => {
-    const url = `${getApiUrl()}${targetUrl ?? req.url}`;
+    const url = targetUrl ?? `${getFitlyApiUrl()}${req.url}`;
 
     try {
       log(`Proxying request to: ${url}`, `Method: ${req.method}`);

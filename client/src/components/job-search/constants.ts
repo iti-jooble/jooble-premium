@@ -1,7 +1,7 @@
 import { JobTypes, LocationTypes, ExperienceLevels } from "./enums";
 import { keyofPreferences } from "./types";
 
-export const MAX_SALARY = 200000;
+export const MAX_SALARY = 50000;
 export const MAX_YEARS_OF_EXPERIENCE = 15;
 
 export const JOB_TYPE_TO_LABEL_MAP = {
