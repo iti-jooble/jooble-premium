@@ -28,43 +28,43 @@ const OnboardingStep3: React.FC = () => {
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Let's start with your resume
         </h2>
-        
+
         <p className="text-lg text-gray-700 mb-10">
-          We'll analyze it to better understand your preferences — so<br />
+          We'll analyze it to better understand your preferences — so
+          <br />
           we can match you with the jobs you'll truly love.
         </p>
-        
-        <div className="bg-slate-50 p-10 rounded-lg border border-gray-200 border-dashed mb-10 flex flex-col items-center justify-center">
+
+        <div className="bg-[#f7f6f2] p-20 rounded-lg border border-gray-300 border-dashed mb-10 flex flex-col items-center justify-center">
           <div className="mb-4">
             <FileText className="h-16 w-16 text-gray-400" />
           </div>
-          
+
           <p className="text-gray-500 mb-6">
-            Choose file or drag and drop here (PDF, DOC,<br />
+            Choose file or drag and drop here (PDF, DOC,
+            <br />
             DOCX up to 5MB)
           </p>
-          
+
           <label htmlFor="resume-upload">
-            <Button 
-              className="bg-[#0066FF] hover:bg-[#0055DD] text-white font-semibold rounded-full py-3 px-6"
-            >
+            <Button className="text-white font-semibold rounded-xl py-3 px-6">
               Choose a file
             </Button>
-            <input 
-              type="file" 
-              id="resume-upload" 
+            <input
+              type="file"
+              id="resume-upload"
               className="hidden"
               accept=".pdf,.doc,.docx"
               onChange={handleFileUpload}
             />
           </label>
         </div>
-        
+
         <div className="flex justify-center">
-          <Button 
+          <Button
             variant="outline"
             onClick={handleNoResume}
-            className="text-[#0066FF] border-[#0066FF] hover:bg-[#0066FF]/10 rounded-full py-2 px-6"
+            className="text-[#0066FF] border-[#0066FF] rounded-xl py-2 px-6 h-12"
           >
             Don't have a resume
           </Button>
