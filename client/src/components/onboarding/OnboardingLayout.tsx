@@ -1,45 +1,37 @@
-import React, { ReactNode } from 'react';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import React, { ReactNode } from "react";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 interface OnboardingLayoutProps {
   children: ReactNode;
   step: number;
-  totalSteps: number;
-  onContinue: () => void;
-  buttonText?: string;
+  totalSteps?: number;
 }
 
 const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   children,
   step,
-  totalSteps,
-  onContinue,
-  buttonText = 'Continue',
+  totalSteps = 4,
 }) => {
-  const progressPercentage = (step / totalSteps) * 100;
+  const progressPercentage = ((step - 1) / totalSteps) * 100;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="w-full max-w-md mx-auto p-6 space-y-6">
-        <div className="mb-8">
-          <Progress value={progressPercentage} className="h-2" />
-          <div className="flex justify-between mt-2 text-sm text-gray-500">
-            <span>Step {step} of {totalSteps}</span>
-            <span>{Math.round(progressPercentage)}% Complete</span>
-          </div>
-        </div>
-
-        <div className="bg-card rounded-lg shadow-lg p-6 mb-6">
-          {children}
-        </div>
-
-        <div className="flex justify-end">
-          <Button onClick={onContinue} className="px-8">
-            {buttonText}
-          </Button>
+    <div className="min-h-screen bg-[#f7f6f2] flex flex-col items-center justify-center p-4">
+      <div className="mb-8">
+        <div className="flex items-center justify-center">
+          <img src="/images/logo.svg" alt="Fitly" />
         </div>
       </div>
+      <div className="mb-8 w-full max-w-md">
+        <Progress value={progressPercentage} className="h-2" />
+        <div className="flex justify-center mt-2 text-sm text-gray-500">
+          <span>{Math.round(progressPercentage)}% Complete</span>
+        </div>
+      </div>
+
+      <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-sm">
+        {children}
+      </Card>
     </div>
   );
 };
