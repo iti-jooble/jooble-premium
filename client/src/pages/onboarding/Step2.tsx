@@ -13,7 +13,9 @@ const OnboardingStep2: React.FC = () => {
   return (
     <OnboardingLayout step={2}>
       <div>
-        <h2 className="text-3xl font-bold mb-10 text-center">How Fitly works</h2>
+        <h2 className="text-3xl font-bold mb-10 text-center">
+          How Fitly works
+        </h2>
 
         <div className="space-y-16">
           {/* Step 1 */}
@@ -24,7 +26,8 @@ const OnboardingStep2: React.FC = () => {
               </div>
               <h3 className="text-xl font-bold mb-3">Upload resume</h3>
               <p className="text-gray-700">
-                Or answer a few quick questions about your job preferences — we'll do the rest.
+                Or answer a few quick questions about your job preferences —
+                we'll do the rest.
               </p>
             </div>
             <div className="w-1/2">
@@ -43,7 +46,8 @@ const OnboardingStep2: React.FC = () => {
               </div>
               <h3 className="text-xl font-bold mb-3">Get jobs that fit you</h3>
               <p className="text-gray-700">
-                We scan the internet and show you roles that fit your skills, experience, and goals.
+                We scan the internet and show you roles that fit your skills,
+                experience, and goals.
               </p>
             </div>
           </div>
@@ -54,9 +58,12 @@ const OnboardingStep2: React.FC = () => {
               <div className="mb-2">
                 <span className="text-4xl font-bold">3</span>
               </div>
-              <h3 className="text-xl font-bold mb-3">Boost your response rate by 4x</h3>
+              <h3 className="text-xl font-bold mb-3">
+                Boost your response rate by 4x
+              </h3>
               <p className="text-gray-700">
-                Fitly adapts your resume and cover letter for each role to highlight why you are the perfect fit.
+                Fitly adapts your resume and cover letter for each role to
+                highlight why you are the perfect fit.
               </p>
             </div>
             <div className="w-1/2">
@@ -66,9 +73,9 @@ const OnboardingStep2: React.FC = () => {
         </div>
 
         <div className="flex justify-center mt-12">
-          <Button 
-            onClick={handleContinue} 
-            className="bg-[#0066FF] hover:bg-[#0055DD] text-white font-semibold rounded-full py-6 px-10 text-lg"
+          <Button
+            onClick={handleContinue}
+            className="text-white font-semibold rounded-xl py-6 px-10 text-lg h-16"
           >
             Let's start
           </Button>

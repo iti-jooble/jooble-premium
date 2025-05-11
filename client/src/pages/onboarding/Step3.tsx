@@ -1,8 +1,8 @@
 import React from "react";
 import { useLocation } from "wouter";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
-import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FileText } from "lucide-react";
 
 const OnboardingStep3: React.FC = () => {
   const [_, setLocation] = useLocation();
@@ -11,42 +11,62 @@ const OnboardingStep3: React.FC = () => {
     setLocation("/onboarding/step4");
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Handle file upload logic here
+    console.log("File selected:", e.target.files?.[0]);
+    handleContinue();
+  };
+
+  const handleNoResume = () => {
+    // Handle no resume option
+    handleContinue();
+  };
+
   return (
     <OnboardingLayout step={3}>
       <div className="text-center">
-        <div className="flex justify-center mb-6">
-          <div className="p-3 rounded-full bg-primary/10">
-            <CheckCircle2 className="h-10 w-10 text-primary" />
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          Let's start with your resume
+        </h2>
+        
+        <p className="text-lg text-gray-700 mb-10">
+          We'll analyze it to better understand your preferences — so<br />
+          we can match you with the jobs you'll truly love.
+        </p>
+        
+        <div className="bg-slate-50 p-10 rounded-lg border border-gray-200 border-dashed mb-10 flex flex-col items-center justify-center">
+          <div className="mb-4">
+            <FileText className="h-16 w-16 text-gray-400" />
           </div>
+          
+          <p className="text-gray-500 mb-6">
+            Choose file or drag and drop here (PDF, DOC,<br />
+            DOCX up to 5MB)
+          </p>
+          
+          <label htmlFor="resume-upload">
+            <Button 
+              className="bg-[#0066FF] hover:bg-[#0055DD] text-white font-semibold rounded-full py-3 px-6"
+            >
+              Choose a file
+            </Button>
+            <input 
+              type="file" 
+              id="resume-upload" 
+              className="hidden"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileUpload}
+            />
+          </label>
         </div>
-
-        <h3 className="text-2xl font-bold mb-4">Getting Started Tips</h3>
-
-        <ul className="space-y-3 text-left mb-6">
-          <li className="flex items-start">
-            <span className="text-primary font-bold mr-2">1.</span>
-            <span>
-              Create your CV first to maximize your job search success
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="text-primary font-bold mr-2">2.</span>
-            <span>Use keyword-rich descriptions that match job postings</span>
-          </li>
-          <li className="flex items-start">
-            <span className="text-primary font-bold mr-2">3.</span>
-            <span>
-              Update your skills regularly to improve matching accuracy
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="text-primary font-bold mr-2">4.</span>
-            <span>Save jobs you're interested in to track applications</span>
-          </li>
-        </ul>
+        
         <div className="flex justify-center">
-          <Button onClick={handleContinue} className="px-8">
-            Continue
+          <Button 
+            variant="outline"
+            onClick={handleNoResume}
+            className="text-[#0066FF] border-[#0066FF] hover:bg-[#0066FF]/10 rounded-full py-2 px-6"
+          >
+            Don't have a resume
           </Button>
         </div>
       </div>
