@@ -2,22 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Rocket, CircleCheck, WatchIcon, ShieldCheckIcon } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useAppSelector, useAppDispatch } from "@/redux/store";
+import { Button } from "@/components/ui/button";
+import { useAppSelector } from "@/redux/store";
+import { useCreateCheckoutSessionMutation } from "@/redux/api/paymentApiSlice";
+import { useToast } from "@/hooks/use-toast";
 import { bootstrapSelectors } from "@/redux/selectors";
-import { closeModal } from "@/redux/slices/uiSlice";
+import { FEATURES, INTERVAL_MAP } from "./constants";
 
 interface PaywallModalProps {
-  modalId: string;
-  preSelectedPlan?: string;
+  closeModal: () => void;
 }
 
-export const PaywallModal: React.FC<PaywallModalProps> = ({
-  modalId,
-  preSelectedPlan,
-}) => {
-  const dispatch = useAppDispatch();
+const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
   const { t } = useTranslation();
-  const [selectedOption, setSelectedOption] = useState<string>("monthly");
+  const { toast } = useToast();
+  const [selectedOption, setSelectedOption] = useState<string>("");
   const payWallConfig = useAppSelector(
     bootstrapSelectors.getPayWallConfigsSelector,
   );
@@ -27,61 +26,45 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
       return;
     }
 
-    // Use preSelectedPlan if provided, otherwise use default option
-    if (preSelectedPlan) {
-      setSelectedOption(preSelectedPlan);
-    } else {
-      const defaultOption =
-        payWallConfig.prices.find((option) => option.isDefault) ||
-        payWallConfig.prices[0];
+    const defaultOption =
+      payWallConfig.prices.find((option) => option.isDefault) ||
+      payWallConfig.prices[0];
 
-      if (defaultOption) {
-        setSelectedOption(defaultOption.priceId);
-      }
+    if (defaultOption) {
+      setSelectedOption(defaultOption.priceId);
     }
-  }, [preSelectedPlan, payWallConfig]);
+  }, [payWallConfig]);
 
-  const features = [
-    { text: "Jobs from <strong>all over the web</strong> in 1 place" },
-    { text: "<strong>Unlimited</strong> AI-tailored resumes" },
-    { text: "<strong>Unlimited</strong> AI-tailored cover letters" },
-    { text: "Smart <strong>Match Score</strong> for every job" },
-    { text: "Resume <strong>Fit Score</strong> for every job" },
-    { text: "Instant PDF downloads" },
-    { text: "AI Resume Builder" },
-    { text: "Advanced job filters" },
-  ];
+  const [createCheckoutSession, { isLoading: isCreatingSession }] =
+    useCreateCheckoutSessionMutation();
 
-  const intervalMap: {
-    [key: number]: {
-      text: string;
-      days: number;
-    };
-  } = {
-    0: { text: "per week", days: 7 },
-    1: { text: "per month", days: 30 },
-    2: { text: "per 3 months", days: 90 },
-    3: { text: "per year", days: 365 },
+  const handleContinue = async () => {
+    try {
+      const successUrl = `${window.location.origin}`;
+      const cancelUrl = `${window.location.origin}`;
+
+      const response = await createCheckoutSession({
+        priceId: selectedOption,
+        successUrl,
+        cancelUrl,
+      }).unwrap();
+
+      window.location.href = response.redirectUrl;
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to create payment session. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleContinue = () => {
-    // Handle payment process - to be implemented
-    console.log("Proceeding with option:", selectedOption);
-    // Here would integrate with a payment processor like Stripe
-    
-    // Close the modal after handling payment
-    dispatch(closeModal(modalId));
-  };
-  
-  // Handle closing the modal with the closeModal action
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      dispatch(closeModal(modalId));
-    }
+  const handleCloseModal = () => {
+    closeModal();
   };
 
   return (
-    <Dialog open={true} onOpenChange={handleOpenChange}>
+    <Dialog open={true} onOpenChange={handleCloseModal}>
       <DialogContent className="sm:max-w-[984px] p-0 overflow-hidden border-none rounded-2xl sm:rounded-2xl">
         {!payWallConfig || !payWallConfig.prices ? (
           <div className="flex justify-center items-center h-full">
@@ -99,7 +82,7 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
                 </h2>
 
                 <div className="space-y-3 mt-6">
-                  {features.map((feature, index) => (
+                  {FEATURES.map((feature, index) => (
                     <div key={index} className="flex items-center">
                       <CircleCheck
                         className="h-7 w-7 text-blue-600 mr-2 flex-shrink-0"
@@ -147,12 +130,12 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
                         </span>
                         <span>
                           .{option.amount.toString().split(".")[1]} / per{" "}
-                          {t(intervalMap[option.interval].text)}
+                          {t(INTERVAL_MAP[option.interval].text)}
                         </span>
                         <div className="text-gray-500 text-sm">
                           Only €
                           {(
-                            option.amount / intervalMap[option.interval].days
+                            option.amount / INTERVAL_MAP[option.interval].days
                           ).toFixed(2)}{" "}
                           per day
                         </div>
@@ -173,12 +156,13 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
                 ))}
               </div>
 
-              <button
+              <Button
+                isLoading={isCreatingSession}
                 onClick={handleContinue}
-                className="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg mt-10 text-center"
+                className="w-full bg-primary-blue hover:bg-blue-700 mt-10"
               >
                 Continue
-              </button>
+              </Button>
 
               <div className="flex justify-center mt-6 gap-6">
                 <div className="flex items-center">

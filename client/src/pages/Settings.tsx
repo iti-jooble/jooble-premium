@@ -10,12 +10,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useCreateCustomerPortalMutation } from "@/redux/api/paymentApiSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { RootState, useAppDispatch } from "@/redux/store";
+import { openModal } from "@/redux/slices/uiSlice";
+import { ModalType } from "@/constants/modals";
 
 const Settings = () => {
   const { toast } = useToast();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [createCustomerPortal, { isLoading: isPortalLoading }] =
     useCreateCustomerPortalMutation();
   const { subscription } = useSelector((state: RootState) => state.user);
@@ -36,6 +39,10 @@ const Settings = () => {
       });
       console.error("Customer portal creation failed:", err);
     }
+  };
+
+  const handleUpgradeClick = () => {
+    dispatch(openModal({ type: ModalType.PAYWALL }));
   };
 
   return (
@@ -260,7 +267,7 @@ const Settings = () => {
                   <p className="text-neutral-600 mb-4">
                     {t("settings.billing.currentPlan.freeDescription")}
                   </p>
-                  <Button onClick={() => navigate("/paywall")}>
+                  <Button onClick={handleUpgradeClick}>
                     {t("settings.billing.currentPlan.upgradeButton")}
                   </Button>
                 </>

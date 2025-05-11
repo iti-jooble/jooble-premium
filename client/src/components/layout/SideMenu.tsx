@@ -45,11 +45,7 @@ const SideMenu = () => {
   };
 
   const handleUpgradeClick = () => {
-    // Open the paywall modal using Redux
-    dispatch(openModal({
-      type: ModalType.PAYWALL,
-      props: {}
-    }));
+    dispatch(openModal({ type: ModalType.PAYWALL }));
   };
 
   return (

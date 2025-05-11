@@ -10,9 +10,8 @@ import { useAppSelector } from "@/redux/store";
 import { BootstrapWrapper } from "@/context/BootstrapWrapper";
 import { PageLoadingIndicator } from "@/components/loading/GlobalLoadingScreen";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import ModalProvider from "@/components/providers/ModalProvider";
+import ModalProvider from "@/providers/ModalProvider";
 
-// Lazy load pages for code splitting
 const NotFound = loadable(() => import("@/pages/not-found"), {
   fallback: <PageLoadingIndicator />,
 });
@@ -40,17 +39,12 @@ const Help = loadable(() => import("@/pages/Help"), {
 const PickTemplate = loadable(() => import("@/pages/PickTemplate"), {
   fallback: <PageLoadingIndicator />,
 });
-const PaywallPage = loadable(() => import("@/pages/PaywallPage"), {
-  fallback: <PageLoadingIndicator />,
-});
 const JobSearch = loadable(() => import("@/pages/JobSearch"), {
   fallback: <PageLoadingIndicator />,
 });
 const JobDetails = loadable(() => import("@/pages/JobDetails"), {
   fallback: <PageLoadingIndicator />,
 });
-
-// Auth Pages
 const LoginPage = loadable(() => import("@/pages/auth/LoginPage"), {
   fallback: <PageLoadingIndicator />,
 });
@@ -70,7 +64,6 @@ function ProtectedApp() {
           <Route path="/cv-review">{() => <CvReview />}</Route>
           <Route path="/jobs">{() => <JobSearch />}</Route>
           <Route path="/job-details/:jobId">{() => <JobDetails />}</Route>
-          <Route path="/paywall">{() => <PaywallPage />}</Route>
           <Route path="/cv-matching">{() => <CvMatching />}</Route>
           <Route path="/cover-letter">{() => <CoverLetter />}</Route>
           <Route path="/settings">{() => <Settings />}</Route>
@@ -84,20 +77,16 @@ function ProtectedApp() {
 }
 
 function Router() {
-  // Check authentication state
   const { isAuthorized } = useAppSelector((state) => state.user);
 
   return (
     <Switch>
-      {/* Auth routes - accessible when not logged in */}
       <Route path="/auth/login">
         {() => (isAuthorized ? <Redirect to="/" /> : <LoginPage />)}
       </Route>
       <Route path="/auth/register">
         {() => (isAuthorized ? <Redirect to="/" /> : <RegisterPage />)}
       </Route>
-
-      {/* Protected routes - require authentication */}
       <Route>
         {() => (
           <ProtectedRoute>
