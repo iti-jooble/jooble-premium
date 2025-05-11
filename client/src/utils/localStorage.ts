@@ -23,7 +23,9 @@ export const getUserPreferences = (): UserPreferences | null => {
  */
 export const saveUserPreferences = (preferences: UserPreferences): void => {
   try {
-    localStorage.setItem(USER_PREFERENCES_KEY, JSON.stringify(preferences));
+    const existingPreferences = getUserPreferences() || {};
+    const updatedPreferences = { ...existingPreferences, ...preferences };
+    localStorage.setItem(USER_PREFERENCES_KEY, JSON.stringify(updatedPreferences));
   } catch (error) {
     console.error('Error saving user preferences:', error);
   }
@@ -34,5 +36,17 @@ export const saveUserPreferences = (preferences: UserPreferences): void => {
  */
 export const hasCompletedOnboarding = (): boolean => {
   const preferences = getUserPreferences();
-  return !!preferences; // Return true if preferences exist
+  return preferences?.onboardingCompleted ?? false;
+};
+
+/**
+ * Clears all user preferences from localStorage
+ * Useful for testing or resetting the application state
+ */
+export const clearUserPreferences = (): void => {
+  try {
+    localStorage.removeItem(USER_PREFERENCES_KEY);
+  } catch (error) {
+    console.error('Error clearing user preferences:', error);
+  }
 };
