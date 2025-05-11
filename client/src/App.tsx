@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { BrowserRouter } from "react-router-dom";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -11,6 +11,8 @@ import { BootstrapWrapper } from "@/context/BootstrapWrapper";
 import { PageLoadingIndicator } from "@/components/loading/GlobalLoadingScreen";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import ModalProvider from "@/providers/ModalProvider";
+import { useEffect } from "react";
+import { hasCompletedOnboarding } from "@/utils/localStorage";
 
 const NotFound = loadable(() => import("@/pages/not-found"), {
   fallback: <PageLoadingIndicator />,
@@ -52,6 +54,23 @@ const RegisterPage = loadable(() => import("@/pages/auth/RegisterPage"), {
   fallback: <PageLoadingIndicator />,
 });
 
+// Onboarding pages
+const OnboardingCheck = loadable(() => import("@/pages/onboarding/OnboardingCheck"), {
+  fallback: <PageLoadingIndicator />,
+});
+const OnboardingStep1 = loadable(() => import("@/pages/onboarding/Step1"), {
+  fallback: <PageLoadingIndicator />,
+});
+const OnboardingStep2 = loadable(() => import("@/pages/onboarding/Step2"), {
+  fallback: <PageLoadingIndicator />,
+});
+const OnboardingStep3 = loadable(() => import("@/pages/onboarding/Step3"), {
+  fallback: <PageLoadingIndicator />,
+});
+const OnboardingStep4 = loadable(() => import("@/pages/onboarding/Step4"), {
+  fallback: <PageLoadingIndicator />,
+});
+
 function ProtectedApp() {
   return (
     <div className="flex h-screen">
@@ -78,15 +97,40 @@ function ProtectedApp() {
 
 function Router() {
   const { isAuthorized } = useAppSelector((state) => state.user);
+  const [location, setLocation] = useLocation();
+
+  useEffect(() => {
+    // Only check for onboarding if user is authorized and not already on an onboarding page
+    if (isAuthorized && 
+        !location.startsWith('/onboarding') && 
+        location !== '/auth/login' && 
+        location !== '/auth/register') {
+      
+      // If user hasn't completed onboarding, redirect them
+      if (!hasCompletedOnboarding()) {
+        setLocation('/onboarding/check');
+      }
+    }
+  }, [isAuthorized, location, setLocation]);
 
   return (
     <Switch>
+      {/* Onboarding routes */}
+      <Route path="/onboarding/check">{() => <OnboardingCheck />}</Route>
+      <Route path="/onboarding/step1">{() => <OnboardingStep1 />}</Route>
+      <Route path="/onboarding/step2">{() => <OnboardingStep2 />}</Route>
+      <Route path="/onboarding/step3">{() => <OnboardingStep3 />}</Route>
+      <Route path="/onboarding/step4">{() => <OnboardingStep4 />}</Route>
+      
+      {/* Auth routes */}
       <Route path="/auth/login">
         {() => (isAuthorized ? <Redirect to="/" /> : <LoginPage />)}
       </Route>
       <Route path="/auth/register">
         {() => (isAuthorized ? <Redirect to="/" /> : <RegisterPage />)}
       </Route>
+      
+      {/* Main app routes */}
       <Route>
         {() => (
           <ProtectedRoute>

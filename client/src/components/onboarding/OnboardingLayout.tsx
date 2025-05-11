@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 
 interface OnboardingLayoutProps {
   children: ReactNode;
@@ -9,48 +10,35 @@ interface OnboardingLayoutProps {
   buttonText?: string;
 }
 
-/**
- * A shared layout component for onboarding steps
- */
-export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
+const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   children,
   step,
   totalSteps,
   onContinue,
-  buttonText = 'Continue'
+  buttonText = 'Continue',
 }) => {
+  const progressPercentage = (step / totalSteps) * 100;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full p-8 bg-white shadow-lg rounded-xl">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Onboarding
-          </h2>
-          <div className="text-sm text-gray-500">
-            Step {step} of {totalSteps}
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="w-full max-w-md mx-auto p-6 space-y-6">
+        <div className="mb-8">
+          <Progress value={progressPercentage} className="h-2" />
+          <div className="flex justify-between mt-2 text-sm text-gray-500">
+            <span>Step {step} of {totalSteps}</span>
+            <span>{Math.round(progressPercentage)}% Complete</span>
           </div>
         </div>
-        
-        <div className="mb-8">
-          {/* Progress bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div 
-              className="bg-primary h-2.5 rounded-full transition-all duration-300" 
-              style={{ width: `${(step / totalSteps) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-        
-        <div className="mb-8">
+
+        <div className="bg-card rounded-lg shadow-lg p-6 mb-6">
           {children}
         </div>
-        
-        <Button 
-          className="w-full" 
-          onClick={onContinue}
-        >
-          {buttonText}
-        </Button>
+
+        <div className="flex justify-end">
+          <Button onClick={onContinue} className="px-8">
+            {buttonText}
+          </Button>
+        </div>
       </div>
     </div>
   );
