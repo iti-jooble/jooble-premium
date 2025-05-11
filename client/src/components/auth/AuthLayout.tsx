@@ -19,7 +19,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, footer }) => {
         </div>
       </div>
 
-      <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-sm">
+      <Card className="w-full max-w-md p-6 bg-white rounded-2xl shadow-sm">
         {children}
       </Card>
 

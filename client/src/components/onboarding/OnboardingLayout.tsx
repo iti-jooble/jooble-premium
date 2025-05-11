@@ -13,7 +13,7 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   step,
   totalSteps = 4,
 }) => {
-  const progressPercentage = ((step - 1) / totalSteps) * 100;
+  const progressPercentage = (step / (totalSteps + 1)) * 100;
 
   return (
     <div className="min-h-screen bg-[#f7f6f2] flex flex-col items-center justify-center p-4">
@@ -22,14 +22,10 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
           <img src="/images/logo.svg" alt="Fitly" />
         </div>
       </div>
-      <div className="mb-8 w-full max-w-md">
+      <div className="mb-4 w-full max-w-[640px]">
         <Progress value={progressPercentage} className="h-2" />
-        <div className="flex justify-center mt-2 text-sm text-gray-500">
-          <span>{Math.round(progressPercentage)}% Complete</span>
-        </div>
       </div>
-
-      <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-sm">
+      <Card className="w-full max-w-[640px] p-10 bg-white rounded-2xl shadow-sm">
         {children}
       </Card>
     </div>
