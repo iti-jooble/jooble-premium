@@ -78,7 +78,7 @@ const SideMenu = () => {
             Get access to exclusive job features by upgrading to premium.
           </div>
           <Button
-            className="w-full bg-primary-blue hover:bg-blue-700"
+            className="w-full bg-primary-blue"
             onClick={handleUpgradeClick}
           >
             Upgrade
@@ -116,7 +116,7 @@ const SideMenu = () => {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-0">
-              <div className="pl-4 pb-2">
+              <div className="px-4 pb-2">
                 <ul className="space-y-1">
                   <li>
                     <Link href="/settings">

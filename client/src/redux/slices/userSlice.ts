@@ -15,11 +15,11 @@ const initialState: UserState = {
   },
   preferences: {
     salaryRange: {
-      lowerBound: 0,
-      upperBound: 0,
+      min: 0,
+      max: 0,
     },
-    jobTypes: [],
-    experienceLevels: [],
+    workFormats: [],
+    seniorityLevels: [],
     experienceYears: 0,
     keywords: [],
     location: null,
@@ -42,6 +42,7 @@ const userSlice = createSlice({
       return {
         ...state,
         ...action.payload,
+        preferences: action.payload.preferences ?? initialState.preferences,
       };
     },
 

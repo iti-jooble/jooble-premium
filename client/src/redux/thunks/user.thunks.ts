@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { userApiSlice } from "../api/userApiSlice";
 import { userSelectors } from "../selectors";
-import { PREFERENCES_KEY } from "@/constants/localStorageKeys";
+import { USER_PREFERENCES_KEY } from "@/constants/localStorageKeys";
 import { updatePreferencesLocaly } from "../slices/userSlice";
 import { User } from "@/types/state/user.types";
+import { updateUserPreferences as updateUserPreferencesInLocalStorage } from "@/utils/localStorage";
 
 export const updatePreferences = createAsyncThunk<
   void,
@@ -12,32 +13,35 @@ export const updatePreferences = createAsyncThunk<
   "user/updatePreferences",
   async (payload, { dispatch, getState, rejectWithValue }) => {
     try {
+      const isAuthorized = userSelectors.isAuthorizedSelector(getState());
+
       if (payload) {
         dispatch(updatePreferencesLocaly(payload));
       }
 
+      if (!isAuthorized) {
+        updateUserPreferencesInLocalStorage(payload);
+        return;
+      }
+
       const preferences = userSelectors.getUserPreferencesSelector(getState());
 
-      const result = await dispatch(
+      await dispatch(
         userApiSlice.endpoints.updatePreferences.initiate(preferences, {
           forceRefetch: true,
         }),
       );
-
-      if (!result.data) {
-        throw new Error("Failed to search jobs");
-      }
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );
 
 export const tryUpdatePreferencesFromLocalStorage = createAsyncThunk(
   "user/tryUpdatePreferencesFromLocalStorage",
-  async (_, { dispatch }) => {
+  async (_, { dispatch, getState }) => {
     try {
-      const json = localStorage.getItem(PREFERENCES_KEY);
+      const json = localStorage.getItem(USER_PREFERENCES_KEY);
 
       if (!json) {
         return;
@@ -47,7 +51,11 @@ export const tryUpdatePreferencesFromLocalStorage = createAsyncThunk(
         updatePreferences(JSON.parse(json) as User["preferences"]),
       );
 
-      localStorage.removeItem(PREFERENCES_KEY);
+      const isAuthorized = userSelectors.isAuthorizedSelector(getState());
+
+      if (isAuthorized) {
+        localStorage.removeItem(USER_PREFERENCES_KEY);
+      }
     } catch (error: any) {
       console.error("Failed to update preferences from local storage:", error);
     }

@@ -17,7 +17,7 @@ export const initCvBuilder = createAsyncThunk(
     try {
       await dispatch(getCvList());
     } catch (error: any) {
-      console.log(error.message || "An error occurred initializing CV builder");
+      console.log(error);
     }
   },
 );
@@ -38,9 +38,7 @@ export const getCvList = createAsyncThunk<CV[]>(
 
       return result.data.cvList;
     } catch (error: any) {
-      return rejectWithValue(
-        error.message || "An error occurred fetching CV list",
-      );
+      return rejectWithValue(error);
     }
   },
 );
@@ -65,7 +63,7 @@ export const createCv = createAsyncThunk<number, ICreateCvRequest>(
 
       return result.data.cvId;
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );
@@ -88,7 +86,7 @@ export const updateCv = createAsyncThunk<void, IUpdateCvRequest>(
 
       dispatch(getCvList());
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );
@@ -120,7 +118,7 @@ export const createOrUpdateCv = createAsyncThunk<void, CV>(
         await dispatch(updateCv({ ...request, id: cv.id }));
       }
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );
@@ -141,7 +139,7 @@ export const deleteCv = createAsyncThunk<void, number>(
 
       await dispatch(getCvList());
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );
@@ -164,7 +162,7 @@ export const duplicateCv = createAsyncThunk<void, number>(
 
       await dispatch(getCvList());
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error);
     }
   },
 );

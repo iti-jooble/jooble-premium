@@ -8,7 +8,7 @@ const OnboardingStep3: React.FC = () => {
   const [_, setLocation] = useLocation();
 
   const handleContinue = () => {
-    setLocation("/onboarding/step4");
+    setLocation("/onboarding/4");
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +35,7 @@ const OnboardingStep3: React.FC = () => {
           we can match you with the jobs you'll truly love.
         </p>
 
-        <div className="bg-[#f7f6f2] p-20 rounded-lg border border-gray-300 border-dashed mb-10 flex flex-col items-center justify-center">
+        <div className="bg-primary-background p-20 rounded-lg border border-gray-300 border-dashed mb-10 flex flex-col items-center justify-center">
           <div className="mb-4">
             <FileText className="h-16 w-16 text-gray-400" />
           </div>
@@ -47,7 +47,7 @@ const OnboardingStep3: React.FC = () => {
           </p>
 
           <label htmlFor="resume-upload">
-            <Button className="text-white font-semibold rounded-xl py-3 px-6">
+            <Button className="text-white font-semibold rounded-xl py-3 px-6 h-14">
               Choose a file
             </Button>
             <input
@@ -64,7 +64,7 @@ const OnboardingStep3: React.FC = () => {
           <Button
             variant="outline"
             onClick={handleNoResume}
-            className="text-[#0066FF] border-[#0066FF] rounded-xl py-2 px-6 h-12"
+            className="rounded-xl py-2 px-6 h-12"
           >
             Don't have a resume
           </Button>

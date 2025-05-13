@@ -25,23 +25,19 @@ export const FilterBar = () => {
   const [yearsOfExperience, setYearsOfExperience] = useState(0);
   const [salaryRange, setSalaryRange] = useState([0, MAX_SALARY]);
 
-  const {
-    selectedPreferences,
-    isSelected,
-    togglePreference,
-    updatePreferences,
-  } = usePreferences();
+  const { preferences, isSelected, togglePreference, updatePreferences } =
+    usePreferences();
 
   const [autocomplete, getAutocomplete, clearAutocomplete] = useAutocomplete({
     mode: AUTOCOMPLETE_MODE.REGION,
   });
 
   useEffect(() => {
-    const experienceYears = selectedPreferences.find(
+    const experienceYears = preferences.find(
       ({ category }) => category === "experienceYears",
     )?.value as number;
 
-    const salaryRange = selectedPreferences.find(
+    const salaryRange = preferences.find(
       ({ category }) => category === "salaryRange",
     )?.value as User["preferences"]["salaryRange"];
 
@@ -51,8 +47,8 @@ export const FilterBar = () => {
 
     if (salaryRange) {
       setSalaryRange([
-        salaryRange.lowerBound || 0,
-        salaryRange.upperBound || MAX_SALARY,
+        salaryRange.min || 0,
+        salaryRange.max || MAX_SALARY,
       ]);
     }
   }, []);
@@ -64,7 +60,9 @@ export const FilterBar = () => {
   const locationSuggestionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    getAutocomplete({ query: locationInput });
+    if (locationInput.length > 0) {
+      getAutocomplete({ query: locationInput });
+    }
   }, [locationInput]);
 
   const handleLocationSelect = (location: string) => {
@@ -97,8 +95,8 @@ export const FilterBar = () => {
     setSalaryRange(value);
     updatePreferences({
       salaryRange: {
-        lowerBound: value[0],
-        upperBound: value[1],
+        min: value[0],
+        max: value[1],
       },
     });
   };
@@ -114,22 +112,24 @@ export const FilterBar = () => {
 
       {/* Selected Filters */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {selectedPreferences.map((item, index) => (
-          <div
-            key={`${item.category}-${item.value}-${index}`}
-            className="flex items-center bg-white border border-gray-200 rounded-full px-4 py-2"
-          >
-            <span className="mr-2">{item.label}</span>
-            <button
-              onClick={() =>
-                togglePreference({ key: item.category, value: item.value })
-              }
-              className="text-gray-400 hover:text-gray-600"
+        {preferences
+          .filter((p) => p.category !== "keywords")
+          .map((item, index) => (
+            <div
+              key={`${item.category}-${item.value}-${index}`}
+              className="flex items-center bg-white border border-gray-200 rounded-full px-4 py-2"
             >
-              <X size={16} />
-            </button>
-          </div>
-        ))}
+              <span className="mr-2">{item.label}</span>
+              <button
+                onClick={() =>
+                  togglePreference({ key: item.category, value: item.value })
+                }
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ))}
       </div>
 
       <Accordion type="multiple" defaultValue={[]}>
@@ -169,7 +169,11 @@ export const FilterBar = () => {
                         className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                         onClick={() => handleLocationSelect(suggestion.value)}
                       >
-                        {suggestion.value}
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: suggestion.label,
+                          }}
+                        />
                       </li>
                     ))}
                   </ul>

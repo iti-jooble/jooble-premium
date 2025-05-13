@@ -35,11 +35,10 @@ const JobSearch = () => {
   };
 
   useLayoutEffect(() => {
-    console.log("Initializing jobs...");
-    if (!isInitialized && !isLoading && !error) {
+    if (!isInitialized && !error) {
       dispatch(initJobs());
     }
-  }, [isInitialized, isLoading]);
+  }, [isInitialized]);
 
   const handleSearch = async ({ keywords }: { keywords: string[] }) => {
     await dispatch(updatePreferences({ keywords }));

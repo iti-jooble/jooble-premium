@@ -50,7 +50,7 @@ const cvBuilderSlice = createSlice({
       })
       .addCase(getCvList.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload.message as string;
       })
 
       // Handle createCv actions
@@ -67,7 +67,7 @@ const cvBuilderSlice = createSlice({
       .addCase(createCv.rejected, (state, action) => {
         state.isLoading = false;
         state.isSaving = false;
-        state.error = action.payload as string;
+        state.error = action.payload.message as string;
       })
 
       // Handle updateCv actions
@@ -83,7 +83,7 @@ const cvBuilderSlice = createSlice({
       .addCase(updateCv.rejected, (state, action) => {
         state.isLoading = false;
         state.isSaving = false;
-        state.error = action.payload as string;
+        state.error = action.payload.message as string;
       })
 
       // Handle deleteCv actions
@@ -96,7 +96,7 @@ const cvBuilderSlice = createSlice({
       })
       .addCase(deleteCv.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload.message as string;
       })
 
       // Handle duplicateCv actions
@@ -109,7 +109,7 @@ const cvBuilderSlice = createSlice({
       })
       .addCase(duplicateCv.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload.message as string;
       });
   },
 });

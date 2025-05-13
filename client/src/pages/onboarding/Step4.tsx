@@ -1,104 +1,187 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
-import { saveUserPreferences } from "@/utils/localStorage";
+import { setHasCompletedOnboarding } from "@/utils/localStorage";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { X } from "lucide-react";
-import { MAX_SALARY, MAX_YEARS_OF_EXPERIENCE } from "@/components/job-search/constants";
-import { JobTypes, LocationTypes, ExperienceLevels } from "@/components/job-search/enums";
+import { useTranslation } from "react-i18next";
+import { useAppDispatch } from "@/redux/store";
+import { useAutocomplete, AUTOCOMPLETE_MODE } from "@/hooks/useAutocomplete";
+import usePreferences from "@/components/job-search/hooks/usePreferences";
+import {
+  MAX_SALARY,
+  MAX_YEARS_OF_EXPERIENCE,
+  preferencesConfig,
+} from "@/components/job-search/constants";
+import {
+  WorkFormats,
+  LocationTypes,
+  SeniorityLevels,
+} from "@/components/job-search/enums";
 
 const OnboardingStep4: React.FC = () => {
   const [_, setLocation] = useLocation();
-  const [jobTitles, setJobTitles] = useState<string[]>(["UX Designer", "Product Designer"]);
-  const [locations, setLocations] = useState<string[]>(["New York", "London"]);
-  const [yearsOfExperience, setYearsOfExperience] = useState<number>(3);
-  const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 23000]);
-  const [newJobTitle, setNewJobTitle] = useState<string>("");
-  const [newLocation, setNewLocation] = useState<string>("");
+  const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const [yearsOfExperience, setYearsOfExperience] = useState(0);
+  const [salaryRange, setSalaryRange] = useState([0, MAX_SALARY]);
 
-  // Job type preferences
-  const [selectedJobTypes, setSelectedJobTypes] = useState<JobTypes[]>([JobTypes.FullTime]);
+  const [locationInputValue, setLocationInputValue] = useState("");
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
+  const locationInputRef = useRef<HTMLInputElement>(null);
+  const locationSuggestionsRef = useRef<HTMLDivElement>(null);
 
-  // Location type preferences
-  const [selectedLocationTypes, setSelectedLocationTypes] = useState<LocationTypes[]>([LocationTypes.OnSite]);
+  const [keywordInputValue, setKeywordInputValue] = useState("");
+  const [showKeywordSuggestions, setShowKeywordSuggestions] = useState(false);
+  const keywordInputRef = useRef<HTMLInputElement>(null);
+  const keywordSuggestionsRef = useRef<HTMLDivElement>(null);
 
-  // Experience level preferences
-  const [selectedExperienceLevels, setSelectedExperienceLevels] = useState<ExperienceLevels[]>([
-    ExperienceLevels.Junior,
-    ExperienceLevels.Intern
-  ]);
+  const [
+    keywordAutocomplete,
+    getKeywordAutocomplete,
+    clearKeywordAutocomplete,
+  ] = useAutocomplete({
+    mode: AUTOCOMPLETE_MODE.KEYWORD,
+  });
 
-  const addJobTitle = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && newJobTitle.trim()) {
-      setJobTitles([...jobTitles, newJobTitle.trim()]);
-      setNewJobTitle("");
-      e.preventDefault();
+  const [
+    locationAutocomplete,
+    getLocationAutocomplete,
+    clearLocationAutocomplete,
+  ] = useAutocomplete({
+    mode: AUTOCOMPLETE_MODE.REGION,
+  });
+
+  const { preferences, isSelected, togglePreference, updatePreferences } =
+    usePreferences();
+
+  useEffect(() => {
+    const experienceYears = preferences.find(
+      ({ category }) => category === "experienceYears",
+    )?.value as number;
+
+    const salaryRange = preferences.find(
+      ({ category }) => category === "salaryRange",
+    )?.value as User["preferences"]["salaryRange"];
+
+    if (experienceYears) {
+      setYearsOfExperience(experienceYears);
+    }
+
+    if (salaryRange) {
+      setSalaryRange([
+        salaryRange.min || 0,
+        salaryRange.max || MAX_SALARY,
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        keywordSuggestionsRef.current &&
+        !keywordSuggestionsRef.current.contains(event.target as Node) &&
+        keywordInputRef.current &&
+        !keywordInputRef.current.contains(event.target as Node)
+      ) {
+        setShowLocationSuggestions(false);
+        setShowKeywordSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (locationInputValue.length > 0) {
+      getLocationAutocomplete({ query: locationInputValue });
+    }
+  }, [locationInputValue]);
+
+  useEffect(() => {
+    if (keywordInputValue) {
+      getKeywordAutocomplete({ query: keywordInputValue });
+    }
+  }, [keywordInputValue]);
+
+  const handleKeywordInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setKeywordInputValue(value);
+    setShowKeywordSuggestions(true);
+  };
+
+  const handleLocationInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = e.target.value;
+    setLocationInputValue(value);
+    setShowLocationSuggestions(true);
+  };
+
+  const handleKeywordInputFocus = () => {
+    setShowKeywordSuggestions(true);
+  };
+
+  const handleLocationInputFocus = () => {
+    setShowLocationSuggestions(true);
+  };
+
+  const handleKeywordSuggestionClick = (suggestion: string) => {
+    const currentKeywords = preferences
+      .filter((p) => p.category === "keywords")
+      .map((k) => k.value) as string[];
+
+    updatePreferences({ keywords: [...currentKeywords, suggestion] });
+
+    // Clear the input and hide dropdown
+    setShowKeywordSuggestions(false);
+    setKeywordInputValue("");
+    clearKeywordAutocomplete();
+
+    // Focus back on the input
+    if (keywordInputRef.current) {
+      keywordInputRef.current.focus();
     }
   };
 
-  const removeJobTitle = (title: string) => {
-    setJobTitles(jobTitles.filter(t => t !== title));
-  };
+  const handleLocationSuggestionClick = (suggestion: string) => {
+    updatePreferences({ location: suggestion });
 
-  const addLocation = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && newLocation.trim()) {
-      setLocations([...locations, newLocation.trim()]);
-      setNewLocation("");
-      e.preventDefault();
+    // Clear the input and hide dropdown
+    setShowLocationSuggestions(false);
+    setLocationInputValue("");
+    clearLocationAutocomplete();
+
+    // Focus back on the input
+    if (locationInputRef.current) {
+      locationInputRef.current.focus();
     }
   };
 
-  const removeLocation = (location: string) => {
-    setLocations(locations.filter(l => l !== location));
+  const handleChangeSalaryRange = (value: number[]) => {
+    setSalaryRange(value);
+    updatePreferences({
+      salaryRange: {
+        min: value[0],
+        max: value[1],
+      },
+    });
   };
 
-  const toggleJobType = (jobType: JobTypes) => {
-    if (selectedJobTypes.includes(jobType)) {
-      setSelectedJobTypes(selectedJobTypes.filter(t => t !== jobType));
-    } else {
-      setSelectedJobTypes([...selectedJobTypes, jobType]);
-    }
-  };
-
-  const toggleLocationType = (locationType: LocationTypes) => {
-    if (selectedLocationTypes.includes(locationType)) {
-      setSelectedLocationTypes(selectedLocationTypes.filter(t => t !== locationType));
-    } else {
-      setSelectedLocationTypes([...selectedLocationTypes, locationType]);
-    }
-  };
-
-  const toggleExperienceLevel = (level: ExperienceLevels) => {
-    if (selectedExperienceLevels.includes(level)) {
-      setSelectedExperienceLevels(selectedExperienceLevels.filter(l => l !== level));
-    } else {
-      setSelectedExperienceLevels([...selectedExperienceLevels, level]);
-    }
+  const handleChangeYearsOfExperience = (value: number[]) => {
+    setYearsOfExperience(value[0]);
+    updatePreferences({ experienceYears: value[0] });
   };
 
   const handleSubmit = () => {
-    // Save preferences to localStorage
-    saveUserPreferences({
-      onboardingCompleted: true,
-      jobPreferences: {
-        jobTitles,
-        locations,
-        jobTypes: selectedJobTypes,
-        locationTypes: selectedLocationTypes,
-        experienceLevels: selectedExperienceLevels,
-        yearsOfExperience,
-        salaryRange: {
-          min: salaryRange[0],
-          max: salaryRange[1]
-        }
-      }
-    });
-
-    // Redirect to main app
+    setHasCompletedOnboarding();
     setLocation("/");
   };
 
@@ -117,26 +200,63 @@ const OnboardingStep4: React.FC = () => {
           <Label htmlFor="job-title" className="block text-sm font-medium mb-2">
             Job title
           </Label>
-          <Input
-            id="job-title"
-            placeholder="Add job title"
-            value={newJobTitle}
-            onChange={(e) => setNewJobTitle(e.target.value)}
-            onKeyDown={addJobTitle}
-            className="mb-2"
-          />
-          <div className="flex flex-wrap gap-2">
-            {jobTitles.map((title) => (
-              <div key={title} className="flex items-center bg-white border border-gray-200 rounded-full px-3 py-1">
-                <span className="mr-2">{title}</span>
-                <button
-                  onClick={() => removeJobTitle(title)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <X size={16} />
-                </button>
+          <div className="relative">
+            <Input
+              id="job-title"
+              ref={keywordInputRef}
+              placeholder="Add job title"
+              value={keywordInputValue}
+              onChange={handleKeywordInputChange}
+              className="mb-2"
+            />
+            {/* Location suggestions dropdown */}
+            {showKeywordSuggestions && keywordAutocomplete.length > 0 && (
+              <div
+                ref={keywordSuggestionsRef}
+                className="absolute z-10 -mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto"
+              >
+                <ul className="py-1">
+                  {keywordAutocomplete.map((suggestion, index) => (
+                    <li
+                      key={`${suggestion}-${index}`}
+                      className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                      onClick={() =>
+                        handleKeywordSuggestionClick(suggestion.value)
+                      }
+                    >
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: suggestion.label,
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {preferences
+              .filter((l) => l.category === "keywords")
+              .map((item) => (
+                <div
+                  key={item.value}
+                  className="flex items-center bg-white border border-gray-200 rounded-full px-3 py-1"
+                >
+                  <span className="mr-2">{item.label}</span>
+                  <button
+                    onClick={() =>
+                      togglePreference({
+                        key: item.category,
+                        value: item.value,
+                      })
+                    }
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
           </div>
         </div>
 
@@ -145,192 +265,120 @@ const OnboardingStep4: React.FC = () => {
           <Label htmlFor="location" className="block text-sm font-medium mb-2">
             Location
           </Label>
-          <Input
-            id="location"
-            placeholder="Add location"
-            value={newLocation}
-            onChange={(e) => setNewLocation(e.target.value)}
-            onKeyDown={addLocation}
-            className="mb-2"
-          />
-          <div className="flex flex-wrap gap-2">
-            {locations.map((location) => (
-              <div key={location} className="flex items-center bg-white border border-gray-200 rounded-full px-3 py-1">
-                <span className="mr-2">{location}</span>
-                <button
-                  onClick={() => removeLocation(location)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <X size={16} />
-                </button>
+          <div className="relative">
+            <Input
+              id="location"
+              ref={locationInputRef}
+              placeholder="Add location"
+              value={locationInputValue}
+              onChange={handleLocationInputChange}
+              className="mb-2"
+            />
+            {/* Location suggestions dropdown */}
+            {showLocationSuggestions && locationAutocomplete.length > 0 && (
+              <div
+                ref={locationSuggestionsRef}
+                className="absolute z-10 -mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto"
+              >
+                <ul className="py-1">
+                  {locationAutocomplete.map((suggestion, index) => (
+                    <li
+                      key={`${suggestion}-${index}`}
+                      className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                      onClick={() =>
+                        handleLocationSuggestionClick(suggestion.value)
+                      }
+                    >
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: suggestion.label,
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {preferences
+              .filter((l) => l.category === "location")
+              .map((item) => (
+                <div
+                  key={item.value}
+                  className="flex items-center bg-white border border-gray-200 rounded-full px-3 py-1"
+                >
+                  <span className="mr-2">{item.label}</span>
+                  <button
+                    onClick={() =>
+                      togglePreference({
+                        key: item.category,
+                        value: item.value,
+                      })
+                    }
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
           </div>
         </div>
 
-        {/* Job Type Section */}
-        <div className="mb-6">
-          <Label className="block text-sm font-medium mb-2">
-            Job Type
-          </Label>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="full-time" 
-                checked={selectedJobTypes.includes(JobTypes.FullTime)}
-                onCheckedChange={() => toggleJobType(JobTypes.FullTime)}
-              />
-              <Label htmlFor="full-time">Full-time</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="contract" 
-                checked={selectedJobTypes.includes(JobTypes.Contract)}
-                onCheckedChange={() => toggleJobType(JobTypes.Contract)}
-              />
-              <Label htmlFor="contract">Contract</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="internship" 
-                checked={selectedJobTypes.includes(JobTypes.Internship)}
-                onCheckedChange={() => toggleJobType(JobTypes.Internship)}
-              />
-              <Label htmlFor="internship">Internship</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="part-time" 
-                checked={selectedJobTypes.includes(JobTypes.PartTime)}
-                onCheckedChange={() => toggleJobType(JobTypes.PartTime)}
-              />
-              <Label htmlFor="part-time">Part-time</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="freelance" 
-                checked={selectedJobTypes.includes(JobTypes.Freelance)}
-                onCheckedChange={() => toggleJobType(JobTypes.Freelance)}
-              />
-              <Label htmlFor="freelance">Freelance</Label>
+        {Object.entries(preferencesConfig).map(([key, config]) => (
+          <div className="mb-6" key={key}>
+            <Label className="block text-sm font-medium mb-2">
+              {t(config.label)}
+            </Label>
+            <div className="grid grid-cols-3 gap-4">
+              {config.options.map(({ value, label }) => (
+                <div
+                  className="flex items-center space-x-2"
+                  key={`${key}-${value}`}
+                >
+                  <Checkbox
+                    id={`${key}-${value}`}
+                    checked={isSelected({
+                      key: key as keyof User["preferences"],
+                      value,
+                    })}
+                    onCheckedChange={() =>
+                      togglePreference({
+                        key: key as keyof User["preferences"],
+                        value,
+                      })
+                    }
+                  />
+                  <Label
+                    htmlFor={`${key}-${value}`}
+                    className="text-sm font-normal"
+                  >
+                    {label}
+                  </Label>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-
-        {/* Location Type Section */}
-        <div className="mb-6">
-          <Label className="block text-sm font-medium mb-2">
-            Location Type
-          </Label>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="onsite" 
-                checked={selectedLocationTypes.includes(LocationTypes.OnSite)}
-                onCheckedChange={() => toggleLocationType(LocationTypes.OnSite)}
-              />
-              <Label htmlFor="onsite">Onsite</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="remote" 
-                checked={selectedLocationTypes.includes(LocationTypes.Remote)}
-                onCheckedChange={() => toggleLocationType(LocationTypes.Remote)}
-              />
-              <Label htmlFor="remote">Remote</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="hybrid" 
-                checked={selectedLocationTypes.includes(LocationTypes.Hybrid)}
-                onCheckedChange={() => toggleLocationType(LocationTypes.Hybrid)}
-              />
-              <Label htmlFor="hybrid">Hybrid</Label>
-            </div>
-          </div>
-        </div>
-
-        {/* Experience Level Section */}
-        <div className="mb-6">
-          <Label className="block text-sm font-medium mb-2">
-            Experience Level
-          </Label>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="entry-level" 
-                checked={selectedExperienceLevels.includes(ExperienceLevels.Intern)}
-                onCheckedChange={() => toggleExperienceLevel(ExperienceLevels.Intern)}
-              />
-              <Label htmlFor="entry-level">Entry-level</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="senior" 
-                checked={selectedExperienceLevels.includes(ExperienceLevels.Senior)}
-                onCheckedChange={() => toggleExperienceLevel(ExperienceLevels.Senior)}
-              />
-              <Label htmlFor="senior">Senior</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="director" 
-                checked={selectedExperienceLevels.includes(ExperienceLevels.Director)}
-                onCheckedChange={() => toggleExperienceLevel(ExperienceLevels.Director)}
-              />
-              <Label htmlFor="director">Director</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="junior" 
-                checked={selectedExperienceLevels.includes(ExperienceLevels.Junior)}
-                onCheckedChange={() => toggleExperienceLevel(ExperienceLevels.Junior)}
-              />
-              <Label htmlFor="junior">Junior</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="manager" 
-                checked={selectedExperienceLevels.includes(ExperienceLevels.Manager)}
-                onCheckedChange={() => toggleExperienceLevel(ExperienceLevels.Manager)}
-              />
-              <Label htmlFor="manager">Manager</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="executive" 
-                checked={selectedExperienceLevels.includes(ExperienceLevels.CLevel)}
-                onCheckedChange={() => toggleExperienceLevel(ExperienceLevels.CLevel)}
-              />
-              <Label htmlFor="executive">Executive</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="mid-level" 
-                checked={selectedExperienceLevels.includes(ExperienceLevels.MidLevel)}
-                onCheckedChange={() => toggleExperienceLevel(ExperienceLevels.MidLevel)}
-              />
-              <Label htmlFor="mid-level">Mid-level</Label>
-            </div>
-          </div>
-        </div>
+        ))}
 
         {/* Years of Experience Slider */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <Label className="text-sm font-medium">Years of Experience:</Label>
-            <span className="text-sm font-medium">{yearsOfExperience} years</span>
+            <span className="text-sm font-medium">
+              {yearsOfExperience} years
+            </span>
           </div>
           <Slider
             value={[yearsOfExperience]}
-            onValueChange={(value) => setYearsOfExperience(value[0])}
+            onValueChange={handleChangeYearsOfExperience}
             max={MAX_YEARS_OF_EXPERIENCE}
             step={1}
             className="mb-1"
           />
           <div className="flex justify-between text-xs text-gray-500">
             <span>0 years</span>
-            <span>10+ years</span>
+            <span>15+ years</span>
           </div>
         </div>
 
@@ -338,11 +386,13 @@ const OnboardingStep4: React.FC = () => {
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <Label className="text-sm font-medium">Salary Range:</Label>
-            <span className="text-sm font-medium">${salaryRange[0]} – ${salaryRange[1]}/year</span>
+            <span className="text-sm font-medium">
+              ${salaryRange[0]} – ${salaryRange[1]}/monthly
+            </span>
           </div>
           <Slider
             value={salaryRange}
-            onValueChange={(value) => setSalaryRange([value[0], value[1]])}
+            onValueChange={handleChangeSalaryRange}
             min={0}
             max={MAX_SALARY}
             step={1000}
@@ -350,15 +400,15 @@ const OnboardingStep4: React.FC = () => {
           />
           <div className="flex justify-between text-xs text-gray-500">
             <span>$0</span>
-            <span>$200,000+</span>
+            <span>$50,000+</span>
           </div>
         </div>
 
         {/* Submit Button */}
         <div className="flex justify-center mt-6">
-          <Button 
-            onClick={handleSubmit} 
-            className="bg-[#0066FF] hover:bg-[#0055DD] text-white font-semibold rounded-full py-3 px-10"
+          <Button
+            onClick={handleSubmit}
+            className="bg-[#0066FF] hover:bg-[#0055DD] text-white font-semibold rounded-xl py-3 px-10 h-14"
           >
             Show jobs
           </Button>

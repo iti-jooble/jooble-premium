@@ -36,9 +36,11 @@ export const useAutocomplete = ({
     data: IAutocompleteArgs,
   ): Promise<IAutocompleteResponseItem[]> => {
     const response = await queryClient.fetchQuery({
-      queryKey: ["autocomplete", { mode, query: data }],
+      queryKey: ["autocomplete", { mode, query: data.query }],
       queryFn: async () => {
-        const res = await fetch(`/api/autocomplete?mode=${mode}&query=${data}`);
+        const res = await fetch(
+          `/api/autocomplete?mode=${mode}&query=${data.query}`,
+        );
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }
@@ -46,7 +48,7 @@ export const useAutocomplete = ({
       },
     });
 
-    return response?.data.suggestions || [];
+    return response?.suggestions || [];
   };
 
   const getAutocomplete = (data: IAutocompleteArgs): void => {

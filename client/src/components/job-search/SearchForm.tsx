@@ -32,12 +32,12 @@ export const SearchForm = ({
     mode: AUTOCOMPLETE_MODE.KEYWORD,
   });
 
-  // Update suggestions when input changes
   useEffect(() => {
-    getAutocomplete({ query: inputValue });
+    if (inputValue) {
+      getAutocomplete({ query: inputValue });
+    }
   }, [inputValue]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -133,16 +133,24 @@ export const SearchForm = ({
                   className="absolute z-10 mt-2 w-full left-0 bg-white border border-gray-200 rounded-md shadow-lg"
                 >
                   <ul className="py-1">
-                    {[
-                      ...autocomplete.map(({ value }) => value),
-                      inputValue,
-                    ].map((suggestion, index) => (
+                    {[...autocomplete, inputValue].map((suggestion, index) => (
                       <li
-                        key={`${suggestion}-${index}`}
+                        key={`${suggestion.value}-${index}`}
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleSuggestionClick(suggestion)}
+                        onClick={() =>
+                          handleSuggestionClick(suggestion?.value ?? suggestion)
+                        }
                       >
-                        {suggestion}
+                        {suggestion?.label ? (
+                          <span
+                            className="flex justify-between items-center"
+                            dangerouslySetInnerHTML={{
+                              __html: suggestion.label,
+                            }}
+                          />
+                        ) : (
+                          suggestion
+                        )}
                       </li>
                     ))}
                   </ul>

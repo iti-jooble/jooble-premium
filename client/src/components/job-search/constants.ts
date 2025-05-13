@@ -1,17 +1,17 @@
-import { JobTypes, LocationTypes, ExperienceLevels } from "./enums";
+import { WorkFormats, LocationTypes, SeniorityLevels } from "./enums";
 import { keyofPreferences } from "./types";
 
 export const MAX_SALARY = 50000;
 export const MAX_YEARS_OF_EXPERIENCE = 15;
 
 export const JOB_TYPE_TO_LABEL_MAP = {
-  [JobTypes.FullTime]: "Full-time",
-  [JobTypes.PartTime]: "Part-time",
-  [JobTypes.Contract]: "Contract",
-  [JobTypes.Temporary]: "Temporary",
-  [JobTypes.Internship]: "Internship",
-  [JobTypes.Consulting]: "Consulting",
-  [JobTypes.Freelance]: "Freelance",
+  [WorkFormats.FullTime]: "Full-time",
+  [WorkFormats.PartTime]: "Part-time",
+  [WorkFormats.Contract]: "Contract",
+  [WorkFormats.Temporary]: "Temporary",
+  [WorkFormats.Internship]: "Internship",
+  [WorkFormats.Consulting]: "Consulting",
+  [WorkFormats.Freelance]: "Freelance",
 };
 
 export const LOCATION_TYPE_TO_LABEL_MAP = {
@@ -24,16 +24,16 @@ export const LOCATION_TYPE_TO_LABEL_MAP = {
 };
 
 export const EXPERIENCE_LEVEL_TO_LABEL_MAP = {
-  [ExperienceLevels.Intern]: "Intern",
-  [ExperienceLevels.Trainee]: "Trainee",
-  [ExperienceLevels.Junior]: "Junior",
-  [ExperienceLevels.MidLevel]: "Mid-level",
-  [ExperienceLevels.Senior]: "Senior-level",
-  [ExperienceLevels.Director]: "Director",
-  [ExperienceLevels.Manager]: "Manager",
-  [ExperienceLevels.Lead]: "Lead",
-  [ExperienceLevels.CLevel]: "C-level",
-  [ExperienceLevels.VicePresident]: "Vice-President",
+  [SeniorityLevels.Intern]: "Intern",
+  [SeniorityLevels.Trainee]: "Trainee",
+  [SeniorityLevels.Junior]: "Junior",
+  [SeniorityLevels.MidLevel]: "Mid-level",
+  [SeniorityLevels.Senior]: "Senior-level",
+  [SeniorityLevels.Director]: "Director",
+  [SeniorityLevels.Manager]: "Manager",
+  [SeniorityLevels.Lead]: "Lead",
+  [SeniorityLevels.CLevel]: "C-level",
+  [SeniorityLevels.VicePresident]: "Vice-President",
 };
 
 export const preferencesConfig: {
@@ -54,22 +54,22 @@ export const preferencesConfig: {
         label: LOCATION_TYPE_TO_LABEL_MAP[value as LocationTypes],
       })),
   },
-  jobTypes: {
+  workFormats: {
     label: "Job Type",
-    options: Object.values(JobTypes)
+    options: Object.values(WorkFormats)
       .filter((v) => typeof v === "number")
       .map((value) => ({
         value: value as number,
-        label: JOB_TYPE_TO_LABEL_MAP[value as JobTypes],
+        label: JOB_TYPE_TO_LABEL_MAP[value as WorkFormats],
       })),
   },
-  experienceLevels: {
+  seniorityLevels: {
     label: "Experience Level",
-    options: Object.values(ExperienceLevels)
+    options: Object.values(SeniorityLevels)
       .filter((v) => typeof v === "number")
       .map((value) => ({
         value: value as number,
-        label: EXPERIENCE_LEVEL_TO_LABEL_MAP[value as ExperienceLevels],
+        label: EXPERIENCE_LEVEL_TO_LABEL_MAP[value as SeniorityLevels],
       })),
   },
 };

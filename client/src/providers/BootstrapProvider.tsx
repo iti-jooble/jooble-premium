@@ -2,15 +2,12 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { runBootstrap } from "@/redux/thunks";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { GlobalLoadingScreen } from "@/components/loading/GlobalLoadingScreen";
 
-interface BootstrapWrapperProps {
+const BootstrapProvider: React.FC<{
   children: React.ReactNode;
-}
-
-export const BootstrapWrapper: React.FC<BootstrapWrapperProps> = ({
-  children,
-}) => {
+}> = ({ children }) => {
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector((state) => state.bootstrap);
 
@@ -28,8 +25,8 @@ export const BootstrapWrapper: React.FC<BootstrapWrapperProps> = ({
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <div className="max-w-md text-center p-6 bg-card rounded-lg shadow-lg">
+      <div className="min-h-screen bg-primary-background flex flex-col items-center justify-center p-4">
+        <Card className="max-w-md text-center p-6 rounded-lg">
           <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-destructive/10 flex items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +57,7 @@ export const BootstrapWrapper: React.FC<BootstrapWrapperProps> = ({
           >
             Retry
           </Button>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -68,4 +65,4 @@ export const BootstrapWrapper: React.FC<BootstrapWrapperProps> = ({
   return children;
 };
 
-export default BootstrapWrapper;
+export default BootstrapProvider;

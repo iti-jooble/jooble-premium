@@ -3,11 +3,11 @@ import { useLocation } from "wouter";
 import { useAppSelector } from "@/redux/store";
 import { bootstrapSelectors, userSelectors } from "@/redux/selectors";
 
-interface ProtectedRouteProps {
+interface AuthGuardProps {
   children: ReactNode;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const [, setLocation] = useLocation();
   const { isLoading } = useAppSelector(
     bootstrapSelectors.getBootstrapStateSelector,
@@ -15,12 +15,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const isAuthorized = useAppSelector(userSelectors.isAuthorizedSelector);
 
   useEffect(() => {
-    if (!isAuthorized && !isLoading) {
+    if (!isAuthorized) {
       setLocation("/auth/login");
     }
-  }, [isAuthorized, isLoading]);
+  }, [isAuthorized]);
 
   return <>{children}</>;
 };
 
-export default ProtectedRoute;
+export default AuthGuard;

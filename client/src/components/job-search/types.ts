@@ -11,5 +11,5 @@ export type SelectedPreferenceValue<T extends keyof User["preferences"]> =
 
 export type keyofPreferences = Extract<
   keyof User["preferences"],
-  "locationTypes" | "jobTypes" | "experienceLevels"
+  "locationTypes" | "workFormats" | "seniorityLevels"
 >;

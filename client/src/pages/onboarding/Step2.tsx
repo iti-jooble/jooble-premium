@@ -7,7 +7,7 @@ const OnboardingStep2: React.FC = () => {
   const [_, setLocation] = useLocation();
 
   const handleContinue = () => {
-    setLocation("/onboarding/step3");
+    setLocation("/onboarding/3");
   };
 
   return (
@@ -75,7 +75,7 @@ const OnboardingStep2: React.FC = () => {
         <div className="flex justify-center mt-12">
           <Button
             onClick={handleContinue}
-            className="text-white font-semibold rounded-xl py-6 px-10 text-lg h-16"
+            className="text-white font-semibold rounded-xl py-6 px-10 text-lg h-14"
           >
             Let's start
           </Button>

@@ -4,9 +4,10 @@ import isArray from "lodash/isArray";
 import debounce from "lodash/debounce";
 import { User } from "@/types/state/user.types";
 import { userSelectors } from "@/redux/selectors";
+import { hasCompletedOnboarding } from "@/utils/localStorage";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { updatePreferences, refreshJobs } from "@/redux/thunks";
-import { LocationTypes, JobTypes, ExperienceLevels } from "../enums";
+import { LocationTypes, WorkFormats, SeniorityLevels } from "../enums";
 import {
   MAX_SALARY,
   JOB_TYPE_TO_LABEL_MAP,
@@ -16,7 +17,20 @@ import {
 import { SelectedPreference, SelectedPreferenceValue } from "../types";
 import { TFunction } from "i18next";
 
-export const getSelectedPreferences = (
+function getLabelByEnum<
+  EnumType extends { [key: string]: string | number },
+  MapType extends Record<number | string, string>,
+>(val: number | string, enumObj: EnumType, labelMap: MapType): string {
+  let enumValue: number | string = val;
+
+  if (typeof val === "string" && val in enumObj) {
+    enumValue = enumObj[val as keyof EnumType];
+  }
+
+  return labelMap[enumValue];
+}
+
+export const getPreferences = (
   preferences: User["preferences"],
   t: TFunction,
 ) =>
@@ -26,7 +40,14 @@ export const getSelectedPreferences = (
       (acc, [key, value]) => {
         const category = key as keyof User["preferences"];
         if (category === "keywords") {
-          return acc;
+          return [
+            ...acc,
+            ...(value as string[]).map((v) => ({
+              category,
+              value: v,
+              label: v,
+            })),
+          ];
         }
 
         if (category === "locationTypes") {
@@ -34,36 +55,44 @@ export const getSelectedPreferences = (
             ...acc,
             ...(value as LocationTypes[]).map((v) => ({
               category,
-              value: v,
-              label: t(LOCATION_TYPE_TO_LABEL_MAP[v]),
+              value: typeof v === "number" ? v : LocationTypes[v],
+              label: t(
+                getLabelByEnum(v, LocationTypes, LOCATION_TYPE_TO_LABEL_MAP),
+              ),
             })),
           ];
         }
 
-        if (category === "jobTypes") {
+        if (category === "workFormats") {
           return [
             ...acc,
-            ...(value as JobTypes[]).map((v) => ({
+            ...(value as WorkFormats[]).map((v) => ({
               category,
-              value: v,
-              label: t(JOB_TYPE_TO_LABEL_MAP[v]),
+              value: typeof v === "number" ? v : WorkFormats[v],
+              label: t(getLabelByEnum(v, WorkFormats, JOB_TYPE_TO_LABEL_MAP)),
             })),
           ];
         }
 
-        if (category === "experienceLevels") {
+        if (category === "seniorityLevels") {
           return [
             ...acc,
-            ...(value as ExperienceLevels[]).map((v) => ({
+            ...(value as SeniorityLevels[]).map((v) => ({
               category,
-              value: v,
-              label: t(EXPERIENCE_LEVEL_TO_LABEL_MAP[v]),
+              value: typeof v === "number" ? v : SeniorityLevels[v],
+              label: t(
+                getLabelByEnum(
+                  v,
+                  SeniorityLevels,
+                  EXPERIENCE_LEVEL_TO_LABEL_MAP,
+                ),
+              ),
             })),
           ];
         }
 
-        if (category === "salaryRange" && "lowerBound" in value) {
-          if (!value.lowerBound && !value.upperBound) {
+        if (category === "salaryRange" && "min" in value) {
+          if (!value.min && !value.max) {
             return acc;
           }
 
@@ -72,9 +101,7 @@ export const getSelectedPreferences = (
             {
               category,
               value,
-              label: t(
-                `$${value.lowerBound || 0}-${value.upperBound || MAX_SALARY}/monthly`,
-              ),
+              label: t(`$${value.min || 0}-${value.max || MAX_SALARY}/monthly`),
             },
           ];
         }
@@ -108,14 +135,19 @@ const usePreferences = () => {
   const userPreferences = useAppSelector(
     userSelectors.getUserPreferencesSelector,
   );
+  const hasOnboardingCompleted = hasCompletedOnboarding();
 
-  const selectedPreferences = getSelectedPreferences(userPreferences, t);
+  const preferences = getPreferences(userPreferences, t);
 
   const updatePreferencesAndSearch = async (
     value: Partial<User["preferences"]>,
   ) => {
+    console.log("updatePreferencesAndSearch", value);
     await dispatch(updatePreferences(value));
-    dispatch(refreshJobs());
+
+    if (hasOnboardingCompleted) {
+      dispatch(refreshJobs());
+    }
   };
 
   const debouncedUpdatePreferences = useMemo(
@@ -135,8 +167,8 @@ const usePreferences = () => {
     if (key === "salaryRange") {
       updatePreferencesAndSearch({
         salaryRange: {
-          lowerBound: 0,
-          upperBound: 0,
+          min: 0,
+          max: 0,
         },
       });
 
@@ -150,7 +182,9 @@ const usePreferences = () => {
 
     updatePreferencesAndSearch({
       [key]: isExisting
-        ? userPreferences[key]?.filter((v) => v !== value)
+        ? preferences
+            .map((p) => (p.category === key ? p.value : null))
+            .filter((v) => v !== null && v !== value)
         : [...(userPreferences[key] || []), value],
     });
   };
@@ -162,13 +196,13 @@ const usePreferences = () => {
     key: T;
     value: SelectedPreferenceValue<T>;
   }) =>
-    selectedPreferences.some(
+    preferences.some(
       ({ category, value: selectedValue }) =>
         category === key && selectedValue === value,
     );
 
   return {
-    selectedPreferences,
+    preferences,
     isSelected,
     togglePreference,
     updatePreferences: debouncedUpdatePreferences,

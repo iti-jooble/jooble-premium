@@ -8,6 +8,7 @@ import { AppDispatch } from "@/redux/store";
 import { UserState } from "../../types/state/user.types";
 import { authApiSlice } from "../api/authApiSlice";
 import { setUser } from "../slices/userSlice";
+import { tryUpdatePreferencesFromLocalStorage } from "./user.thunks";
 
 export const authByGoogle = createAsyncThunk<
   Partial<UserState>,
@@ -23,6 +24,7 @@ export const authByGoogle = createAsyncThunk<
     }
 
     dispatch(setUser(result.data));
+    dispatch(tryUpdatePreferencesFromLocalStorage());
 
     return result.data;
   } catch (error: any) {
@@ -43,6 +45,7 @@ export const login = createAsyncThunk<Partial<UserState>, AuthCredentials>(
       }
 
       dispatch(setUser(result.data));
+      dispatch(tryUpdatePreferencesFromLocalStorage());
 
       return result.data;
     } catch (error: any) {
@@ -64,6 +67,7 @@ export const register = createAsyncThunk<Partial<UserState>, RegisterData>(
       }
 
       dispatch(setUser(result.data));
+      dispatch(tryUpdatePreferencesFromLocalStorage());
 
       return result.data;
     } catch (error: any) {

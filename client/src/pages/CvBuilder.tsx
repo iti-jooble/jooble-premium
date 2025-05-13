@@ -29,7 +29,6 @@ const CvBuilder = () => {
   );
 
   useLayoutEffect(() => {
-    console.log("Initializing CV builder...");
     if (!isInitialized && !isLoading && !error) {
       dispatch(initCvBuilder());
     }
@@ -78,7 +77,7 @@ const CvBuilder = () => {
         <div className="flex gap-3">
           <Button
             onClick={handleCreateNew}
-            className="flex-1 sm:flex-auto transition-all hover:scale-105"
+            className="flex-1 sm:flex-auto"
             size="lg"
           >
             <PlusIcon className="h-5 w-5 mr-2" />

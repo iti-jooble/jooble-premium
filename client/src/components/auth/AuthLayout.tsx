@@ -12,7 +12,7 @@ interface AuthLayoutProps {
  */
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children, footer }) => {
   return (
-    <div className="min-h-screen bg-[#f7f6f2] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-primary-background flex flex-col items-center justify-center p-4">
       <div className="mb-8">
         <div className="flex items-center justify-center">
           <img src="/images/logo.svg" alt="Fitly" />

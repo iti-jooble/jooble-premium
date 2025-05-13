@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const matchingSchema = z.object({
-  score: z.number(),
+  originalMatchingScore: z.number(),
   title: z.boolean(),
   location: z.boolean(),
   jobType: z.boolean(),
   salary: z.boolean(),
   locationType: z.boolean(),
-  experienceLevel: z.boolean(),
+  seniorityLevel: z.boolean(),
   experienceYears: z.boolean(),
 });
 
@@ -34,7 +34,7 @@ export const fitlyJobCardSchema = z.object({
     }),
     seniorityLevel: z.string(),
     workFormat: z.string(),
-    workLocationType: z.string(),
+    locationType: z.string(),
     yearsOfExperience: z.number(),
   }),
 });

@@ -7,7 +7,7 @@ const OnboardingStep1: React.FC = () => {
   const [_, setLocation] = useLocation();
 
   const handleContinue = () => {
-    setLocation("/onboarding/step2");
+    setLocation("/onboarding/2");
   };
 
   return (
@@ -43,7 +43,7 @@ const OnboardingStep1: React.FC = () => {
             </div>
 
             {/* Second column - 32% */}
-            <div className="text-center px-9 bg-[#f7f6f2] py-6">
+            <div className="text-center px-9 bg-primary-background py-6">
               <h3 className="text-4xl font-bold mb-2">32%</h3>
               <div className="flex justify-center">
                 <div className="h-[180px] w-[124px] bg-[#0066FF] flex items-end mb-4"></div>
@@ -62,7 +62,7 @@ const OnboardingStep1: React.FC = () => {
         <div className="flex justify-center mt-4">
           <Button
             onClick={handleContinue}
-            className="text-white font-semibold rounded-xl py-6 px-10 text-lg h-16"
+            className="text-white font-semibold rounded-xl py-6 px-10 text-lg h-14"
           >
             How it works?
           </Button>

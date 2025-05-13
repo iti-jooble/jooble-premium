@@ -1,34 +1,31 @@
-export enum ExperienceLevels {
-  Intern = 0,
-  Trainee = 1,
-  Junior = 2,
-  MidLevel = 3,
-  Senior = 4,
-  Lead = 5,
-  Manager = 6,
-  Director = 7,
-  VicePresident = 8,
-  CLevel = 9,
+export enum SeniorityLevels {
+  Intern = 1,
+  Trainee = 2,
+  Junior = 3,
+  MidLevel = 4,
+  Senior = 5,
+  Lead = 6,
+  Manager = 7,
+  Director = 8,
+  VicePresident = 9,
+  CLevel = 10,
 }
 
 export enum LocationTypes {
-  Remote = 0,
-  OnSite = 1,
-  OfficeBased = 2,
-  Hybrid = 3,
-  FlexibleLocation = 4,
-  FieldBased = 5,
+  Remote = 1,
+  OnSite = 2,
+  OfficeBased = 3,
+  Hybrid = 4,
+  FlexibleLocation = 5,
+  FieldBased = 6,
 }
 
-export enum JobTypes {
-  // Default = 0,
+export enum WorkFormats {
   FullTime = 1,
-  Temporary = 2,
-  PartTime = 3,
-  Internship = 4,
-  // ForUkrainians = 5,
-  // ShiftWorkWithoutRelocate = 6,
-  Contract = 7,
-  Freelance = 8,
-  Consulting = 9,
+  PartTime = 2,
+  Contract = 3,
+  Freelance = 4,
+  Temporary = 5,
+  Internship = 6,
+  Consulting = 7,
 }

@@ -1,52 +1,54 @@
-import { USER_PREFERENCES_KEY } from '@/constants/localStorageKeys';
+import {
+  USER_PREFERENCES_KEY,
+  HAS_COMPLETED_ONBOARDING_KEY,
+} from "@/constants/localStorageKeys";
+import { User } from "@/types/state/user.types";
 
 interface UserPreferences {
-  onboardingCompleted?: boolean;
   [key: string]: any;
 }
 
-/**
- * Retrieves user preferences from localStorage
- */
-export const getUserPreferences = (): UserPreferences | null => {
+export const getUserPreferences = (): User["preferences"] | null => {
   try {
     const preferences = localStorage.getItem(USER_PREFERENCES_KEY);
     return preferences ? JSON.parse(preferences) : null;
   } catch (error) {
-    console.error('Error retrieving user preferences:', error);
+    console.error("Error retrieving user preferences:", error);
     return null;
   }
 };
 
-/**
- * Saves user preferences to localStorage
- */
-export const saveUserPreferences = (preferences: UserPreferences): void => {
+export const updateUserPreferences = (
+  preferences: User["preferences"],
+): void => {
   try {
     const existingPreferences = getUserPreferences() || {};
     const updatedPreferences = { ...existingPreferences, ...preferences };
-    localStorage.setItem(USER_PREFERENCES_KEY, JSON.stringify(updatedPreferences));
+    localStorage.setItem(
+      USER_PREFERENCES_KEY,
+      JSON.stringify(updatedPreferences),
+    );
   } catch (error) {
-    console.error('Error saving user preferences:', error);
+    console.error("Error saving user preferences:", error);
   }
 };
 
-/**
- * Checks if onboarding has been completed
- */
-export const hasCompletedOnboarding = (): boolean => {
-  const preferences = getUserPreferences();
-  return preferences?.onboardingCompleted ?? false;
+export const hasCompletedOnboarding = (): boolean =>
+  localStorage.getItem(HAS_COMPLETED_ONBOARDING_KEY) || false;
+
+export const setHasCompletedOnboarding = (): boolean => {
+  try {
+    localStorage.setItem(HAS_COMPLETED_ONBOARDING_KEY, true);
+    return true;
+  } catch (error) {
+    console.error("Error setting onboarding completion:", error);
+  }
 };
 
-/**
- * Clears all user preferences from localStorage
- * Useful for testing or resetting the application state
- */
 export const clearUserPreferences = (): void => {
   try {
     localStorage.removeItem(USER_PREFERENCES_KEY);
   } catch (error) {
-    console.error('Error clearing user preferences:', error);
+    console.error("Error clearing user preferences:", error);
   }
 };

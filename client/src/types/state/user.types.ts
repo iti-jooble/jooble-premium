@@ -16,12 +16,12 @@ export interface User {
   preferences: {
     keywords: string[];
     location: string | null;
-    jobTypes: number[];
+    workFormats: number[];
     salaryRange: {
-      lowerBound: number | null;
-      upperBound: number | null;
+      min: number | null;
+      max: number | null;
     };
-    experienceLevels: string[];
+    seniorityLevels: string[];
     locationTypes: string[];
     experienceYears: number;
   };
