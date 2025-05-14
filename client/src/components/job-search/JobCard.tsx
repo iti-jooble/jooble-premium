@@ -78,11 +78,14 @@ export const JobCard = React.memo(
             <div className="grid grid-cols-7 gap-x-4 gap-y-2 text-sm text-muted-foreground mt-2">
               <div className="flex items-center col-span-3 pr-2">
                 <WalletIcon className="h-4 w-4 mr-1 min-w-4 text-muted-foreground/70" />
-                <span>
+                <span
+                  className={`${!job.salary && "text-muted-foreground/70"}`}
+                >
                   {job.salary ||
                     job.estimatedSalary ||
-                    job.fitlyJobCard?.basicInfo.salaryLevel.min ||
+                    job.matching?.salary.actual ||
                     "Unknown"}
+                  {!job.salary ? " (est.)" : ""}
                 </span>
               </div>
               <div className="flex items-center col-span-2 pr-2">
@@ -130,9 +133,9 @@ export const JobCard = React.memo(
           <div className="col-span-3 flex justify-center items-center flex-col p-6 border-l border-gray-200">
             <div
               className={`w-14 h-14 flex items-center justify-center text-2xl font-bold text-white rounded-xl ${
-                score >= 9
+                Number(score) >= 9
                   ? "bg-primary-blue"
-                  : score >= 5
+                  : Number(score) >= 5
                     ? "bg-yellow-700"
                     : "bg-red-700"
               }`}
@@ -140,10 +143,10 @@ export const JobCard = React.memo(
               {score}
             </div>
             <div className="text-center text-xs font-bold mt-4">
-              {(score >= 9 && <div>Perfect match</div>) ||
-                (score >= 7 && <div>Good match</div>) ||
-                (score >= 5 && <div>Average match</div>) ||
-                (score >= 4 && <div>Below average match</div>) || (
+              {(Number(score) >= 9 && <div>Perfect match</div>) ||
+                (Number(score) >= 7 && <div>Good match</div>) ||
+                (Number(score) >= 5 && <div>Average match</div>) ||
+                (Number(score) >= 4 && <div>Below average match</div>) || (
                   <div>Poor match</div>
                 )}
             </div>

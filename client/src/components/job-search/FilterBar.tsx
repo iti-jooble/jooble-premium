@@ -46,10 +46,7 @@ export const FilterBar = () => {
     }
 
     if (salaryRange) {
-      setSalaryRange([
-        salaryRange.min || 0,
-        salaryRange.max || MAX_SALARY,
-      ]);
+      setSalaryRange([salaryRange.min || 0, salaryRange.max || MAX_SALARY]);
     }
   }, []);
 
@@ -108,7 +105,7 @@ export const FilterBar = () => {
 
   return (
     <div className="md:col-span-1">
-      <h2 className="text-2xl font-semibold mb-4">{t("Filters")}</h2>
+      <h2 className="text-2xl font-semibold mb-4">{t("Preferences")}</h2>
 
       {/* Selected Filters */}
       <div className="flex flex-wrap gap-2 mb-4">
