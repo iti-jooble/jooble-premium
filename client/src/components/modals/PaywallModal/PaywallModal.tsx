@@ -75,7 +75,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
         ) : (
           <div className="flex flex-col md:flex-row h-full">
             {/* Left part - features */}
-            <div className="bg-primary-background px-[56px] py-[72px] md:w-[50%] relative">
+            <div className="bg-primary-gradient px-[56px] py-[72px] md:w-[50%] relative">
               <div className="mt-8">
                 <h2 className="text-4xl font-bold text-[#1a2137] mb-2">
                   Get 4x more interviews. Pay less than for coffee
@@ -159,7 +159,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
               <Button
                 isLoading={isCreatingSession}
                 onClick={handleContinue}
-                className="w-full bg-primary-blue hover:bg-blue-700 mt-10"
+                className="w-full mt-10"
               >
                 Continue
               </Button>

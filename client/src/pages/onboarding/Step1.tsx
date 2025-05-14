@@ -46,14 +46,25 @@ const OnboardingStep1: React.FC = () => {
             <div className="text-center px-9 bg-primary-background py-6">
               <h3 className="text-4xl font-bold mb-2">32%</h3>
               <div className="flex justify-center">
-                <div className="h-[180px] w-[124px] bg-[#0066FF] flex items-end mb-4"></div>
+                <div className="h-[180px] w-[124px] bg-primary-blue flex items-end mb-4"></div>
               </div>
               <p className="text-gray-700 font-medium flex flex-col items-center">
                 Response
                 <br />
                 rate with
                 <br />
-                <img src="/images/logo.svg" alt="Fitly" className="w-[54px]" />
+                <div className="flex items-start justify-center">
+                  <img
+                    src="/images/logo.svg"
+                    alt="Fitly Logo"
+                    className="relative top-[1px] mr-1 w-[14px]"
+                  />
+                  <img
+                    src="/images/logo-name.svg"
+                    alt="Fitly"
+                    className="w-[40px]"
+                  />
+                </div>
               </p>
             </div>
           </div>

@@ -80,7 +80,7 @@ const JobDetails = () => {
             </div>
 
             {/* Resume Match Card */}
-            <div className="mb-3 p-8 bg-primary-background rounded-lg overflow-hidden rounded-xl">
+            <div className="mb-3 p-8 bg-primary-gradient rounded-lg overflow-hidden rounded-xl">
               <div className="flex items-center">
                 {/* Resume images */}
                 <div className="flex-shrink-0 w-[120px]">

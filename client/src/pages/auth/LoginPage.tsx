@@ -131,11 +131,7 @@ const LoginPage = () => {
             )}
           />
 
-          <Button
-            type="submit"
-            className="w-full bg-primary-blue hover:bg-blue-700"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Logging in..." : "Log in"}
           </Button>
         </form>

@@ -6,7 +6,7 @@ interface ContentProps {
 
 const Content: React.FC<ContentProps> = ({ children }) => {
   return (
-    <main className="flex-1 overflow-y-auto bg-primary-background">
+    <main className="flex-1 overflow-y-auto bg-primary-gradient">
       {children}
     </main>
   );

@@ -36,7 +36,7 @@ export const JobListings = ({
           <Button
             onClick={onLoadMore}
             isLoading={isLoading}
-            className="px-4 py-2 bg-primary-blue text-white rounded-md hover:bg-blue-700"
+            className="px-4 py-2text-white rounded-md"
           >
             Load More
           </Button>

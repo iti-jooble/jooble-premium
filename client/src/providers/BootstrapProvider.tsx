@@ -25,7 +25,7 @@ const BootstrapProvider: React.FC<{
 
   if (error) {
     return (
-      <div className="min-h-screen bg-primary-background flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-primary-gradient flex flex-col items-center justify-center p-4">
         <Card className="max-w-md text-center p-6 rounded-lg">
           <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-destructive/10 flex items-center justify-center">
             <svg
@@ -51,10 +51,7 @@ const BootstrapProvider: React.FC<{
             There was a problem connecting to the server. Please try again
             later.
           </p>
-          <Button
-            onClick={initialize}
-            className="mt-2 bg-primary-blue font-bold"
-          >
+          <Button onClick={initialize} className="mt-2 font-bold">
             Retry
           </Button>
         </Card>

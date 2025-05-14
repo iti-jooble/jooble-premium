@@ -94,7 +94,7 @@ export const SearchForm = ({
   };
 
   return (
-    <div className="bg-white rounded-full shadow-sm mb-6 p-2 flex items-center hover:shadow-md">
+    <div className="bg-white rounded-xl shadow-sm mb-6 p-2 flex items-center hover:shadow-md">
       <form onSubmit={handleSubmit} className="flex-1 flex items-center">
         <div className="flex-1 flex items-center px-3 relative">
           <SearchIcon className="h-5 w-5 text-muted-foreground mr-2" />
@@ -163,7 +163,7 @@ export const SearchForm = ({
           type="submit"
           disabled={isSearching}
           size="icon"
-          className="rounded-full h-12 w-12 bg-primary-blue hover:bg-blue-700"
+          className="rounded-xl h-12 w-12"
         >
           {isSearching ? (
             <Loader2 className="h-5 w-5 animate-spin" />

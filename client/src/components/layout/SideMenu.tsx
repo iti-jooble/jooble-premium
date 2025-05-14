@@ -51,8 +51,13 @@ const SideMenu = () => {
   return (
     <aside className="w-64 bg-white shadow-md flex flex-col z-10 h-screen">
       <div className="p-4 border-b border-neutral-100">
-        <div className="flex items-center">
-          <img src="/images/logo.svg" alt="Fitly" />
+        <div className="flex items-start">
+          <img
+            src="/images/logo.svg"
+            alt="Fitly Logo"
+            className="relative top-[2px] mr-2"
+          />
+          <img src="/images/logo-name.svg" alt="Fitly" />
         </div>
       </div>
 
@@ -77,10 +82,7 @@ const SideMenu = () => {
           <div className="text-xs text-gray-600 mb-2">
             Get access to exclusive job features by upgrading to premium.
           </div>
-          <Button
-            className="w-full bg-primary-blue"
-            onClick={handleUpgradeClick}
-          >
+          <Button className="w-full" onClick={handleUpgradeClick}>
             Upgrade
           </Button>
         </div>

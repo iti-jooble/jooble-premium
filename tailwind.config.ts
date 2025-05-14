@@ -10,9 +10,22 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      borderColor: {
+        "primary-blue": "#5D55FA",
+      },
+      backgroundImage: {
+        "primary-gradient": "linear-gradient(0deg, #EFEEFF 0%, #F6F7F8 100%)",
+      },
+      boxShadow: {
+        button:
+          "-4px -4px 14px 0px rgba(122, 137, 158, 0.70) inset, 4px 4px 14px 0px #5D55FA inset",
+        "hover-button":
+          "-4px -4px 14px 0px rgba(122, 137, 158, 0.70) inset, 0px 0px 40px 0px #5D55FA inset",
+      },
       colors: {
         "primary-background": "#F7F6F2",
-        "primary-blue": "#014EFE",
+        "primary-blue": "#5D55FA",
+        "primary-button": "#100918",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

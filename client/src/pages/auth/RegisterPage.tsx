@@ -178,11 +178,7 @@ const RegisterPage = () => {
             )}
           />
 
-          <Button
-            type="submit"
-            className="w-full bg-primary-blue hover:bg-blue-700"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading}>
             Signing up{isLoading ? "..." : ""}
           </Button>
         </form>

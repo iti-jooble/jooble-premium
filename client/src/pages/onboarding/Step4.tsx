@@ -73,10 +73,7 @@ const OnboardingStep4: React.FC = () => {
     }
 
     if (salaryRange) {
-      setSalaryRange([
-        salaryRange.min || 0,
-        salaryRange.max || MAX_SALARY,
-      ]);
+      setSalaryRange([salaryRange.min || 0, salaryRange.max || MAX_SALARY]);
     }
   }, []);
 
@@ -408,7 +405,7 @@ const OnboardingStep4: React.FC = () => {
         <div className="flex justify-center mt-6">
           <Button
             onClick={handleSubmit}
-            className="bg-[#0066FF] hover:bg-[#0055DD] text-white font-semibold rounded-xl py-3 px-10 h-14"
+            className="text-white font-semibold rounded-xl py-3 px-10 h-14"
           >
             Show jobs
           </Button>
