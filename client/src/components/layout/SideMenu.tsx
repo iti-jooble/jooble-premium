@@ -6,11 +6,13 @@ import {
   SettingsIcon,
   LogOutIcon,
   MoreVertical,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAppDispatch } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { logout as logoutLocaly } from "@/redux/slices/userSlice";
 import { useLogoutMutation } from "@/redux/api/authApiSlice";
+import { userSelectors } from "@/redux/selectors";
 import {
   Accordion,
   AccordionContent,
@@ -55,6 +57,7 @@ const SideMenu = () => {
   const [location] = useLocation();
   const dispatch = useAppDispatch();
   const [logoutByServer] = useLogoutMutation();
+  const user = useAppSelector(userSelectors.getUserSelector);
 
   const logout = () => {
     dispatch(logoutLocaly());
@@ -116,13 +119,26 @@ const SideMenu = () => {
               withChevron={false}
             >
               <div className="px-4 py-4 flex items-center justify-between w-full">
-                <div className="flex">
+                <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-gray-300 overflow-hidden mr-3">
-                    <img
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
+                    {false ? (
+                      <img
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-primary-gradient flex items-center justify-center text-primary-blue">
+                        {user.firstName ? (
+                          <span>
+                            {user.firstName ? user.firstName.charAt(0) : ""}
+                            {user.lastName ? user.lastName.charAt(0) : ""}
+                          </span>
+                        ) : (
+                          <User className="h-5 w-5 text-primary-blue" />
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-col items-start">
                     <p className="text-sm font-bold text-gray-900">
