@@ -55,7 +55,7 @@ const Settings = () => {
       </div>
 
       <Tabs defaultValue="profile" className="mb-8">
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 bg-transparent">
           <TabsTrigger value="profile" className="flex items-center">
             <UserIcon className="h-4 w-4 mr-2" />
             {t("settings.tabs.profile")}
