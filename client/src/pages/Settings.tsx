@@ -79,8 +79,8 @@ const Settings = () => {
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-3/12 flex flex-col items-center">
-                  <div className="w-32 h-32 rounded-full bg-neutral-200 flex items-center justify-center mb-4">
-                    <UserIcon className="h-16 w-16 text-neutral-500" />
+                  <div className="w-32 h-32 rounded-full bg-primary-gradient text-primary-blue flex items-center justify-center mb-4">
+                    <UserIcon className="h-16 w-16" />
                   </div>
                   <Button
                     variant="outline"

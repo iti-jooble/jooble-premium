@@ -154,7 +154,7 @@ export function CvPreview({
 
       <div
         ref={previewWidthReference}
-        className="bg-card rounded-lg shadow-md overflow-auto flex-grow w-full max-w-[492px] max-h-[696px] border border-border/40"
+        className="bg-card rounded-xl shadow-md overflow-auto flex-grow w-full max-w-[492px] max-h-[696px] border border-border/40"
       >
         {previewSize.calculated && (
           <div

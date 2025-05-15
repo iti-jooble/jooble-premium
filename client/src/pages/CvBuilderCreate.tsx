@@ -371,7 +371,7 @@ const CvBuilderCreate = () => {
             {/* Personal Information Section */}
             <AccordionItem
               value="personal"
-              className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
+              className="bg-card rounded-xl shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
@@ -399,7 +399,7 @@ const CvBuilderCreate = () => {
             {/* Work Experience Section */}
             <AccordionItem
               value="experience"
-              className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
+              className="bg-card rounded-xl shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
@@ -427,7 +427,7 @@ const CvBuilderCreate = () => {
             {/* Education Section */}
             <AccordionItem
               value="education"
-              className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
+              className="bg-card rounded-xl shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
@@ -455,7 +455,7 @@ const CvBuilderCreate = () => {
             {/* Skills Section */}
             <AccordionItem
               value="skills"
-              className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
+              className="bg-card rounded-xl shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
@@ -483,7 +483,7 @@ const CvBuilderCreate = () => {
             {/* Summary Section */}
             <AccordionItem
               value="summary"
-              className="bg-card rounded-lg shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
+              className="bg-card rounded-xl shadow-sm border border-border/50 mb-4 overflow-hidden transition-all hover:shadow-md"
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">

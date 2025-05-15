@@ -178,7 +178,7 @@ export function EducationSection({
 
           <Button
             variant="ghost"
-            className="mt-4 text-blue-600 pl-0"
+            className="mt-4 text-primary-blue pl-0"
             onClick={handleAddEducation}
           >
             <PlusCircle className="h-4 w-4 mr-2" />

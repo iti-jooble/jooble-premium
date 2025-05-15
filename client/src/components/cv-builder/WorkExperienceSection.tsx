@@ -247,7 +247,7 @@ export function ExperienceSection({
           <div className="flex justify-between mt-3">
             <Button
               variant="ghost"
-              className="text-blue-600 pl-0"
+              className="text-primary-blue pl-0"
               onClick={handleAddExperience}
             >
               <PlusCircle className="h-4 w-4 mr-2" />
@@ -388,12 +388,12 @@ export function ExperienceSection({
               )}
             />
 
-            <div className="bg-blue-50 p-4 mt-0 rounded-md">
+            <div className="bg-gradient-to-r from-blue-100 to-violet-200 p-4 mt-0 rounded-md">
               <div className="flex items-center mb-2">
-                <SparkleIcon className="h-5 w-5 text-blue-500 mr-2" />
-                <p className="text-blue-800 font-medium">Need a hint?</p>
+                <SparkleIcon className="h-5 w-5 text-blue-500 mr-2 text-primary-blue" />
+                <p className="font-medium">Need a hint?</p>
               </div>
-              <p className="text-sm text-blue-700 mb-3">
+              <p className="text-sm mb-3">
                 Start with a draft or add your text and use the tools below to
                 improve it.
               </p>
@@ -403,10 +403,10 @@ export function ExperienceSection({
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="bg-white"
+                  className="bg-white border-primary-blue"
                   onClick={generateDescription}
                 >
-                  <FileText className="h-4 w-4 mr-1" />
+                  <FileText className="h-4 w-4 mr-1 text-primary-blue" />
                   Get a draft
                 </Button>
 
@@ -414,10 +414,10 @@ export function ExperienceSection({
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="bg-white"
+                  className="bg-white border-primary-blue"
                   onClick={improveDescription}
                 >
-                  <Wand2 className="h-4 w-4 mr-1" />
+                  <Wand2 className="h-4 w-4 mr-1 text-primary-blue" />
                   Make more professional
                 </Button>
 
@@ -425,10 +425,10 @@ export function ExperienceSection({
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="bg-white"
+                  className="bg-white border-primary-blue"
                   onClick={checkSpelling}
                 >
-                  <Check className="h-4 w-4 mr-1" />
+                  <Check className="h-4 w-4 mr-1 text-primary-blue" />
                   Check spelling
                 </Button>
               </div>

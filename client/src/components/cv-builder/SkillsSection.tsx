@@ -147,7 +147,7 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       ) : (
         <Button
           variant="ghost"
-          className="text-blue-600 pl-0"
+          className="text-primary-blue pl-0"
           onClick={() => {
             setIsAddingSkill(true);
             setNewSkill("");
@@ -159,12 +159,10 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       )}
 
       {/* AI suggestion box */}
-      <div className="bg-blue-50 rounded-lg p-5 mt-6">
+      <div className="bg-gradient-to-r from-blue-100 to-violet-200 rounded-md p-5 mt-6">
         <div className="flex items-center mb-3">
-          <Sparkles className="text-blue-500 h-5 w-5 mr-2" />
-          <h3 className="text-blue-800 font-medium">
-            Skills index for Front-end Developer
-          </h3>
+          <Sparkles className="text-primary-blue h-5 w-5 mr-2" />
+          <h3 className="font-medium">Skills index for Front-end Developer</h3>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -173,10 +171,10 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
               key={suggestion}
               variant="outline"
               size="sm"
-              className="bg-white hover:bg-gray-50 text-gray-700"
+              className="bg-white hover:bg-gray-50 text-gray-700 border-primary-blue"
               onClick={() => handleAddSuggestion(suggestion)}
             >
-              <PlusCircle className="h-4 w-4 mr-1 text-blue-500" />
+              <PlusCircle className="h-4 w-4 mr-1 text-primary-blue" />
               {suggestion}
             </Button>
           ))}
