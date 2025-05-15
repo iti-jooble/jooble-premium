@@ -114,7 +114,7 @@ export const FilterBar = () => {
           .map((item, index) => (
             <div
               key={`${item.category}-${item.value}-${index}`}
-              className="flex items-center bg-white border border-gray-200 rounded-full px-4 py-2"
+              className="flex items-center bg-white border border-primary-blue rounded-xl px-4 py-2"
             >
               <span className="mr-2">{item.label}</span>
               <button

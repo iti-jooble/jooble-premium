@@ -17,6 +17,8 @@ import {
   CalendarIcon,
   DownloadIcon,
   CopyIcon,
+  MenuIcon,
+  PlusIcon,
   MoreHorizontalIcon,
 } from "lucide-react";
 import ConfirmationModal from "@/components/cv-builder/ConfirmationModal";
@@ -35,6 +37,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CV } from "@shared/schema";
+import { useLocation } from "wouter";
 
 interface CvTableProps {
   cvs: CV[];
@@ -52,6 +55,7 @@ export const CvTable = ({
   onDownload = () => {},
 }: CvTableProps) => {
   const { t } = useTranslation();
+  const [, navigate] = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCvId, setSelectedCvId] = useState<number | null>(null);
@@ -88,6 +92,10 @@ export const CvTable = ({
     onDownload(cv);
   };
 
+  const handleCreateNew = async () => {
+    navigate("/pick-template");
+  };
+
   const getScoreColor = (score: number) => {
     if (score >= 80) return "bg-green-100 text-green-800 border-green-200";
     if (score >= 60) return "bg-yellow-100 text-yellow-800 border-yellow-200";
@@ -121,12 +129,12 @@ export const CvTable = ({
                   {t("cvBuilder.table.title")}
                 </div>
               </TableHead>
-              <TableHead className="py-4 text-sm font-semibold">
+              {/* <TableHead className="py-4 text-sm font-semibold">
                 <div className="flex items-center">
                   <BarChart3Icon className="h-4 w-4 mr-2 text-muted-foreground" />
                   {t("cvBuilder.table.score")}
                 </div>
-              </TableHead>
+              </TableHead> */}
               <TableHead className="py-4 text-sm font-semibold">
                 <div className="flex items-center">
                   <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
@@ -134,7 +142,10 @@ export const CvTable = ({
                 </div>
               </TableHead>
               <TableHead className="text-right py-4 text-sm font-semibold">
-                {t("cvBuilder.table.actions")}
+                <div className="flex items-center justify-end">
+                  <MenuIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  {t("cvBuilder.table.actions")}
+                </div>
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -160,15 +171,15 @@ export const CvTable = ({
                 >
                   <TableCell className="font-medium py-4">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-primary/10 rounded-md flex items-center justify-center mr-3 group-hover:bg-primary/20 transition-colors">
-                        <FileTextIcon className="h-5 w-5 text-primary" />
-                      </div>
+                      {/* <div className="w-10 h-10 bg-primary-gradient rounded-md flex items-center justify-center mr-3 group-hover:bg-primary-gradient/20 transition-colors">
+                        <FileTextIcon className="h-5 w-5 text-primary-blue" />
+                      </div> */}
                       <h3 className="text-primary-blue group-hover:underline transition-all font-bold">
                         {cv.title}
                       </h3>
                     </div>
                   </TableCell>
-                  <TableCell className="py-4">
+                  {/* <TableCell className="py-4">
                     <div className="flex items-center gap-2">
                       <Badge
                         variant="outline"
@@ -186,7 +197,7 @@ export const CvTable = ({
                         />
                       </div>
                     </div>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="py-4 text-muted-foreground">
                     {formatDate(cv.dateCreated)}
                   </TableCell>
@@ -340,6 +351,18 @@ export const CvTable = ({
                 </TableRow>
               ))
             )}
+            <TableRow
+              className="hover:bg-muted/30 transition-colors group cursor-pointer border-b border-dashed"
+              onClick={handleCreateNew}
+            >
+              <TableCell className="font-medium py-4">
+                <div className="flex items-center">
+                  <h3 className="text-primary-blue group-hover:underline transition-all font-bold">
+                    + {t("cvBuilder.createNew")}
+                  </h3>
+                </div>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </div>

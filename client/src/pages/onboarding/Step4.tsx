@@ -238,7 +238,7 @@ const OnboardingStep4: React.FC = () => {
               .map((item) => (
                 <div
                   key={item.value}
-                  className="flex items-center bg-white border border-gray-200 rounded-full px-3 py-1"
+                  className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-1"
                 >
                   <span className="mr-2">{item.label}</span>
                   <button
@@ -303,7 +303,7 @@ const OnboardingStep4: React.FC = () => {
               .map((item) => (
                 <div
                   key={item.value}
-                  className="flex items-center bg-white border border-gray-200 rounded-full px-3 py-1"
+                  className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-1"
                 >
                   <span className="mr-2">{item.label}</span>
                   <button

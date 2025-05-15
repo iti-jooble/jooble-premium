@@ -110,9 +110,6 @@ export function CvPreview({
     <div className="w-full lg:w-1/2 flex-shrink-0 rounded-lg flex flex-col items-center h-[calc(100vh-150px)]">
       <div className="flex justify-between items-center mb-4 flex-shrink-0 w-full max-w-[492px]">
         <h2 className="text-xl font-medium text-foreground flex items-center">
-          <span className="mr-2 p-1 rounded-full bg-primary/10">
-            <FileText className="h-4 w-4 text-primary" />
-          </span>
           {t("cvPreview.preview")}
         </h2>
         <div className="flex gap-2">

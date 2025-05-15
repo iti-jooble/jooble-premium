@@ -72,7 +72,7 @@
     }
   },
   "cvBuilder": {
-    "title": "Resume",
+    "title": "Your resumes",
     "subtitle": "Easily create and manage your resumes with our tools",
     "createNew": "Create new resume",
     "importFromLinkedIn": "Import from LinkedIn",
@@ -81,7 +81,7 @@
       "description": "Create a professional resume with our easy-to-use builder. Choose from multiple templates and customize to match your style.",
       "button": "Create new resume"
     },
-    "yourCvs": "Your CVs",
+    "yourCvs": "Your resumes",
     "linkedInImport": {
       "title": "LinkedIn Import",
       "description": "This feature is coming soon. Stay tuned!"

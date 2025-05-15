@@ -74,7 +74,7 @@ const CvBuilder = () => {
             {t("cvBuilder.subtitle")}
           </p>
         </div>
-        <div className="flex gap-3">
+        {/* <div className="flex gap-3">
           <Button
             onClick={handleCreateNew}
             className="flex-1 sm:flex-auto"
@@ -92,7 +92,7 @@ const CvBuilder = () => {
             <LinkedinIcon className="h-5 w-5 mr-2" />
             {t("cvBuilder.importFromLinkedIn")}
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {(!isInitialized && isLoading) || error ? (
@@ -111,7 +111,7 @@ const CvBuilder = () => {
         <Card className="shadow-md border-0 bg-gradient-to-br from-background to-muted/50">
           <CardContent className="p-10 flex flex-col items-center justify-center text-center">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 ring-4 ring-primary/5">
-              <FileEditIcon className="h-10 w-10 text-primary" />
+              <FileEditIcon className="h-10 w-10 text-primary-blue" />
             </div>
             <h2 className="text-2xl font-semibold mb-3">
               {t("cvBuilder.noData.title")}
@@ -130,25 +130,19 @@ const CvBuilder = () => {
           </CardContent>
         </Card>
       ) : (
-        <Card className="shadow-md border-border/30 border overflow-hidden rounded-xl bg-card">
-          <CardHeader className="bg-muted/40 pb-4">
-            <CardTitle className="text-xl flex items-center">
-              <div className="rounded-full bg-primary/10 p-1.5 mr-2">
-                <FileEditIcon className="h-5 w-5 text-primary" />
-              </div>
-              {t("cvBuilder.yourCvs")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <CvTable
-              cvs={cvList}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onDuplicate={handleDuplicate}
-              onDownload={handleDownload}
-            />
-          </CardContent>
-        </Card>
+        <>
+          <Card className="shadow-md border-border/30 border overflow-hidden rounded-xl bg-card">
+            <CardContent className="p-0">
+              <CvTable
+                cvs={cvList}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onDuplicate={handleDuplicate}
+                onDownload={handleDownload}
+              />
+            </CardContent>
+          </Card>
+        </>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import React from "react";
 import {
   FileEditIcon,
   SearchIcon,
@@ -6,7 +7,6 @@ import {
   LogOutIcon,
   MoreVertical,
 } from "lucide-react";
-import { NavItem } from "@/types";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/redux/store";
 import { logout as logoutLocaly } from "@/redux/slices/userSlice";
@@ -17,20 +17,37 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 
 import { openModal } from "@/redux/slices/uiSlice";
 import { ModalType } from "@/constants/modals";
+
+export interface NavItem {
+  path: string;
+  label: string;
+  Icon: React.FC<{ stroke?: string; className?: string }>;
+}
 
 const navItems: NavItem[] = [
   {
     path: "/jobs",
     label: "Jobs",
-    icon: <SearchIcon className="h-4 w-4" />,
+    Icon: ({ className, stroke }) => (
+      <SearchIcon
+        className={cn("h-4 w-4", className)}
+        {...(stroke && { stroke })}
+      />
+    ),
   },
   {
     path: "/resume",
     label: "Resume",
-    icon: <FileEditIcon className="h-4 w-4" />,
+    Icon: ({ className, stroke }) => (
+      <FileEditIcon
+        className={cn("h-4 w-4", className)}
+        {...(stroke && { stroke })}
+      />
+    ),
   },
 ];
 
@@ -67,7 +84,7 @@ const SideMenu = () => {
             key={item.path}
             path={item.path}
             label={item.label}
-            icon={item.icon}
+            Icon={item.Icon}
             isActive={location === item.path}
           />
         ))}
@@ -150,11 +167,11 @@ const SideMenu = () => {
 interface NavLinkProps {
   path: string;
   label: string;
-  icon: React.ReactNode;
+  Icon: React.FC<{ stroke?: string; className?: string }>;
   isActive: boolean;
 }
 
-const NavLink = ({ path, label, icon, isActive }: NavLinkProps) => {
+const NavLink = ({ path, label, Icon, isActive }: NavLinkProps) => {
   return (
     <div className="mx-3 mb-1">
       <Link href={path}>
@@ -165,7 +182,9 @@ const NavLink = ({ path, label, icon, isActive }: NavLinkProps) => {
               : "text-gray-800 hover:bg-primary-background"
           }`}
         >
-          <span className="flex-shrink-0 mr-3 text-gray-900">{icon}</span>
+          <span className="flex-shrink-0 mr-3 text-gray-900">
+            <Icon {...(isActive && { stroke: "#5D55FA" })} />
+          </span>
           <span>{label}</span>
         </div>
       </Link>

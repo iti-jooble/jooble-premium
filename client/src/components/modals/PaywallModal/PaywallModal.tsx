@@ -85,9 +85,8 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
                   {FEATURES.map((feature, index) => (
                     <div key={index} className="flex items-center">
                       <CircleCheck
-                        className="h-7 w-7 text-blue-600 mr-2 flex-shrink-0"
-                        fill="#014EFE"
-                        color="white"
+                        className="h-7 w-7 text-blue-600 mr-2 flex-shrink-0 text-white"
+                        fill="#5D55FA"
                       />
                       <div>
                         <Trans
@@ -119,7 +118,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
                     onClick={() => setSelectedOption(option.priceId)}
                   >
                     {option.isDefault && (
-                      <div className="absolute -top-px -right-px bg-blue-600 text-white px-3 py-1 rounded-tr-lg rounded-bl-lg text-sm font-bold">
+                      <div className="absolute -top-px -right-px bg-primary-blue text-white px-3 py-1 rounded-tr-lg rounded-bl-lg text-sm font-bold">
                         🔥 Best value
                       </div>
                     )}
@@ -143,7 +142,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
                       <div
                         className={`h-5 w-5 rounded-full border ${
                           selectedOption === option.priceId
-                            ? "border-blue-600 bg-blue-600"
+                            ? "border-primary-blue bg-primary-blue"
                             : "border-gray-300"
                         } flex items-center justify-center`}
                       >
@@ -166,17 +165,17 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
 
               <div className="flex justify-center mt-6 gap-6">
                 <div className="flex items-center">
-                  <Rocket className="h-5 w-5 mr-2 text-blue-600" />
+                  <Rocket className="h-5 w-5 mr-2 text-primary-blue" />
                   <span>Instant access</span>
                 </div>
                 <div className="flex items-center">
-                  <WatchIcon className="h-5 w-5 mr-2 text-blue-600" />
+                  <WatchIcon className="h-5 w-5 mr-2 text-primary-blue" />
                   <span>Cancel anytime</span>
                 </div>
               </div>
               <div className="flex justify-center mt-2">
                 <div className="flex items-center">
-                  <ShieldCheckIcon className="h-5 w-5 mr-2 text-blue-600" />
+                  <ShieldCheckIcon className="h-5 w-5 mr-2 text-primary-blue" />
                   <span>Money Back Guarantee</span>
                 </div>
               </div>

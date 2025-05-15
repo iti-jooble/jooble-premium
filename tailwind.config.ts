@@ -11,7 +11,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       borderColor: {
-        "primary-blue": "#5D55FA",
+        "primary-blue": "#E1D2F3",
       },
       backgroundImage: {
         "primary-gradient": "linear-gradient(0deg, #EFEEFF 0%, #F6F7F8 100%)",

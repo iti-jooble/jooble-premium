@@ -311,7 +311,7 @@ const CvBuilderCreate = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left side with accordion form */}
         <div className="w-full lg:w-1/2 min-w-[380px]">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-muted/40 shadow-sm border border-border/50 rounded-lg">
+          {/* <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-white shadow-sm border border-border/50 rounded-lg">
             <div className="flex items-center gap-2">
               <div
                 className={`w-16 h-12 rounded-full flex items-center justify-center ${
@@ -360,13 +360,13 @@ const CvBuilderCreate = () => {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <Accordion
             type="single"
             collapsible
             defaultValue="personal"
-            className="w-full py-4"
+            className="w-full"
           >
             {/* Personal Information Section */}
             <AccordionItem
@@ -375,8 +375,8 @@ const CvBuilderCreate = () => {
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <div className="rounded-full bg-primary/10 p-2 mr-3">
-                    <User className="h-5 w-5 text-primary" />
+                  <div className="rounded-full bg-primary-gradient p-2 mr-3">
+                    <User className="h-5 w-5 text-primary-blue" />
                   </div>
                   <div>
                     <h3 className="text-base font-medium">
@@ -403,8 +403,8 @@ const CvBuilderCreate = () => {
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <div className="rounded-full bg-primary/10 p-2 mr-3">
-                    <BriefcaseBusiness className="h-5 w-5 text-primary" />
+                  <div className="rounded-full bg-primary-gradient p-2 mr-3">
+                    <BriefcaseBusiness className="h-5 w-5 text-primary-blue" />
                   </div>
                   <div>
                     <h3 className="text-base font-medium">
@@ -431,8 +431,8 @@ const CvBuilderCreate = () => {
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <div className="rounded-full bg-primary/10 p-2 mr-3">
-                    <GraduationCap className="h-5 w-5 text-primary" />
+                  <div className="rounded-full bg-primary-gradient p-2 mr-3">
+                    <GraduationCap className="h-5 w-5 text-primary-blue" />
                   </div>
                   <div>
                     <h3 className="text-base font-medium">
@@ -459,8 +459,8 @@ const CvBuilderCreate = () => {
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <div className="rounded-full bg-primary/10 p-2 mr-3">
-                    <Sparkles className="h-5 w-5 text-primary" />
+                  <div className="rounded-full bg-primary-gradient p-2 mr-3">
+                    <Sparkles className="h-5 w-5 text-primary-blue" />
                   </div>
                   <div>
                     <h3 className="text-base font-medium">
@@ -487,8 +487,8 @@ const CvBuilderCreate = () => {
             >
               <AccordionTrigger className="px-5 py-4 hover:no-underline">
                 <div className="flex items-center text-left">
-                  <div className="rounded-full bg-primary/10 p-2 mr-3">
-                    <FileText className="h-5 w-5 text-primary" />
+                  <div className="rounded-full bg-primary-gradient p-2 mr-3">
+                    <FileText className="h-5 w-5 text-primary-blue" />
                   </div>
                   <div>
                     <h3 className="text-base font-medium">

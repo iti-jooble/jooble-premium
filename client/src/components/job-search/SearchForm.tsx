@@ -135,7 +135,7 @@ export const SearchForm = ({
                   <ul className="py-1">
                     {[...autocomplete, inputValue].map((suggestion, index) => (
                       <li
-                        key={`${suggestion.value}-${index}`}
+                        key={`${suggestion.value ?? suggestion}-${index}`}
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         onClick={() =>
                           handleSuggestionClick(suggestion?.value ?? suggestion)
@@ -149,7 +149,7 @@ export const SearchForm = ({
                             }}
                           />
                         ) : (
-                          suggestion
+                          (suggestion as string)
                         )}
                       </li>
                     ))}
