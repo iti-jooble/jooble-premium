@@ -41,7 +41,7 @@ const colorMap = {
 export const JobCard = React.memo(
   ({ job, isSelected, onClick }: JobCardProps) => {
     const score = job.matching?.originalMatchingScore
-      ? (job.matching?.originalMatchingScore * 9.9).toFixed(1)
+      ? (job.matching?.originalMatchingScore * 9.99).toFixed(1)
       : Math.floor(Math.random() * 21) + 80;
 
     return (
@@ -140,7 +140,7 @@ export const JobCard = React.memo(
                     : "bg-red-700"
               }`}
             >
-              {score}
+              {Number.parseFloat(score) > 10 ? "10.0" : score}
             </div>
             <div className="text-center text-xs font-bold mt-4">
               {(Number(score) >= 9 && <div>Perfect match</div>) ||
