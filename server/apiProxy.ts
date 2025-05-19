@@ -51,7 +51,7 @@ export const createApiProxy = ({
         const status = error.response?.status || 500;
         const data = error.response?.data || { message: "External API error" };
 
-        log(`API Proxy error: ${status} - ${JSON.stringify(data)}`, "proxy");
+        log(`API Proxy error: ${status}`, "proxy");
         res.status(status).json(data);
       } else {
         log(`Proxy error: ${error}`, "proxy");

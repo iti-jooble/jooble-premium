@@ -219,7 +219,7 @@ export const tryCreateCvFromLocalStorage = createAsyncThunk(
     const cv = getUserCvLocaly();
 
     if (cv) {
-      await dispatch(createOrUpdateCv(cv));
+      await dispatch(createCv({ cvModel: { ...cv, templateId: 1, score: 0 } }));
 
       clearUserCvLocaly();
     }
