@@ -51,14 +51,26 @@ export const useAutocomplete = ({
     return response?.suggestions || [];
   };
 
-  const getAutocomplete = (data: IAutocompleteArgs): void => {
+  const getAutocomplete = async (data: IAutocompleteArgs): Promise<boolean> => {
     isLoading.current = true;
+    let hasAutocomplete = false;
 
-    getDebouncedAutocomplete<IAutocompleteArgs, IAutocompleteResponseItem[]>(
-      getData,
-    )(data)
-      .then(setAutocomplete)
-      .catch((err: any) => console.error(err));
+    try {
+      const autocomplete = await getDebouncedAutocomplete<
+        IAutocompleteArgs,
+        IAutocompleteResponseItem[]
+      >(getData)(data);
+
+      setAutocomplete(autocomplete);
+
+      if (autocomplete.length > 0) {
+        hasAutocomplete = true;
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      return hasAutocomplete;
+    }
   };
 
   const setAutocomplete = (autocomplete: IAutocompleteResponseItem[]): void => {

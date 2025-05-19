@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useAppDispatch } from "@/redux/store";
+import { User } from "@/types/state/user.types";
 import { useAutocomplete, AUTOCOMPLETE_MODE } from "@/hooks/useAutocomplete";
 import usePreferences from "@/components/job-search/hooks/usePreferences";
 import {
@@ -17,16 +17,10 @@ import {
   MAX_YEARS_OF_EXPERIENCE,
   preferencesConfig,
 } from "@/components/job-search/constants";
-import {
-  WorkFormats,
-  LocationTypes,
-  SeniorityLevels,
-} from "@/components/job-search/enums";
 
 const OnboardingStep4: React.FC = () => {
   const [_, setLocation] = useLocation();
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const [yearsOfExperience, setYearsOfExperience] = useState(0);
   const [salaryRange, setSalaryRange] = useState([0, MAX_SALARY]);
 
@@ -75,6 +69,22 @@ const OnboardingStep4: React.FC = () => {
     if (salaryRange) {
       setSalaryRange([salaryRange.min || 0, salaryRange.max || MAX_SALARY]);
     }
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (!preferences.filter((l) => l.category === "location").length) {
+        return;
+      }
+
+      const hasAutocomplete = await getLocationAutocomplete({
+        query: locationInputValue,
+      });
+
+      if (!hasAutocomplete) {
+        updatePreferences({ location: "" });
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -204,6 +214,7 @@ const OnboardingStep4: React.FC = () => {
               placeholder="Add job title"
               value={keywordInputValue}
               onChange={handleKeywordInputChange}
+              onFocus={handleKeywordInputFocus}
               className="mb-2"
             />
             {/* Location suggestions dropdown */}
@@ -269,6 +280,7 @@ const OnboardingStep4: React.FC = () => {
               placeholder="Add location"
               value={locationInputValue}
               onChange={handleLocationInputChange}
+              onFocus={handleLocationInputFocus}
               className="mb-2"
             />
             {/* Location suggestions dropdown */}

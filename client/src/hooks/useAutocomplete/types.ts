@@ -5,7 +5,7 @@ export interface IGetAutocompleteArgs<ITEM> {
 
 export type TUseAutocomplete<DATA, ITEM> = [
   ITEM[],
-  (data: DATA) => void,
+  (data: DATA) => Promise<boolean>,
   () => void,
 ];
 

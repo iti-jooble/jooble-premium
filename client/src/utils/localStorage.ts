@@ -1,8 +1,10 @@
 import {
+  USER_CV_KEY,
   USER_PREFERENCES_KEY,
   HAS_COMPLETED_ONBOARDING_KEY,
 } from "@/constants/localStorageKeys";
 import { User } from "@/types/state/user.types";
+import { CV } from "@shared/schema";
 
 interface UserPreferences {
   [key: string]: any;
@@ -50,5 +52,33 @@ export const clearUserPreferences = (): void => {
     localStorage.removeItem(USER_PREFERENCES_KEY);
   } catch (error) {
     console.error("Error clearing user preferences:", error);
+  }
+};
+
+export const getUserCv = (): CV | null => {
+  try {
+    const cv = localStorage.getItem(USER_CV_KEY);
+    return cv ? JSON.parse(cv) : null;
+  } catch (error) {
+    console.error("Error retrieving user cv:", error);
+    return null;
+  }
+};
+
+export const createOrUpdateCv = (cv: Partial<CV>): void => {
+  try {
+    const currentCv = getUserCv() || {};
+    const updatedCv = { ...currentCv, ...cv };
+    localStorage.setItem(USER_CV_KEY, JSON.stringify(updatedCv));
+  } catch (error) {
+    console.error("Error saving user cv:", error);
+  }
+};
+
+export const clearUserCv = (): void => {
+  try {
+    localStorage.removeItem(USER_CV_KEY);
+  } catch (error) {
+    console.error("Error clearing user cv:", error);
   }
 };

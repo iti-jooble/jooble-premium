@@ -1,8 +1,11 @@
 import type { Express } from "express";
+import axios from "axios";
+import multer from "multer";
 import { createServer, type Server } from "http";
 import { createApiProxy } from "./apiProxy";
 import { EXTERNAL_RESPONSE_TYPES } from "./constants";
 import { getBaseApiUrl, getFitlyApiUrl } from "./helpers";
+import { cvParsingSchema } from "./cvParsingSchema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoint
@@ -43,6 +46,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Duplicate CV
   app.post("/api/cvs/:id/duplicate", createApiProxy());
+
+  // Parse CV from file
+  app.post("/api/cvs/parse", multer().single("file"), (req, res) => {
+    console.log("file size", req.file?.size);
+
+    axios
+      .post(
+        "https://api.openai.com/v1/responses",
+        {
+          model: "gpt-4.1",
+          input: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "input_file",
+                  filename: req.file?.originalname,
+                  file_data: `data:application/pdf;base64,${req.file?.buffer.toString("base64")}`,
+                },
+                {
+                  type: "input_text",
+                  text: JSON.stringify(cvParsingSchema),
+                },
+              ],
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Bearer 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`,
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      .then((response) => {
+        res.send(response.data.output[0].content[0].text);
+      })
+      .catch((error) => {
+        const data = error.response?.data ?? {
+          message: error.message ?? "External API error",
+        };
+        res.status(500).json(data);
+      });
+  });
 
   // === Auth API Routes ===
 

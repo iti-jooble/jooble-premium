@@ -6,6 +6,12 @@ import { cvApiSlice } from "../api/cvApiSlice";
 import { CV } from "@shared/schema";
 import { PdfDataCreator } from "@/components/cv-builder/Templates/PdfDataCreator";
 import axios from "axios";
+import { updatePreferences } from "@/redux/thunks";
+import {
+  createOrUpdateCv as createOrUpdateCvLocaly,
+  getUserCv as getUserCvLocaly,
+  clearUserCv as clearUserCvLocaly,
+} from "@/utils/localStorage";
 
 /**
  * AsyncThunk for initializing the CV builder
@@ -180,5 +186,42 @@ export const downloadCv = createAsyncThunk<void, { id: number; title: string }>(
     document.body.appendChild(link);
     link.click();
     link.parentNode?.removeChild(link);
+  },
+);
+
+/**
+ * AsyncThunk for parsing a CV from a file
+ * Uses the API slice's parseCv endpoint
+ */
+export const parseCv = createAsyncThunk<void, FormData>(
+  "cvBuilder/parseCv",
+  async (payload, { dispatch, rejectWithValue }) => {
+    try {
+      const result = await dispatch(
+        cvApiSlice.endpoints.parseCV.initiate(payload),
+      );
+
+      if (!result.data) {
+        throw new Error("Failed to parse CV");
+      }
+
+      dispatch(updatePreferences(result.data.preferences));
+      createOrUpdateCvLocaly(result.data.cv);
+    } catch (error: any) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const tryCreateCvFromLocalStorage = createAsyncThunk(
+  "cvBuilder/tryCreateCvFromLocalStorage",
+  async (_, { dispatch }) => {
+    const cv = getUserCvLocaly();
+
+    if (cv) {
+      await dispatch(createOrUpdateCv(cv));
+
+      clearUserCvLocaly();
+    }
   },
 );

@@ -4,6 +4,7 @@ import {
   ICreateCvRequest,
   IUpdateCvRequest,
 } from "@/types/api/cvBuilder.types";
+import { User } from "@/types/state/user.types";
 
 /**
  * API slice for CV-related operations
@@ -82,6 +83,19 @@ export const cvApiSlice = createApi({
         method: "POST",
         body: data,
       }),
+    }),
+
+    // Parse CV from file
+    parseCV: builder.mutation<
+      { preferences: User["preferences"]; cv: CV },
+      FormData
+    >({
+      query: (data) => ({
+        url: "/cvs/parse",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "CV", id: "LIST" }],
     }),
   }),
 });

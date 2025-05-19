@@ -4,10 +4,10 @@ import {
   AuthByGoogleCredentials,
   RegisterData,
 } from "@/types/api/auth.types";
-import { AppDispatch } from "@/redux/store";
 import { UserState } from "../../types/state/user.types";
 import { authApiSlice } from "../api/authApiSlice";
 import { setUser } from "../slices/userSlice";
+import { tryCreateCvFromLocalStorage } from "./cvBuilder.thunks";
 import { tryUpdatePreferencesFromLocalStorage } from "./user.thunks";
 
 export const authByGoogle = createAsyncThunk<
@@ -25,6 +25,7 @@ export const authByGoogle = createAsyncThunk<
 
     dispatch(setUser(result.data));
     dispatch(tryUpdatePreferencesFromLocalStorage());
+    dispatch(tryCreateCvFromLocalStorage());
 
     return result.data;
   } catch (error: any) {
@@ -46,6 +47,7 @@ export const login = createAsyncThunk<Partial<UserState>, AuthCredentials>(
 
       dispatch(setUser(result.data));
       dispatch(tryUpdatePreferencesFromLocalStorage());
+      dispatch(tryCreateCvFromLocalStorage());
 
       return result.data;
     } catch (error: any) {
@@ -68,6 +70,7 @@ export const register = createAsyncThunk<Partial<UserState>, RegisterData>(
 
       dispatch(setUser(result.data));
       dispatch(tryUpdatePreferencesFromLocalStorage());
+      dispatch(tryCreateCvFromLocalStorage());
 
       return result.data;
     } catch (error: any) {
