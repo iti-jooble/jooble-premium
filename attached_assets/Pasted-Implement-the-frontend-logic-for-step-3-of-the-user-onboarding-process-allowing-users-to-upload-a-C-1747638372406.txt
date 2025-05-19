@@ -1,0 +1,34 @@
+Implement the frontend logic for step 3 of the user onboarding process, allowing users to upload a CV file and trigger a simulated analysis with error handling.
+
+Tasks:
+
+CV Upload Functionality:
+Provide two methods for users to upload their CV:
+Drag and Drop: Implement a designated area where users can drag and drop their CV file.
+Button Upload: Include a button that, when clicked, opens a file selection dialog for the user to choose their CV file.
+Accepted File Types: Ensure that only files with the extensions .pdf, .doc, .docx, and .txt are accepted.
+Maximum File Size: Set a maximum allowed file size. A reasonable recommendation is 5MB (5 * 1024 * 1024 bytes), but please confirm if you have a specific limit in mind.
+File Information and Analysis Button:
+Once a valid file is successfully uploaded:
+Display the name of the uploaded file to the user.
+Show an "Analyze" button next to the displayed file name.
+Simulated Server Submission:
+When the user clicks the "Analyze" button:
+Retrieve the uploaded CV file.
+Simulate sending the file data to a server. For this frontend task, you do not need to implement the actual server-side route. You can simply use console.log() to output a message indicating that the file data would be sent, along with the file name.
+Error Handling and Messages:
+Implement error handling for the following scenarios:
+Invalid File Type: If the user attempts to upload a file with an extension other than .pdf, .doc, .docx, or .txt, display an appropriate error message to the user (e.g., "Invalid file type. Please upload a .pdf, .doc, .docx, or .txt file.").
+File Size Exceeded: If the user attempts to upload a file larger than the maximum allowed size, display an appropriate error message (e.g., "File size exceeds the limit. Please upload a file smaller than [Maximum File Size].").
+Upload Failure (if applicable): Consider any other potential reasons for upload failure and display a generic error message if necessary (e.g., "File upload failed.").
+Expected Outcome:
+
+Users should be able to upload CV files of the specified types and within the recommended (or specified) size limit via drag and drop or a button. Upon successful upload, the filename will be displayed with an "Analyze" button. Clicking "Analyze" will log a simulated submission. Appropriate error messages will be displayed for invalid file types or files exceeding the size limit.
+
+Hints:
+
+You can use JavaScript to check the file type (file.type or by examining the file extension) and file size (file.size) before proceeding with the simulated upload.
+Use conditional statements to display error messages to the user within the existing UI.
+Clarification:
+
+The maximum file size has been recommended as 5MB. Please confirm if this is acceptable or if you have a different size limit in mind.
