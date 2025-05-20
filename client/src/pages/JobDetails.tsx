@@ -255,137 +255,92 @@ const JobDetails = () => {
 
         {/* Right Column (1/3 width) */}
         <div className="md:col-span-1 space-y-6">
-          {/* Match Score Card */}
+          {/* Resume Matching Card */}
           <Card className="p-6 flex flex-col items-center">
-            <div className="relative w-24 h-24 mb-2">
+            {/* Progress Circle */}
+            <div className="relative w-44 h-44 mb-6">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-4xl font-bold">94</div>
-                  <div className="text-xs text-muted-foreground">/100</div>
+                  <div className="text-4xl font-bold text-[#111827]">47<span className="text-2xl">%</span></div>
                 </div>
               </div>
-              {/* Blue circular progress ring */}
+              {/* Semi-circular progress ring */}
               <svg
                 className="w-full h-full transform -rotate-90"
-                viewBox="0 0 48 48"
+                viewBox="0 0 100 100"
               >
                 <circle
-                  cx="24"
-                  cy="24"
-                  r="20"
+                  cx="50"
+                  cy="50"
+                  r="45"
                   fill="none"
-                  stroke="#e5e5e5"
-                  strokeWidth="4"
+                  stroke="#EEEEEE"
+                  strokeWidth="10"
                 />
                 <circle
-                  cx="24"
-                  cy="24"
-                  r="20"
+                  cx="50"
+                  cy="50"
+                  r="45"
                   fill="none"
-                  stroke="#014EFE"
-                  strokeWidth="4"
-                  strokeDasharray="125.6"
-                  strokeDashoffset="7.54"
+                  stroke="#E41B17"
+                  strokeWidth="10"
+                  strokeDasharray="282.7"
+                  strokeDashoffset="150"
+                  strokeLinecap="round"
                 />
               </svg>
             </div>
-            <h3 className="font-bold text-center">Perfect match</h3>
-            <p className="text-sm text-muted-foreground text-center mt-1">
-              This job perfectly fit your preferences
+            
+            {/* Heading */}
+            <h3 className="font-bold text-xl text-center mb-1">Response Chance</h3>
+            <h2 className="font-bold text-3xl text-center text-[#111827] mb-4">Without Fitly</h2>
+            
+            {/* Description */}
+            <p className="text-gray-600 text-center mb-8">
+              You've got potential, but your resume isn't selling it. Let's refine it to really match what this job needs.
             </p>
-            <div className="space-y-3 py-8 my-8 border-y border-gray-200">
-              {/* Salary */}
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">$59 per hour</div>
-                  <div className="text-xs text-muted-foreground">
-                    Your expected rate: $55-$60
-                  </div>
-                </div>
+            
+            {/* Fix Categories */}
+            <div className="flex w-full gap-3 mb-8">
+              {/* Must Fix */}
+              <div className="flex-1 bg-red-50 rounded-lg p-4 relative">
+                <div className="text-center font-bold">MUST FIX</div>
+                <div className="text-center text-3xl font-bold mt-1">3</div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-500 rounded-b-lg"></div>
               </div>
-
-              {/* Location */}
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">New York, NY</div>
-                  <div className="text-xs text-muted-foreground">
-                    You're open to NYC & hybrid roles
-                  </div>
-                </div>
+              
+              {/* Should Fix */}
+              <div className="flex-1 bg-amber-50 rounded-lg p-4 relative">
+                <div className="text-center font-bold">SHOULD FIX</div>
+                <div className="text-center text-3xl font-bold mt-1">4</div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-500 rounded-b-lg"></div>
               </div>
-
-              {/* Job Type */}
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">Full-time</div>
-                  <div className="text-xs text-muted-foreground">
-                    Your preference: Full-time
-                  </div>
-                </div>
-              </div>
-
-              {/* Work Format */}
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">Hybrid work format</div>
-                  <div className="text-xs text-muted-foreground">
-                    You prefer: Hybrid or Remote
-                  </div>
-                </div>
-              </div>
-
-              {/* Level */}
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">Senior level</div>
-                  <div className="text-xs text-muted-foreground">
-                    Your level: Senior
-                  </div>
-                </div>
-              </div>
-
-              {/* Experience */}
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  <XCircle className="h-5 w-5 text-red-500" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">
-                    Requires 5+ years of experience
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Your experience: 4 years
-                  </div>
-                </div>
+              
+              {/* Minor Fix */}
+              <div className="flex-1 bg-blue-50 rounded-lg p-4 relative">
+                <div className="text-center font-bold">MINOR FIX</div>
+                <div className="text-center text-3xl font-bold mt-1">2</div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-blue-500 rounded-b-lg"></div>
               </div>
             </div>
-            {/* Apply Button */}
-            <Button className="w-full mb-4 py-6 bg-primary-blue hover:bg-blue-700 text-white text-lg font-bold rounded-md">
-              Apply now
+            
+            {/* Fix Resume Button */}
+            <Button className="w-full mb-4 py-6 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold rounded-md">
+              Fix resume & Apply
             </Button>
-
-            {/* Fit Docs Button */}
+            
+            {/* Show Issues Button */}
             <Button
               variant="outline"
-              className="w-full py-6 border-gray-300 text-gray-700 font-bold"
+              className="w-full py-6 border-gray-300 text-blue-600 font-bold"
             >
-              Fit my docs
+              Show issues
             </Button>
+            
+            {/* Footer Text */}
+            <p className="text-gray-500 text-center mt-6">
+              We'll tailor your resume before applying and increase your chances.
+            </p>
           </Card>
         </div>
       </div>
