@@ -4,6 +4,7 @@ import { RootState, useAppDispatch } from "@/redux/store";
 import { ModalType } from "@/constants/modals";
 import { closeModal } from "@/redux/slices/uiSlice";
 import PaywallModal from "@/components/modals/PaywallModal";
+import CvAdaptationModal from "@/components/modals/CvAdaptationModal";
 
 const ModalProvider: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +21,14 @@ const ModalProvider: React.FC = () => {
           case ModalType.PAYWALL:
             return (
               <PaywallModal
+                key={modal.id}
+                closeModal={() => handleCloseModal(modal.id)}
+                {...modal.props}
+              />
+            );
+          case ModalType.CV_ADAPTATION:
+            return (
+              <CvAdaptationModal
                 key={modal.id}
                 closeModal={() => handleCloseModal(modal.id)}
                 {...modal.props}
