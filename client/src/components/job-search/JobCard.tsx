@@ -74,9 +74,7 @@ export const JobCard = React.memo(
             <div className="grid grid-cols-7 gap-x-4 gap-y-2 text-sm text-muted-foreground mt-2">
               <div className="flex items-center col-span-3 pr-2">
                 <WalletIcon className="h-4 w-4 mr-1 min-w-4 text-muted-foreground/70" />
-                <span
-                  className={`${!job.salary && "text-muted-foreground/70"}`}
-                >
+                <span className={`${!job.salary && "italic"}`}>
                   {job.salary ||
                     job.estimatedSalary ||
                     job.matching?.salary.actual ||
