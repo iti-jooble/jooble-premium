@@ -85,7 +85,7 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
                   {FEATURES.map((feature, index) => (
                     <div key={index} className="flex items-center">
                       <CircleCheck
-                        className="h-7 w-7 text-blue-600 mr-2 flex-shrink-0 text-white"
+                        className="h-7 w-7 text-primary-blue mr-2 flex-shrink-0 text-white"
                         fill="#5D55FA"
                       />
                       <div>

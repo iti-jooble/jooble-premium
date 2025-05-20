@@ -46,7 +46,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="p-6 animate-in fade-in duration-300 max-w-[1012px] m-auto">
+    <div className="p-6 animate-in fade-in duration-300 max-w-[1032px] m-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-neutral-800">
           {t("settings.title")}

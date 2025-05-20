@@ -1,14 +1,22 @@
 import { z } from "zod";
 
+export const getMatchingDetailsSchema = (
+  expected: z.ZodArray<z.ZodString> | z.ZodString,
+) =>
+  z.object({
+    actual: z.string(),
+    expected,
+    score: z.number(),
+  });
+
 export const matchingSchema = z.object({
   originalMatchingScore: z.number(),
-  title: z.boolean(),
-  location: z.boolean(),
-  jobType: z.boolean(),
-  salary: z.boolean(),
-  locationType: z.boolean(),
-  seniorityLevel: z.boolean(),
-  experienceYears: z.boolean(),
+  location: getMatchingDetailsSchema(z.string()),
+  workFormat: getMatchingDetailsSchema(z.array(z.string())),
+  salary: getMatchingDetailsSchema(z.string()),
+  locationType: getMatchingDetailsSchema(z.array(z.string())),
+  seniorityLevel: getMatchingDetailsSchema(z.array(z.string())),
+  experienceYears: getMatchingDetailsSchema(z.string()),
 });
 
 export const jobCompanySchema = z.object({
@@ -54,7 +62,7 @@ export const jobSchema = z.object({
   dateCaption: z.string(),
   fullContent: z.string().optional(),
   originalDescription: z.string(),
-  matching: matchingSchema.optional(),
+  matching: matchingSchema,
   fitlyJobCard: fitlyJobCardSchema.optional(),
 });
 

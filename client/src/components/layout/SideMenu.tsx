@@ -7,6 +7,7 @@ import {
   LogOutIcon,
   MoreVertical,
   User,
+  Rocket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
@@ -91,6 +92,44 @@ const SideMenu = () => {
             isActive={location === item.path}
           />
         ))}
+        
+        {/* Coming Soon Features Section */}
+        <div className="mt-6 relative">
+          {/* Blurred Overlay */}
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+            <Rocket className="text-blue-500 mb-2" size={24} />
+            <h3 className="text-lg font-bold text-gray-900">More features</h3>
+            <p className="text-gray-800 font-medium">coming soon</p>
+          </div>
+          
+          {/* Fake Menu Items (will be blurred) */}
+          <div className="mx-3 mb-1">
+            <div className="flex items-center px-4 py-3 rounded-xl text-md font-bold text-gray-800">
+              <span className="flex-shrink-0 mr-3 text-gray-900">
+                <div className="w-4 h-4 bg-gray-300 rounded-sm"></div>
+              </span>
+              <span>Feature 1</span>
+            </div>
+          </div>
+          
+          <div className="mx-3 mb-1">
+            <div className="flex items-center px-4 py-3 rounded-xl text-md font-bold text-gray-800">
+              <span className="flex-shrink-0 mr-3 text-gray-900">
+                <div className="w-4 h-4 bg-gray-300 rounded-sm"></div>
+              </span>
+              <span>Feature 2</span>
+            </div>
+          </div>
+          
+          <div className="mx-3 mb-1">
+            <div className="flex items-center px-4 py-3 rounded-xl text-md font-bold text-gray-800">
+              <span className="flex-shrink-0 mr-3 text-gray-900">
+                <div className="w-4 h-4 bg-gray-300 rounded-sm"></div>
+              </span>
+              <span>Feature 3</span>
+            </div>
+          </div>
+        </div>
       </nav>
 
       <div className="mt-auto">
