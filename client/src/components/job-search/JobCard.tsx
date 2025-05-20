@@ -93,7 +93,7 @@ export const JobCard = React.memo(
                 <span>
                   {(JOB_TYPE_TO_LABEL_MAP[WorkFormats[job.jobType]] ??
                     JOB_TYPE_TO_LABEL_MAP[
-                      WorkFormats[job.fitlyJobCard?.basicInfo.workFormat]
+                      WorkFormats[job.fitlyJobCard?.basicInfo?.workFormat]
                     ]) ||
                     "Unknown"}
                 </span>
@@ -102,7 +102,7 @@ export const JobCard = React.memo(
                 <TrophyIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
                 <span>
                   {EXPERIENCE_LEVEL_TO_LABEL_MAP[
-                    SeniorityLevels[job.fitlyJobCard?.basicInfo.seniorityLevel]
+                    SeniorityLevels[job.fitlyJobCard?.basicInfo?.seniorityLevel]
                   ] || "Unknown"}
                 </span>
               </div>
@@ -114,14 +114,14 @@ export const JobCard = React.memo(
                 <Building2Icon className="h-4 w-4 mr-1 text-muted-foreground/70" />
                 <span>
                   {LOCATION_TYPE_TO_LABEL_MAP[
-                    LocationTypes[job.fitlyJobCard?.basicInfo.locationType]
+                    LocationTypes[job.fitlyJobCard?.basicInfo?.locationType]
                   ] ?? "Unknown"}
                 </span>
               </div>
               <div className="flex items-center col-span-2">
                 <CalendarIcon className="h-4 w-4 mr-1 text-muted-foreground/70" />
                 <span>
-                  {job.fitlyJobCard?.basicInfo.yearsOfExperience
+                  {job.fitlyJobCard?.basicInfo?.yearsOfExperience
                     ? `${job.fitlyJobCard?.basicInfo.yearsOfExperience}+ years exp`
                     : "Unknown"}
                 </span>

@@ -24,19 +24,21 @@ export const jobLocationSchema = z.object({
 });
 
 export const fitlyJobCardSchema = z.object({
-  basicInfo: z.object({
-    salaryLevel: z.object({
-      max: z.number(),
-      min: z.number(),
-      period: z.string(),
-      currency: z.string(),
-      salarySource: z.string(),
-    }),
-    seniorityLevel: z.string(),
-    workFormat: z.string(),
-    locationType: z.string(),
-    yearsOfExperience: z.number(),
-  }),
+  basicInfo: z
+    .object({
+      salaryLevel: z.object({
+        max: z.number(),
+        min: z.number(),
+        period: z.string(),
+        currency: z.string(),
+        salarySource: z.string(),
+      }),
+      seniorityLevel: z.string(),
+      workFormat: z.string(),
+      locationType: z.string(),
+      yearsOfExperience: z.number(),
+    })
+    .optional(),
 });
 
 export const jobSchema = z.object({

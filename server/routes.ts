@@ -75,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         {
           headers: {
-            Authorization: `Bearer token`,
+            Authorization: `Bearer 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`,
             "Content-Type": "application/json",
           },
         },

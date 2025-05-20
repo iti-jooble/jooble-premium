@@ -79,67 +79,114 @@ const JobDetails = () => {
               </div>
             </div>
 
-            {/* Resume Match Card */}
-            <div className="mb-3 p-8 bg-primary-gradient rounded-lg overflow-hidden rounded-xl">
-              <div className="flex items-center">
-                {/* Resume images */}
-                <div className="flex-shrink-0 w-[120px]">
-                  <div className="relative">
-                    <img src="/images/cvs.png" alt="Resume" />
+            {/* Job Info Matching Block */}
+            <div className="mb-3 p-6 bg-gray-50 rounded-lg overflow-hidden rounded-xl">
+              <div className="flex flex-col">
+                {/* Score and Title */}
+                <div className="flex items-center mb-4">
+                  {/* Score Block */}
+                  <div className="bg-blue-600 text-white text-3xl font-bold p-4 rounded-lg w-24 h-24 flex items-center justify-center mr-4">
+                    8.6
+                  </div>
+                  
+                  {/* Title and Subtitle */}
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">
+                      Fitly Perfect!
+                    </h3>
+                    <p className="text-gray-500">
+                      Spot-on! This is your ideal fit — go for it.
+                    </p>
                   </div>
                 </div>
-
-                {/* Text Content */}
-                <div className="flex-1 ml-[32px] mr-[32px]">
-                  <h3 className="text-md font-bold text-gray-800">
-                    Response chance without Fitly
-                  </h3>
-                  <p className="text-gray-700 mt-2 mb-1 text-sm">
-                    Your resume doesn't highlight your strengths well enough for
-                    this job.
-                  </p>
-                </div>
-
-                {/* Score Circle */}
-                <div className="flex-shrink-0">
-                  <div className="relative w-28 h-28">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center text-4xl font-black">34</div>
+                
+                {/* Criteria Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Left Column */}
+                  <div className="space-y-4">
+                    {/* Salary */}
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 mr-3 mt-1">
+                        <div className="bg-blue-600 rounded-full p-1">
+                          <CheckCircle2 className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-800">£49k - £67k per annum</div>
+                        <div className="text-sm text-gray-500">Expected: $55-$60</div>
+                      </div>
                     </div>
-                    {/* Red circular progress ring */}
-                    <svg
-                      className="w-full h-full transform -rotate-90"
-                      viewBox="0 0 48 48"
-                    >
-                      <circle
-                        cx="24"
-                        cy="24"
-                        r="20"
-                        fill="none"
-                        stroke="#e5e5e5"
-                        strokeWidth="4"
-                      />
-                      <circle
-                        cx="24"
-                        cy="24"
-                        r="20"
-                        fill="none"
-                        stroke="#CC2714"
-                        strokeWidth="4"
-                        strokeDasharray="125.6"
-                        strokeDashoffset="83"
-                      />
-                    </svg>
+                    
+                    {/* Location */}
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 mr-3 mt-1">
+                        <div className="bg-blue-600 rounded-full p-1">
+                          <CheckCircle2 className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-800">New York, NY</div>
+                        <div className="text-sm text-gray-500">Preferred: New York, NY</div>
+                      </div>
+                    </div>
+                    
+                    {/* Job Type */}
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 mr-3 mt-1">
+                        <div className="bg-blue-600 rounded-full p-1">
+                          <CheckCircle2 className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-800">Full-time</div>
+                        <div className="text-sm text-gray-500">Preferred: Full-time</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center text-sm text-red-600 font-medium mt-1 justify-center">
-                    <span className="mr-1">😔</span> Need improve
+                  
+                  {/* Right Column */}
+                  <div className="space-y-4">
+                    {/* Work Format */}
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 mr-3 mt-1">
+                        <div className="bg-gray-400 rounded-full p-1">
+                          <span className="h-4 w-4 text-white flex items-center justify-center text-sm">?</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-800">Hybrid</div>
+                        <div className="text-sm text-gray-500">Preferred: Hybrid or Remote</div>
+                      </div>
+                    </div>
+                    
+                    {/* Level */}
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 mr-3 mt-1">
+                        <div className="bg-amber-500 rounded-full p-1">
+                          <span className="h-4 w-4 text-white flex items-center justify-center text-sm">!</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-800">Senior level</div>
+                        <div className="text-sm text-gray-500">Your level: Senior</div>
+                      </div>
+                    </div>
+                    
+                    {/* Experience */}
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 mr-3 mt-1">
+                        <div className="bg-red-500 rounded-full p-1">
+                          <XCircle className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-800">5+ years exp</div>
+                        <div className="text-sm text-gray-500">Your experience: 6 years</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <Button className="w-full mt-8 py-6 bg-primary-blue hover:bg-blue-700 text-white text-lg font-bold rounded-md">
-                Fit my docs
-              </Button>
             </div>
 
             {/* Summary Section */}
