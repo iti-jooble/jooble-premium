@@ -42,7 +42,7 @@ export const JobCard = React.memo(
   ({ job, isSelected, onClick }: JobCardProps) => {
     const score = job.matching?.originalMatchingScore
       ? (job.matching?.originalMatchingScore * 9.99).toFixed(1)
-      : Math.floor(Math.random() * 21) + 80;
+      : "9.0";
 
     return (
       <div
