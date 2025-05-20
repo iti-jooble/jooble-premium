@@ -35,6 +35,9 @@ const JobSearch = loadable(() => import("@/pages/JobSearch"), {
 const JobDetails = loadable(() => import("@/pages/JobDetails"), {
   fallback: <PageLoadingIndicator />,
 });
+const CvAdaptationTest = loadable(() => import("@/pages/CvAdaptationTest"), {
+  fallback: <PageLoadingIndicator />,
+});
 
 function Main() {
   return (
@@ -50,6 +53,7 @@ function Main() {
       <Route path="/settings">{() => <Settings />}</Route>
       <Route path="/help">{() => <Help />}</Route>
       <Route path="/pick-template">{() => <PickTemplate />}</Route>
+      <Route path="/cv-adaptation-test">{() => <CvAdaptationTest />}</Route>
       <Route>{() => <NotFound />}</Route>
     </Switch>
   );
