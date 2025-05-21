@@ -24,14 +24,14 @@ export interface JobCardProps {
 }
 
 const colorMap = {
-  red: "bg-red-100",
+  red: "bg-red/20",
   blue: "bg-blue-100",
-  green: "bg-green-100",
+  green: "bg-green/20",
   yellow: "bg-yellow-100",
   purple: "bg-purple-100",
   pink: "bg-pink-100",
-  orange: "bg-orange-100",
-  gray: "bg-gray-100",
+  orange: "bg-orange/20",
+  gray: "bg-gray/20",
 };
 
 export const JobCard = React.memo(
@@ -66,9 +66,7 @@ export const JobCard = React.memo(
             </div>
 
             {/* Job title */}
-            <h3 className="font-bold text-primary-blue text-lg">
-              {job.position}
-            </h3>
+            <h3 className="font-bold text-lg">{job.position}</h3>
 
             {/* Job details */}
             <div className="grid grid-cols-7 gap-x-4 gap-y-2 text-sm text-muted-foreground mt-2">
@@ -126,7 +124,7 @@ export const JobCard = React.memo(
             {matchingScore && (
               <>
                 <div
-                  className={`w-14 h-14 flex items-center justify-center text-2xl font-bold text-white rounded-xl ${matchingScore.color}`}
+                  className={`w-14 h-14 flex items-center justify-center text-2xl font-bold text-white rounded-xl ${matchingScore.styles}`}
                 >
                   {matchingScore.score}
                 </div>

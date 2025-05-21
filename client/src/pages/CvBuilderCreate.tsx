@@ -28,7 +28,6 @@ import { createOrUpdateCv, downloadCv } from "@/redux/thunks";
 import cvData from "@/components/cv-builder/Templates/cvData.json";
 import { CvSource } from "@/types/enums/cv.enums";
 import { cvSelectors } from "@/redux/selectors";
-import { getCvScoreDescription } from "@/lib/cvScoreUtils";
 import {
   PersonalInfo,
   Experience,
@@ -232,7 +231,7 @@ const CvBuilderCreate = () => {
   }
 
   return (
-    <div className="p-6 sm:p-8 animate-in fade-in duration-300">
+    <div className="p-6 sm:p-8 animate-in fade-in duration-300 max-w-[1600px] m-auto">
       <div className="mb-8 max-w-xl min-w-[380px]">
         {/* Editable CV title */}
         <div className="group relative mb-2">
@@ -511,16 +510,18 @@ const CvBuilderCreate = () => {
         </div>
 
         {/* Right side - Preview */}
-        <CvPreview
-          data={
-            userInfo.personalInfo.firstName || userInfo.personalInfo.lastName
-              ? userInfo
-              : (cvData as CvUserInfo)
-          }
-          onDownload={handleDownload}
-          templateId={templateId}
-          onChangeTemplate={handleChangeTemplate}
-        />
+        <div className="w-full lg:w-1/2 min-w-[380px] flex justify-center">
+          <CvPreview
+            data={
+              userInfo.personalInfo.firstName || userInfo.personalInfo.lastName
+                ? userInfo
+                : (cvData as CvUserInfo)
+            }
+            onDownload={handleDownload}
+            templateId={templateId}
+            onChangeTemplate={handleChangeTemplate}
+          />
+        </div>
       </div>
     </div>
   );

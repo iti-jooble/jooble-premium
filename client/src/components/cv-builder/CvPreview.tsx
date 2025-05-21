@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { debounce } from "lodash";
 import loadable, { LoadableClassComponent } from "@loadable/component";
-import { DownloadIcon, LayoutTemplateIcon, Loader2 } from "lucide-react";
+import { DownloadIcon, LayoutTemplateIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CvUserInfo } from "@shared/schema";
+import { GlobalLoadingScreen } from "@/components/loading/GlobalLoadingScreen";
 import {
   Tooltip,
   TooltipContent,
@@ -31,7 +32,7 @@ const getTemplate = (
         `./Templates/${templateId <= 9 ? "0" : ""}${templateId}/TemplateComponent.tsx`
       ),
     {
-      fallback: <Loader2 />,
+      fallback: <GlobalLoadingScreen isLoading />,
     },
   );
 
@@ -104,9 +105,9 @@ export function CvPreview({
   }, [templateId]);
 
   return (
-    <div className="w-full lg:w-1/2 flex-shrink-0 rounded-lg flex flex-col items-center h-[calc(100vh-150px)]">
+    <div className="w-[85%] flex-shrink-0 rounded-lg flex flex-col items-center">
       {withHeading && (
-        <div className="flex justify-between items-center mb-4 flex-shrink-0 w-full max-w-[492px]">
+        <div className="flex justify-between items-center mb-4 flex-shrink-0 w-full max-w-[794px]">
           <h2 className="text-xl font-medium text-foreground flex items-center">
             {t("cvPreview.preview")}
           </h2>
@@ -153,7 +154,7 @@ export function CvPreview({
 
       <div
         ref={previewWidthReference}
-        className="bg-card rounded-xl shadow-md overflow-auto flex-grow w-full max-w-[492px] max-h-[696px] border border-border/40"
+        className="bg-card shadow-sm overflow-auto flex-grow w-full max-w-[794px] max-h-[calc(100vh-150px)] border border-border/40"
       >
         {previewSize.calculated && (
           <div

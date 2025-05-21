@@ -31,22 +31,35 @@ export const jobLocationSchema = z.object({
   name: z.string(),
 });
 
+export const jobDescriptionSchema = z.object({
+  summary: z.string(),
+  companyOffers: z.string(),
+  qualifications: z.object({
+    skills: z.array(z.string()),
+    requiredQualifications: z.array(z.string()),
+    preferredQualifications: z.array(z.string()),
+  }),
+  responsibilities: z.array(z.string()),
+  companyDescription: z.string(),
+});
+
+export const jobBasicInfoSchema = z.object({
+  salaryLevel: z.object({
+    max: z.number(),
+    min: z.number(),
+    period: z.string(),
+    currency: z.string(),
+    salarySource: z.string(),
+  }),
+  seniorityLevel: z.string(),
+  workFormat: z.string(),
+  locationType: z.string(),
+  yearsOfExperience: z.number(),
+});
+
 export const fitlyJobCardSchema = z.object({
-  basicInfo: z
-    .object({
-      salaryLevel: z.object({
-        max: z.number(),
-        min: z.number(),
-        period: z.string(),
-        currency: z.string(),
-        salarySource: z.string(),
-      }),
-      seniorityLevel: z.string(),
-      workFormat: z.string(),
-      locationType: z.string(),
-      yearsOfExperience: z.number(),
-    })
-    .optional(),
+  basicInfo: jobBasicInfoSchema.optional(),
+  description: jobDescriptionSchema.optional(),
 });
 
 export const jobSchema = z.object({
@@ -67,3 +80,9 @@ export const jobSchema = z.object({
 });
 
 export type Job = z.infer<typeof jobSchema>;
+
+export type JobMatching = z.infer<typeof matchingSchema>;
+
+export type JobInferredDescription = z.infer<typeof jobDescriptionSchema>;
+
+export type JobInferredBasicInfo = z.infer<typeof jobBasicInfoSchema>;

@@ -12,6 +12,7 @@ export default {
       },
       borderColor: {
         "primary-blue": "#E1D2F3",
+        "primary-gray": "#100918",
       },
       backgroundImage: {
         "primary-gradient": "linear-gradient(0deg, #EFEEFF 0%, #F6F7F8 100%)",
@@ -21,11 +22,19 @@ export default {
           "-4px -4px 14px 0px rgba(122, 137, 158, 0.70) inset, 4px 4px 14px 0px #5D55FA inset",
         "hover-button":
           "-4px -4px 14px 0px rgba(122, 137, 158, 0.70) inset, 0px 0px 40px 0px #5D55FA inset",
+        "primary-box":
+          "2px 2px 12px 0px #554DE4 inset, 0px 0px 24px 8px rgba(86, 78, 228, 0.25)",
+        "primary-box-inset":
+          "2px 2px 12px 0px #554DE4 inset, 0px 0px 24px 8px rgba(86, 78, 228, 0.25) inset",
       },
       colors: {
-        "primary-background": "#F7F6F2",
-        "primary-blue": "#5D55FA",
-        "primary-button": "#100918",
+        "primary-background": "#F6F7F8",
+        "primary-blue": "#554de4",
+        "primary-button": "#0C1221",
+        red: "#BB374B",
+        orange: "#F18939",
+        green: "#6EE1A7",
+        gray: "#7A899E",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

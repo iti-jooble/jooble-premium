@@ -18,32 +18,32 @@ const matchingScoreData = {
   [MatchingScore.Perfect]: {
     title: "Fitly Perfect!",
     description: "Spot-on! This is your ideal fit — go for it.",
-    color: "bg-primary-blue",
+    styles: "bg-primary-button shadow-primary-box",
   },
   [MatchingScore.Great]: {
     title: "Great fit!",
     description: "This role matches your preferences really well",
-    color: "bg-primary-blue",
+    styles: "bg-primary-button",
   },
   [MatchingScore.Good]: {
     title: "Good fit",
     description: "Pretty aligned! This could be a strong opportunity",
-    color: "bg-yellow-700",
+    styles: "bg-primary-button",
   },
   [MatchingScore.Average]: {
     title: "Decent fit",
     description: "There's a fair match. Worth checking out if you're flexible",
-    color: "bg-yellow-700",
+    styles: "bg-primary-button",
   },
   [MatchingScore.BelowAverage]: {
     title: "Weak fit",
     description: "Some things line up, but you'd need to compromise a lot",
-    color: "bg-red-700",
+    styles: "bg-primary-button",
   },
   [MatchingScore.Poor]: {
     title: "Poor fit",
     description: "A few overlaps, but mostly a missmatch",
-    color: "bg-red-700",
+    styles: "bg-primary-button",
   },
 };
 
