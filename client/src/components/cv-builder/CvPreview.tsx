@@ -1,12 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { debounce } from "lodash";
 import loadable, { LoadableClassComponent } from "@loadable/component";
-import {
-  FileText,
-  DownloadIcon,
-  LayoutTemplateIcon,
-  Loader2,
-} from "lucide-react";
+import { DownloadIcon, LayoutTemplateIcon, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CvUserInfo } from "@shared/schema";
 import {
@@ -20,10 +15,11 @@ import { A4_PAGE_SIZES_IN_PX } from "./Templates/constants";
 import { ITemplateComponentProps } from "./Templates/types";
 
 interface CvPreviewProps {
+  withHeading: boolean;
   data: CvUserInfo;
   templateId: number;
-  onDownload: () => void;
-  onChangeTemplate: () => void;
+  onDownload?: () => void;
+  onChangeTemplate?: () => void;
 }
 
 const getTemplate = (
@@ -41,6 +37,7 @@ const getTemplate = (
 
 export function CvPreview({
   data,
+  withHeading = true,
   templateId,
   onDownload,
   onChangeTemplate,
@@ -76,7 +73,7 @@ export function CvPreview({
 
   const handleDownload = async (): Promise<void> => {
     setIsLoading(true);
-    await onDownload();
+    await onDownload?.();
     setIsLoading(false);
   };
 
@@ -108,49 +105,51 @@ export function CvPreview({
 
   return (
     <div className="w-full lg:w-1/2 flex-shrink-0 rounded-lg flex flex-col items-center h-[calc(100vh-150px)]">
-      <div className="flex justify-between items-center mb-4 flex-shrink-0 w-full max-w-[492px]">
-        <h2 className="text-xl font-medium text-foreground flex items-center">
-          {t("cvPreview.preview")}
-        </h2>
-        <div className="flex gap-2">
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  isLoading={isLoading}
-                  onClick={handleDownload}
-                  className="h-9 w-9 p-0 transition-all hover:shadow-sm hover:bg-primary/5"
-                >
-                  <DownloadIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={5}>
-                <p>{t("common.buttons.download")} CV</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={onChangeTemplate}
-                  className="bg-card hover:bg-card/80 shadow-sm transition-all"
-                >
-                  <LayoutTemplateIcon className="h-4 w-4" />
-                  {t("Template")}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={5}>
-                <p>{t("cvPreview.changeTemplate")}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+      {withHeading && (
+        <div className="flex justify-between items-center mb-4 flex-shrink-0 w-full max-w-[492px]">
+          <h2 className="text-xl font-medium text-foreground flex items-center">
+            {t("cvPreview.preview")}
+          </h2>
+          <div className="flex gap-2">
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    isLoading={isLoading}
+                    onClick={handleDownload}
+                    className="h-9 w-9 p-0 transition-all hover:shadow-sm hover:bg-primary/5"
+                  >
+                    <DownloadIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" sideOffset={5}>
+                  <p>{t("common.buttons.download")} CV</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onChangeTemplate}
+                    className="bg-card hover:bg-card/80 shadow-sm transition-all"
+                  >
+                    <LayoutTemplateIcon className="h-4 w-4" />
+                    {t("Template")}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" sideOffset={5}>
+                  <p>{t("cvPreview.changeTemplate")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
-      </div>
+      )}
 
       <div
         ref={previewWidthReference}

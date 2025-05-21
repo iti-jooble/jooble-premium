@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useMemo } from "react";
+import { useState, useLayoutEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useLocation, Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,97 @@ import { XCircle, CircleCheck, CircleHelp } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setSelectedJob } from "@/redux/slices/jobSearchSlice";
 import { jobsSelectors } from "@/redux/selectors";
+import { openModal } from "@/redux/slices/uiSlice";
+import { ModalType } from "@/constants/modals";
+
+const sampleCv = {
+  id: "1",
+  title: "My Professional CV",
+  templateId: 1,
+  userInfo: {
+    personalInfo: {
+      firstName: "Alejandro",
+      lastName: "García",
+      jobTitle: "Global Operations Coordinator",
+      email: "alejandro.garcia@mail.com",
+      phone: "+12-345-678",
+      location: "Barcelona, Spain",
+      summary:
+        "Exceptional problem-solving skills and a proven track record of meeting project deadlines and exceeding performance targets on a global scale. Committed to driving operational excellence.",
+    },
+    skills: [
+      { id: "1", name: "Regulatory Compliance" },
+      { id: "2", name: "Risk Mitigation" },
+      { id: "3", name: "Cross-Functional Team Leadership" },
+      { id: "4", name: "Process Optimization" },
+      { id: "5", name: "Budget Planning" },
+    ],
+    educations: [
+      {
+        id: "1",
+        institution: "Global University",
+        degree: "Supply Chain Management",
+        location: "Madrid, Spain",
+        startDate: "2015-09",
+        endDate: "2018-03",
+        description: "Bachelor",
+      },
+    ],
+    experiences: [
+      {
+        id: "1",
+        company: "San Global",
+        position: "Global Operations Manager",
+        location: "Barcelona",
+        startDate: "2017-09",
+        endDate: "2020-11",
+        current: false,
+        description: [
+          "Directed and harmonized global operations across 15 countries, resulting in a 20% increase in operational efficiency and a 15% reduction in costs.",
+          "Managed analytics and reporting, tracking campaign performance.",
+        ],
+      },
+      {
+        id: "2",
+        company: "U2 Group",
+        position: "International Logistics Coordinator",
+        location: "Madrid",
+        startDate: "2020-12",
+        endDate: "2023-10",
+        current: false,
+        description: [
+          "Managed complex international logistics, optimizing supplier and distributor networks across 10 countries, resulting in a 12% reduction in shipping delays.",
+          "Leveraged data analytics to forecast demand accurately, leading to a 18% reduction in excess inventory and substantial cost savings.",
+          "Implemented a robust supplier evaluation process, driving improved vendor performance",
+        ],
+      },
+    ],
+    languages: [
+      { id: "1", name: "Spanish", level: "Native" },
+      { id: "2", name: "English", level: "Upper Intermediate" },
+    ],
+    certificates: [
+      {
+        id: "1",
+        name: "Certified Supply Chain Professional",
+        issuer: "Coursera",
+        issueDate: "2020-12",
+        expiryDate: "2021-05",
+        credentialUrl: "",
+      },
+      {
+        id: "2",
+        name: "Meta Social Media Marketing Professional Certificate",
+        issuer: "Coursera",
+        issueDate: "2019-10",
+        expiryDate: "2020-01",
+        credentialUrl: "",
+      },
+    ],
+    additional:
+      "Adept at problem-solving in high-pressure situations and consistently exceeding global project objectives. Committed to driving operational excellence and supporting the growth of multinational organizations.",
+  },
+};
 
 const colorMap = {
   red: "bg-red-100",
@@ -53,6 +144,17 @@ const JobDetails = () => {
     "FigJam",
     "Loom",
   ];
+
+  const handleApply = () => {
+    dispatch(
+      openModal({
+        type: ModalType.CV_ADAPTATION,
+        props: {
+          cv: sampleCv,
+        },
+      }),
+    );
+  };
 
   const matching = useMemo(() => {
     return getJobDataMatching(job?.matching);
@@ -212,7 +314,9 @@ const JobDetails = () => {
               </ul>
             </div>
             {/* Apply Button */}
-            <Button className="w-full my-4">Fit & Apply</Button>
+            <Button className="w-full my-4" onClick={handleApply}>
+              Fit & Apply
+            </Button>
           </Card>
         </div>
 
@@ -299,7 +403,9 @@ const JobDetails = () => {
             </div>
 
             {/* Fix Resume Button */}
-            <Button className="w-full mb-4">Fix resume & Apply</Button>
+            <Button className="w-full mb-4" onClick={handleApply}>
+              Fix resume & Apply
+            </Button>
 
             {/* Show Issues Button */}
             <Button variant="outline" className="w-full font-bold">
