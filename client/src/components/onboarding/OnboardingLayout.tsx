@@ -20,9 +20,7 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({ children }) => {
           <img src="/images/logo-name.svg" alt="Fitly" />
         </div>
       </div>
-      <Card className="w-full max-w-[640px] p-10 bg-white rounded-2xl shadow-sm">
-        {children}
-      </Card>
+      {children}
     </div>
   );
 };

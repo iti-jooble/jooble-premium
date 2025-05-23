@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Card } from "@/components/ui/card";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { User } from "@/types/state/user.types";
@@ -194,235 +195,245 @@ const OnboardingStep4: React.FC = () => {
 
   return (
     <OnboardingLayout step={4}>
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Review and confirm your preferences
-        </h2>
-        <p className="text-gray-600 text-center mb-6">
-          It's important to find jobs that truly fit you.
-        </p>
+      <Card className="w-full max-w-[640px] p-10 bg-white rounded-2xl shadow-sm">
+        <div>
+          <h2 className="text-2xl font-bold mb-4 text-center">
+            Review and confirm your preferences
+          </h2>
+          <p className="text-gray-600 text-center mb-6">
+            It's important to find jobs that truly fit you.
+          </p>
 
-        {/* Job Title Section */}
-        <div className="mb-6">
-          <Label htmlFor="job-title" className="block text-sm font-medium mb-2">
-            Job title
-          </Label>
-          <div className="relative">
-            <Input
-              id="job-title"
-              ref={keywordInputRef}
-              placeholder="Add job title"
-              value={keywordInputValue}
-              onChange={handleKeywordInputChange}
-              onFocus={handleKeywordInputFocus}
-              className="mb-2"
-            />
-            {/* Location suggestions dropdown */}
-            {showKeywordSuggestions && keywordAutocomplete.length > 0 && (
-              <div
-                ref={keywordSuggestionsRef}
-                className="absolute z-10 -mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto"
-              >
-                <ul className="py-1">
-                  {keywordAutocomplete.map((suggestion, index) => (
-                    <li
-                      key={`${suggestion}-${index}`}
-                      className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                      onClick={() =>
-                        handleKeywordSuggestionClick(suggestion.value)
-                      }
-                    >
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: suggestion.label,
-                        }}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {preferences
-              .filter((l) => l.category === "keywords")
-              .map((item) => (
-                <div
-                  key={item.value}
-                  className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-1"
-                >
-                  <span className="mr-2">{item.label}</span>
-                  <button
-                    onClick={() =>
-                      togglePreference({
-                        key: item.category,
-                        value: item.value,
-                      })
-                    }
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ))}
-          </div>
-        </div>
-
-        {/* Location Section */}
-        <div className="mb-6">
-          <Label htmlFor="location" className="block text-sm font-medium mb-2">
-            Location
-          </Label>
-          <div className="relative">
-            <Input
-              id="location"
-              ref={locationInputRef}
-              placeholder="Add location"
-              value={locationInputValue}
-              onChange={handleLocationInputChange}
-              onFocus={handleLocationInputFocus}
-              className="mb-2"
-            />
-            {/* Location suggestions dropdown */}
-            {showLocationSuggestions && locationAutocomplete.length > 0 && (
-              <div
-                ref={locationSuggestionsRef}
-                className="absolute z-10 -mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto"
-              >
-                <ul className="py-1">
-                  {locationAutocomplete.map((suggestion, index) => (
-                    <li
-                      key={`${suggestion}-${index}`}
-                      className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                      onClick={() =>
-                        handleLocationSuggestionClick(suggestion.value)
-                      }
-                    >
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: suggestion.label,
-                        }}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {preferences
-              .filter((l) => l.category === "location")
-              .map((item) => (
-                <div
-                  key={item.value}
-                  className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-1"
-                >
-                  <span className="mr-2">{item.label}</span>
-                  <button
-                    onClick={() =>
-                      togglePreference({
-                        key: item.category,
-                        value: item.value,
-                      })
-                    }
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ))}
-          </div>
-        </div>
-
-        {Object.entries(preferencesConfig).map(([key, config]) => (
-          <div className="mb-6" key={key}>
-            <Label className="block text-sm font-medium mb-2">
-              {t(config.label)}
+          {/* Job Title Section */}
+          <div className="mb-6">
+            <Label
+              htmlFor="job-title"
+              className="block text-sm font-medium mb-2"
+            >
+              Job title
             </Label>
-            <div className="grid grid-cols-3 gap-4">
-              {config.options.map(({ value, label }) => (
+            <div className="relative">
+              <Input
+                id="job-title"
+                ref={keywordInputRef}
+                placeholder="Add job title"
+                value={keywordInputValue}
+                onChange={handleKeywordInputChange}
+                onFocus={handleKeywordInputFocus}
+                className="mb-2"
+              />
+              {/* Location suggestions dropdown */}
+              {showKeywordSuggestions && keywordAutocomplete.length > 0 && (
                 <div
-                  className="flex items-center space-x-2"
-                  key={`${key}-${value}`}
+                  ref={keywordSuggestionsRef}
+                  className="absolute z-10 -mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto"
                 >
-                  <Checkbox
-                    id={`${key}-${value}`}
-                    checked={isSelected({
-                      key: key as keyof User["preferences"],
-                      value,
-                    })}
-                    onCheckedChange={() =>
-                      togglePreference({
-                        key: key as keyof User["preferences"],
-                        value,
-                      })
-                    }
-                  />
-                  <Label
-                    htmlFor={`${key}-${value}`}
-                    className="text-sm font-normal"
-                  >
-                    {label}
-                  </Label>
+                  <ul className="py-1">
+                    {keywordAutocomplete.map((suggestion, index) => (
+                      <li
+                        key={`${suggestion}-${index}`}
+                        className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                        onClick={() =>
+                          handleKeywordSuggestionClick(suggestion.value)
+                        }
+                      >
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: suggestion.label,
+                          }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ))}
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {preferences
+                .filter((l) => l.category === "keywords")
+                .map((item) => (
+                  <div
+                    key={item.value}
+                    className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-1"
+                  >
+                    <span className="mr-2">{item.label}</span>
+                    <button
+                      onClick={() =>
+                        togglePreference({
+                          key: item.category,
+                          value: item.value,
+                        })
+                      }
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
             </div>
           </div>
-        ))}
 
-        {/* Years of Experience Slider */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <Label className="text-sm font-medium">Years of Experience:</Label>
-            <span className="text-sm font-medium">
-              {yearsOfExperience} years
-            </span>
+          {/* Location Section */}
+          <div className="mb-6">
+            <Label
+              htmlFor="location"
+              className="block text-sm font-medium mb-2"
+            >
+              Location
+            </Label>
+            <div className="relative">
+              <Input
+                id="location"
+                ref={locationInputRef}
+                placeholder="Add location"
+                value={locationInputValue}
+                onChange={handleLocationInputChange}
+                onFocus={handleLocationInputFocus}
+                className="mb-2"
+              />
+              {/* Location suggestions dropdown */}
+              {showLocationSuggestions && locationAutocomplete.length > 0 && (
+                <div
+                  ref={locationSuggestionsRef}
+                  className="absolute z-10 -mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto"
+                >
+                  <ul className="py-1">
+                    {locationAutocomplete.map((suggestion, index) => (
+                      <li
+                        key={`${suggestion}-${index}`}
+                        className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                        onClick={() =>
+                          handleLocationSuggestionClick(suggestion.value)
+                        }
+                      >
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: suggestion.label,
+                          }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {preferences
+                .filter((l) => l.category === "location")
+                .map((item) => (
+                  <div
+                    key={item.value}
+                    className="flex items-center bg-white border border-gray-200 rounded-xl px-3 py-1"
+                  >
+                    <span className="mr-2">{item.label}</span>
+                    <button
+                      onClick={() =>
+                        togglePreference({
+                          key: item.category,
+                          value: item.value,
+                        })
+                      }
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
+            </div>
           </div>
-          <Slider
-            value={[yearsOfExperience]}
-            onValueChange={handleChangeYearsOfExperience}
-            max={MAX_YEARS_OF_EXPERIENCE}
-            step={1}
-            className="mb-1"
-          />
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>0 years</span>
-            <span>15+ years</span>
+
+          {Object.entries(preferencesConfig).map(([key, config]) => (
+            <div className="mb-6" key={key}>
+              <Label className="block text-sm font-medium mb-2">
+                {t(config.label)}
+              </Label>
+              <div className="grid grid-cols-3 gap-4">
+                {config.options.map(({ value, label }) => (
+                  <div
+                    className="flex items-center space-x-2"
+                    key={`${key}-${value}`}
+                  >
+                    <Checkbox
+                      id={`${key}-${value}`}
+                      checked={isSelected({
+                        key: key as keyof User["preferences"],
+                        value,
+                      })}
+                      onCheckedChange={() =>
+                        togglePreference({
+                          key: key as keyof User["preferences"],
+                          value,
+                        })
+                      }
+                    />
+                    <Label
+                      htmlFor={`${key}-${value}`}
+                      className="text-sm font-normal"
+                    >
+                      {label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* Years of Experience Slider */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <Label className="text-sm font-medium">
+                Years of Experience:
+              </Label>
+              <span className="text-sm font-medium">
+                {yearsOfExperience} years
+              </span>
+            </div>
+            <Slider
+              value={[yearsOfExperience]}
+              onValueChange={handleChangeYearsOfExperience}
+              max={MAX_YEARS_OF_EXPERIENCE}
+              step={1}
+              className="mb-1"
+            />
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>0 years</span>
+              <span>15+ years</span>
+            </div>
+          </div>
+
+          {/* Salary Range Slider */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <Label className="text-sm font-medium">Salary Range:</Label>
+              <span className="text-sm font-medium">
+                ${salaryRange[0]} – ${salaryRange[1]}/monthly
+              </span>
+            </div>
+            <Slider
+              value={salaryRange}
+              onValueChange={handleChangeSalaryRange}
+              min={0}
+              max={MAX_SALARY}
+              step={1000}
+              className="mb-1"
+            />
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>$0</span>
+              <span>$50,000+</span>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={handleSubmit}
+              className="text-white font-semibold rounded-xl py-3 px-10 h-14"
+            >
+              Show jobs
+            </Button>
           </div>
         </div>
-
-        {/* Salary Range Slider */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <Label className="text-sm font-medium">Salary Range:</Label>
-            <span className="text-sm font-medium">
-              ${salaryRange[0]} – ${salaryRange[1]}/monthly
-            </span>
-          </div>
-          <Slider
-            value={salaryRange}
-            onValueChange={handleChangeSalaryRange}
-            min={0}
-            max={MAX_SALARY}
-            step={1000}
-            className="mb-1"
-          />
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>$0</span>
-            <span>$50,000+</span>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <div className="flex justify-center mt-6">
-          <Button
-            onClick={handleSubmit}
-            className="text-white font-semibold rounded-xl py-3 px-10 h-14"
-          >
-            Show jobs
-          </Button>
-        </div>
-      </div>
+      </Card>
     </OnboardingLayout>
   );
 };
