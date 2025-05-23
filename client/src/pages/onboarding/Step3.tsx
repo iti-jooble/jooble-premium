@@ -182,7 +182,7 @@ const OnboardingStep3: React.FC = () => {
               </p>
 
               <label htmlFor="resume-upload">
-                <Button className="text-white font-semibold rounded-xl py-3 px-6 h-14">
+                <Button className="py-5 px-8 min-w-[214px] h-14">
                   Choose a file
                 </Button>
                 <input
@@ -210,7 +210,7 @@ const OnboardingStep3: React.FC = () => {
             <Button
               variant="outline"
               onClick={handleNoResume}
-              className="rounded-xl py-2 px-6 h-12"
+              className="py-5 px-8 h-14"
             >
               Don't have a resume
             </Button>

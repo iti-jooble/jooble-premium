@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 
 interface OnboardingLayoutProps {
   children: ReactNode;
@@ -8,13 +7,7 @@ interface OnboardingLayoutProps {
   totalSteps?: number;
 }
 
-const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
-  children,
-  step,
-  totalSteps = 4,
-}) => {
-  const progressPercentage = (step / (totalSteps + 1)) * 100;
-
+const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-primary-gradient flex flex-col items-center justify-center p-4">
       <div className="mb-8">
@@ -26,9 +19,6 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
           />
           <img src="/images/logo-name.svg" alt="Fitly" />
         </div>
-      </div>
-      <div className="mb-4 w-full max-w-[640px]">
-        <Progress value={progressPercentage} className="h-2" />
       </div>
       <Card className="w-full max-w-[640px] p-10 bg-white rounded-2xl shadow-sm">
         {children}
