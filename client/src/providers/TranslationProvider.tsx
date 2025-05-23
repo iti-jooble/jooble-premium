@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Loader } from "@/components/ui/loader";
+import { GlobalLoadingScreen } from "@/components/loading/GlobalLoadingScreen";
 
 interface TranslationProviderProps {
   children: ReactNode;
@@ -8,9 +8,11 @@ interface TranslationProviderProps {
 
 export function TranslationProvider({ children }: TranslationProviderProps) {
   const { i18n } = useTranslation();
-  const [isI18nInitialized, setIsI18nInitialized] = useState(i18n.isInitialized);
+  const [isI18nInitialized, setIsI18nInitialized] = useState(
+    i18n.isInitialized,
+  );
   const [isResourcesLoaded, setIsResourcesLoaded] = useState(
-    Object.keys(i18n.options.resources || {}).length > 0
+    Object.keys(i18n.options.resources || {}).length > 0,
   );
 
   useEffect(() => {
@@ -40,11 +42,7 @@ export function TranslationProvider({ children }: TranslationProviderProps) {
 
   // Only render children when i18n is initialized AND resources are loaded
   if (!isI18nInitialized || !isResourcesLoaded) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center bg-background">
-        <Loader size="lg" />
-      </div>
-    );
+    return <GlobalLoadingScreen isLoading />;
   }
 
   return <>{children}</>;

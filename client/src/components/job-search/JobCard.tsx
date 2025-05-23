@@ -40,6 +40,9 @@ export const JobCard = React.memo(
       ? getJobMatchingScore(job.matching)
       : null;
 
+    const isSalaryEstimated =
+      !job.salary && (job.estimatedSalary || job.matching?.salary.actual);
+
     return (
       <div
         className={`bg-white rounded-xl mb-3 cursor-pointer transition-all shadow-sm hover:shadow-md ${
@@ -72,12 +75,12 @@ export const JobCard = React.memo(
             <div className="grid grid-cols-7 gap-x-4 gap-y-2 text-sm text-muted-foreground mt-2">
               <div className="flex items-center col-span-3 pr-2">
                 <WalletIcon className="h-4 w-4 mr-1 min-w-4 text-muted-foreground/70" />
-                <span className={`${!job.salary && "italic"}`}>
+                <span className={`${isSalaryEstimated && "italic"}`}>
                   {job.salary ||
                     job.estimatedSalary ||
                     job.matching?.salary.actual ||
                     "Unknown"}
-                  {!job.salary ? " (est.)" : ""}
+                  {isSalaryEstimated ? " (est.)" : ""}
                 </span>
               </div>
               <div className="flex items-center col-span-2 pr-2">
@@ -141,7 +144,9 @@ export const JobCard = React.memo(
   (oldProps, newProps) => {
     return (
       oldProps.job.uid === newProps.job.uid &&
-      oldProps.isSelected === newProps.isSelected
+      oldProps.isSelected === newProps.isSelected &&
+      oldProps.job.matching?.originalMatchingScore ===
+        newProps.job.matching?.originalMatchingScore
     );
   },
 );

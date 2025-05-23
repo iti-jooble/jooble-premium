@@ -75,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         {
           headers: {
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer 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`,
             "Content-Type": "application/json",
           },
         },
@@ -114,6 +114,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get job listings
   app.post("/api/jobs/search", createApiProxy());
+
+  // Get job details by UID
+  app.get("/api/jobs/:uid", createApiProxy());
 
   // === User API Routes ===
 

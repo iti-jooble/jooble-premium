@@ -1,6 +1,6 @@
-import { useState, useLayoutEffect } from "react";
+import { useState, useLayoutEffect, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams, Redirect } from "wouter";
+import { useParams, Redirect, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import getAcronym from "@/utils/getAcronym";
@@ -13,6 +13,11 @@ import { ModalType } from "@/constants/modals";
 import CvMatchingBlock from "@/components/job-details/CvMatchingBlock";
 import JobMatchingBlock from "@/components/job-details/JobMatchingBlock";
 import JobDescription from "@/components/job-details/JobDescription";
+import {
+  JobDescriptionSkeleton,
+  JobDetailsSkeleton,
+} from "@/components/job-details/Skeletons";
+import { getJobByUidAsync } from "@/redux/thunks";
 
 const sampleCv = {
   id: "1",
@@ -118,16 +123,53 @@ const JobDetails = () => {
   const { t } = useTranslation();
   const params = useParams();
   const dispatch = useAppDispatch();
+  const [_, navigate] = useLocation();
   const job = useAppSelector(jobsSelectors.getSelectedJobSelector);
   const [loading, setLoading] = useState(true);
+  const [isDescriptionLoading, setIsDescriptionLoading] = useState(true);
 
-  useLayoutEffect(() => {
-    if (params.jobId) {
-      dispatch(setSelectedJob(params.jobId));
+  useEffect(() => {
+    (async (): Promise<void> => {
+      if (!params.jobId) {
+        navigate("/");
+        return;
+      }
+
+      if (job?.uid !== params.jobId) {
+        dispatch(setSelectedJob(params.jobId));
+
+        if (job) {
+          return;
+        }
+      }
+
+      if (job) {
+        setLoading(false);
+      }
+
+      if (job?.fitlyJobCard?.descriptionInfo) {
+        setIsDescriptionLoading(false);
+        return;
+      }
+
+      try {
+        await dispatch(getJobByUidAsync(params.jobId));
+      } catch (error) {
+        if (!job) {
+          navigate("/");
+        }
+      } finally {
+        setLoading(false);
+        setIsDescriptionLoading(false);
+      }
+    })();
+  }, [job?.uid]);
+
+  useEffect(() => {
+    if (job) {
+      document.title = `${job.position} - ${job.company?.name}`;
     }
-
-    setLoading(false);
-  }, [params.jobId]);
+  }, []);
 
   const handleApply = () => {
     dispatch(
@@ -140,14 +182,6 @@ const JobDetails = () => {
     );
   };
 
-  if (loading) {
-    return <div className="p-8 flex justify-center">Loading...</div>;
-  }
-
-  if (!job) {
-    return <Redirect to="/" />;
-  }
-
   return (
     <div className="p-6 max-w-[1032px] mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -155,44 +189,56 @@ const JobDetails = () => {
         <div className="md:col-span-2 space-y-6">
           {/* Job Header Card */}
           <Card className="p-6">
-            <div className="flex items-start gap-4">
-              {/* Company logo - green owl */}
-              <div
-                className={`w-20 h-20 rounded-lg flex text-3xl font-bold items-center justify-center text-muted-foreground ${colorMap[getColorByName(job.company?.name)]}`}
-              >
-                {getAcronym(job.company?.name)}
-              </div>
-              <div className="flex-1">
-                <div className="text-sm">
-                  <strong>{job.company?.name || "Company"}</strong>{" "}
-                  <span className="text-muted-foreground">is looking for</span>
-                </div>
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                  {job.position}
-                </h1>
-                <div className="text-xs text-muted-foreground">
-                  Posted {job.dateCaption}
-                </div>
-              </div>
-            </div>
-
-            {/* Job Info Matching Block */}
-            {job?.matching && <JobMatchingBlock matching={job.matching} />}
-
-            {/* Job Description */}
-            {job.fitlyJobCard?.description ? (
-              <JobDescription description={job.fitlyJobCard.description} />
+            {!job || loading ? (
+              <JobDetailsSkeleton />
             ) : (
-              <div
-                className="my-8"
-                dangerouslySetInnerHTML={{ __html: job.fullContent ?? "" }}
-              />
-            )}
+              <>
+                <div className="flex items-start gap-4">
+                  {/* Company logo - green owl */}
+                  <div
+                    className={`w-20 h-20 rounded-lg flex text-3xl font-bold items-center justify-center text-muted-foreground ${colorMap[getColorByName(job.company?.name)]}`}
+                  >
+                    {getAcronym(job.company?.name)}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm">
+                      <strong>{job.company?.name || "Company"}</strong>{" "}
+                      <span className="text-muted-foreground">
+                        is looking for
+                      </span>
+                    </div>
+                    <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                      {job.position}
+                    </h1>
+                    <div className="text-xs text-muted-foreground">
+                      Posted {job.dateCaption}
+                    </div>
+                  </div>
+                </div>
 
-            {/* Apply Button */}
-            <Button className="w-full my-4" onClick={handleApply}>
-              Fit & Apply
-            </Button>
+                {/* Job Info Matching Block */}
+                {job?.matching && <JobMatchingBlock matching={job.matching} />}
+
+                {/* Job Description */}
+                {isDescriptionLoading ? (
+                  <JobDescriptionSkeleton />
+                ) : job.fitlyJobCard?.descriptionInfo ? (
+                  <JobDescription
+                    description={job.fitlyJobCard.descriptionInfo}
+                  />
+                ) : (
+                  <div
+                    className="my-8"
+                    dangerouslySetInnerHTML={{ __html: job.fullContent ?? "" }}
+                  />
+                )}
+
+                {/* Apply Button */}
+                <Button className="w-full my-4" onClick={handleApply}>
+                  Fit & Apply
+                </Button>
+              </>
+            )}
           </Card>
         </div>
 

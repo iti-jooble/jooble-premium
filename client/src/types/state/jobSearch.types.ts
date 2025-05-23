@@ -9,6 +9,7 @@ import { Job } from "@shared/schema";
 export interface JobSearchState {
   jobs: Job[];
   selectedJobId: string | null;
+  isLoadingSelectedJob: boolean;
   isInitialized: boolean;
   isLoading: boolean;
   error: string | null;

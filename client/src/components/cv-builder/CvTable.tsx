@@ -335,7 +335,7 @@ export const CvTable = ({
                                   e.stopPropagation();
                                   handleDeleteClick(cv.id);
                                 }}
-                                className="h-9 w-9 p-0 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 transition-all hover:shadow-sm"
+                                className="h-9 w-9 p-0 text-red border-red hover:bg-red/10 hover:text-red transition-all hover:shadow-sm"
                               >
                                 <Trash2Icon className="h-4 w-4" />
                               </Button>

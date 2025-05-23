@@ -20,7 +20,7 @@ const BootstrapProvider: React.FC<{
   }, []);
 
   if (isLoading) {
-    return <GlobalLoadingScreen fullPage={true} />;
+    return <GlobalLoadingScreen isLoading />;
   }
 
   if (error) {

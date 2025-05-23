@@ -142,7 +142,6 @@ const usePreferences = () => {
   const updatePreferencesAndSearch = async (
     value: Partial<User["preferences"]>,
   ) => {
-    console.log("updatePreferencesAndSearch", value);
     await dispatch(updatePreferences(value));
 
     if (hasOnboardingCompleted) {
@@ -172,6 +171,13 @@ const usePreferences = () => {
         },
       });
 
+      return;
+    }
+
+    if (key === "experienceYears") {
+      updatePreferencesAndSearch({
+        experienceYears: isExisting ? 0 : (value as number),
+      });
       return;
     }
 

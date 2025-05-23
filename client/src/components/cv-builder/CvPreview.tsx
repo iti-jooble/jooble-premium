@@ -4,7 +4,6 @@ import loadable, { LoadableClassComponent } from "@loadable/component";
 import { DownloadIcon, LayoutTemplateIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CvUserInfo } from "@shared/schema";
-import { GlobalLoadingScreen } from "@/components/loading/GlobalLoadingScreen";
 import {
   Tooltip,
   TooltipContent,
@@ -14,6 +13,7 @@ import {
 import { useState, useEffect, ComponentClass, FC, useRef } from "react";
 import { A4_PAGE_SIZES_IN_PX } from "./Templates/constants";
 import { ITemplateComponentProps } from "./Templates/types";
+import { CvSkeleton } from "./Skeletons";
 
 interface CvPreviewProps {
   withHeading: boolean;
@@ -32,7 +32,7 @@ const getTemplate = (
         `./Templates/${templateId <= 9 ? "0" : ""}${templateId}/TemplateComponent.tsx`
       ),
     {
-      fallback: <GlobalLoadingScreen isLoading />,
+      fallback: <CvSkeleton />,
     },
   );
 

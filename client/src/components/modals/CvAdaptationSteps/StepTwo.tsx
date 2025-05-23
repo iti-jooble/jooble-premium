@@ -84,7 +84,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ jobDetails, cv, onCvUpdate }) => {
                 <Button
                   variant={question.answer === true ? "default" : "outline"}
                   size="sm"
-                  className={`mb-1 rounded-full [&_svg]:size-6 w-14 h-14 p-0 ${question.answer === true ? "bg-primary-blue shadow-0 text-white" : "bg-white text-gray-800 hover:bg-gray-100"}`}
+                  className={`mb-1 rounded-full [&_svg]:size-6 w-14 h-14 p-0 ${question.answer !== true ? "bg-white text-gray-800 hover:bg-gray-100" : ""}`}
                   onClick={() => handleAnswer(question.id, true)}
                 >
                   <ThumbsUp absoluteStrokeWidth />
@@ -104,7 +104,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ jobDetails, cv, onCvUpdate }) => {
                 <Button
                   variant={question.answer === false ? "default" : "outline"}
                   size="sm"
-                  className={`mb-1 rounded-full [&_svg]:size-6 w-14 h-14 p-0 ${question.answer === false ? "bg-primary-blue shadow-0 text-white" : "bg-white text-gray-800 hover:bg-gray-100"}`}
+                  className={`mb-1 rounded-full [&_svg]:size-6 w-14 h-14 p-0 ${question.answer !== false ? "bg-white text-gray-800 hover:bg-gray-100" : ""}`}
                   onClick={() => handleAnswer(question.id, false)}
                 >
                   <ThumbsDown absoluteStrokeWidth />

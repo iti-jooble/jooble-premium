@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { JobSearchState } from "../../types/state/jobSearch.types";
 import { Job } from "@shared/schema";
-import { refreshJobs, initJobs, loadMore } from "../thunks";
+import { refreshJobs, initJobs, loadMore, getJobByUidAsync } from "../thunks";
 
 const initialState: JobSearchState = {
   jobs: [],
   selectedJobId: null,
+  isLoadingSelectedJob: false,
   isInitialized: false,
   isLoading: false,
   error: null,
@@ -28,6 +29,9 @@ const jobSearchSlice = createSlice({
       isInitialized: state.isInitialized,
       error: state.error,
     }),
+    isLoadingSelector: (state) => state.isLoading,
+    isInitializedSelector: (state) => state.isInitialized,
+    isLoadingSelectedJobSelector: (state) => state.isLoadingSelectedJob,
     getCurrentPageSelector: (state) => state.currentPage,
   },
   reducers: {
@@ -107,6 +111,29 @@ const jobSearchSlice = createSlice({
     });
     builder.addCase(loadMore.rejected, (state, action) => {
       state.isLoading = false;
+      state.error = action.error.message || null;
+    });
+
+    builder.addCase(getJobByUidAsync.pending, (state) => {
+      state.isLoadingSelectedJob = true;
+      state.error = null;
+    });
+    builder.addCase(getJobByUidAsync.fulfilled, (state, action) => {
+      const existingJobIndex = state.jobs.findIndex(
+        (job) => job.uid === action.payload.uid,
+      );
+
+      if (existingJobIndex !== -1) {
+        state.jobs[existingJobIndex] = action.payload;
+      } else {
+        state.jobs.push(action.payload);
+      }
+
+      state.isLoadingSelectedJob = false;
+      state.error = null;
+    });
+    builder.addCase(getJobByUidAsync.rejected, (state, action) => {
+      state.isLoadingSelectedJob = false;
       state.error = action.error.message || null;
     });
 

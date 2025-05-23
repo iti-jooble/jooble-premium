@@ -27,11 +27,11 @@ export const jobApiSlice = createApi({
     }),
 
     // Get a single job by ID
-    getJobById: builder.query<Job, string>({
-      query: (id) => `/jobs/${id}`,
+    getJobByUid: builder.query<Job, string>({
+      query: (uid) => `/jobs/${uid}`,
       providesTags: (result, error, id) => [{ type: "Job", id }],
     }),
   }),
 });
 
-export const { useSearchJobsQuery, useGetJobByIdQuery } = jobApiSlice;
+export const { useSearchJobsQuery, useGetJobByUidQuery } = jobApiSlice;

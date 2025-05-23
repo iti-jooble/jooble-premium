@@ -37,7 +37,7 @@ export const getRequestHeaders = (req: Request) => ({
 
 // localhost url: https://9dda-78-25-4-231.ngrok-free.app/fitly
 export const getBaseApiUrl = (): string => {
-  return process.env.API_URL || "https://uk.jooble.org";
+  return process.env.API_URL || "https://833c-195-123-10-42.ngrok-free.app";
 };
 
 export const getFitlyApiUrl = (): string => `${getBaseApiUrl()}/fitly`;

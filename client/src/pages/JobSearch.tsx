@@ -71,6 +71,7 @@ const JobSearch = () => {
         <JobListings
           jobs={jobs}
           isLoading={isLoading}
+          isInitialized={isInitialized}
           onSelectJob={handleJobSelect}
           onLoadMore={hasMoreJobs ? handleLoadMore : undefined}
         />

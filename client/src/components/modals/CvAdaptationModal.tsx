@@ -146,7 +146,7 @@ const CvAdaptationModal: React.FC<CvAdaptationModalProps> = ({
                 <Button
                   onClick={handleContinue}
                   variant="ghost"
-                  className="w-full text-blue-600"
+                  className="w-full"
                 >
                   <PencilIcon className="h-4 w-4" />
                   Edit resume
@@ -159,7 +159,7 @@ const CvAdaptationModal: React.FC<CvAdaptationModalProps> = ({
           </div>
 
           {/* Right column with CV preview */}
-          <div className="w-[58%] bg-primary-gradient flex justify-center items-center">
+          <div className="w-[58%] bg-primary-background flex justify-center items-center">
             {adaptedCv && (
               <CvPreview
                 withHeading={false}

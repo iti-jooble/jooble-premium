@@ -15,7 +15,8 @@ export default {
         "primary-gray": "#100918",
       },
       backgroundImage: {
-        "primary-gradient": "linear-gradient(0deg, #EFEEFF 0%, #F6F7F8 100%)",
+        "primary-gradient":
+          "linear-gradient(179deg, #F6F7F8 0.63%, #EFEEFF 98.87%)",
       },
       boxShadow: {
         button:
@@ -28,7 +29,7 @@ export default {
           "2px 2px 12px 0px #554DE4 inset, 0px 0px 24px 8px rgba(86, 78, 228, 0.25) inset",
       },
       colors: {
-        "primary-background": "#F6F7F8",
+        "primary-background": "#F4F6F9",
         "primary-blue": "#554de4",
         "primary-button": "#0C1221",
         red: "#BB374B",

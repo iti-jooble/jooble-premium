@@ -74,7 +74,7 @@ export const getJobMatchingScore = (matching?: Job["matching"]) => {
   }
 
   return {
-    score: Number(score) > 10 ? "10.0" : score,
+    score: Number(score) >= 10 ? "10" : score,
     ...matchingScoreData[matchingScore],
   };
 };

@@ -72,3 +72,22 @@ export const searchJobs = createAsyncThunk<
     throw error;
   }
 });
+
+export const getJobByUidAsync = createAsyncThunk<Job, string>(
+  "jobs/getJobByUid",
+  async (uid, { dispatch }) => {
+    try {
+      const result = await dispatch(
+        jobApiSlice.endpoints.getJobByUid.initiate(uid),
+      );
+
+      if (!result.data) {
+        throw new Error("Failed to get job by uid");
+      }
+
+      return result.data;
+    } catch (error: any) {
+      throw error;
+    }
+  },
+);

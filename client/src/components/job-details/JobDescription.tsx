@@ -9,7 +9,7 @@ const JobDescription: React.FC<{
       {/* Summary Section */}
       <div className="py-3">
         <h2 className="text-lg font-bold mb-4">Summary</h2>
-        <p className="text-muted-foreground">{description.summary}</p>
+        <p>{description.summary}</p>
       </div>
 
       {/* Toolstack Section */}
@@ -30,7 +30,7 @@ const JobDescription: React.FC<{
       {/* Responsibilities Section */}
       <div className="py-3">
         <h2 className="text-lg font-bold mb-4">Responsibilities</h2>
-        <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+        <ul className="list-disc pl-5 space-y-2">
           {description.responsibilities?.map((item, index) => (
             <li key={index}>{item}</li>
           ))}
@@ -40,7 +40,7 @@ const JobDescription: React.FC<{
       {/* Qualification */}
       <div className="py-3">
         <h2 className="text-lg font-bold mb-4">Qualification</h2>
-        <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+        <ul className="list-disc pl-5 space-y-2">
           {[
             ...(description.qualifications.requiredQualifications ?? []),
             ...(description.qualifications.preferredQualifications ?? []),
@@ -53,7 +53,7 @@ const JobDescription: React.FC<{
       {/* Benefits */}
       <div className="py-3">
         <h2 className="text-lg font-bold mb-4">We offer</h2>
-        <p className="text-muted-foreground">{description.companyOffers}</p>
+        <p>{description.companyOffers}</p>
       </div>
     </div>
   );

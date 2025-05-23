@@ -1,4 +1,4 @@
-import { useState, useCallback, FormEvent } from "react";
+import { useState, useCallback } from "react";
 
 interface SearchFormState {
   keywords: string[];
@@ -12,7 +12,7 @@ interface UseSearchFormProps {
 interface UseSearchFormReturn {
   keywords: string[];
   setKeywords: (value: string[]) => void;
-  handleSearch: () => void;
+  handleSearch: () => Promise<void>;
   resetForm: () => void;
   isSearching: boolean;
 }
@@ -21,26 +21,19 @@ export const useSearchForm = ({
   onSearch,
   initialKeywords = [],
 }: UseSearchFormProps = {}): UseSearchFormReturn => {
-  // Form state
   const [keywords, setKeywords] = useState<string[]>(initialKeywords);
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
-  // Handler for form submission
-  const handleSearch = useCallback(() => {
+  const handleSearch = useCallback(async () => {
     setIsSearching(true);
 
-    // Call the onSearch callback if provided
     if (onSearch) {
-      onSearch({ keywords });
+      await onSearch({ keywords });
     }
 
-    // Reset loading state after search (in real app, this would be in the callback)
-    setTimeout(() => {
-      setIsSearching(false);
-    }, 500);
+    setIsSearching(false);
   }, [keywords, onSearch]);
 
-  // Reset form to initial values
   const resetForm = useCallback(() => {
     setKeywords(initialKeywords);
   }, [initialKeywords]);

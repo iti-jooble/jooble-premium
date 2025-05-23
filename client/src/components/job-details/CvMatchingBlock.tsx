@@ -53,7 +53,7 @@ const CvMatchingBlock: React.FC<{ onApply: () => void }> = ({ onApply }) => {
       </Button>
 
       {/* Footer Text */}
-      <p className="text-gray-500 text-sm text-center mt-6">
+      <p className="text-muted-foreground text-sm text-center mt-6">
         We'll tailor your resume before applying and increase your chances.
       </p>
     </Card>

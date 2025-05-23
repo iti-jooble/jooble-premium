@@ -59,7 +59,7 @@ export const jobBasicInfoSchema = z.object({
 
 export const fitlyJobCardSchema = z.object({
   basicInfo: jobBasicInfoSchema.optional(),
-  description: jobDescriptionSchema.optional(),
+  descriptionInfo: jobDescriptionSchema.optional(),
 });
 
 export const jobSchema = z.object({
