@@ -122,7 +122,7 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="bg-white border-primary-blue"
+                    className="bg-white border-primary-blue/30"
                     onClick={generateSummary}
                   >
                     <FileText className="h-4 w-4 mr-1 text-primary-blue" />
@@ -133,7 +133,7 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="bg-white border-primary-blue"
+                    className="bg-white border-primary-blue/30"
                     onClick={improveSummary}
                   >
                     <Wand2 className="h-4 w-4 mr-1 text-primary-blue" />
@@ -144,7 +144,7 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="bg-white border-primary-blue"
+                    className="bg-white border-primary-blue/30"
                     onClick={checkSpelling}
                   >
                     <Check className="h-4 w-4 mr-1 text-primary-blue" />

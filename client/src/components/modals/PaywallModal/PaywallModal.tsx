@@ -112,13 +112,13 @@ const PaywallModal: React.FC<PaywallModalProps> = ({ closeModal }) => {
                     key={option.priceId}
                     className={`border rounded-lg p-6 relative cursor-pointer ${
                       selectedOption === option.priceId
-                        ? "border-blue-600"
+                        ? "border-primary-blue shadow-border-inset"
                         : "border-gray-200"
-                    } ${option.isDefault ? "border-blue-600" : ""}`}
+                    }`}
                     onClick={() => setSelectedOption(option.priceId)}
                   >
                     {option.isDefault && (
-                      <div className="absolute -top-px -right-px bg-primary-blue text-white px-3 py-1 rounded-tr-lg rounded-bl-lg text-sm font-bold">
+                      <div className="absolute top-0 right-0 bg-primary-blue text-white px-3 py-1 rounded-tr-lg rounded-bl-lg text-sm font-bold">
                         🔥 Best value
                       </div>
                     )}

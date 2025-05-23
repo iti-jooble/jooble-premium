@@ -171,7 +171,7 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
               key={suggestion}
               variant="outline"
               size="sm"
-              className="bg-white hover:bg-gray-50 text-gray-700 border-primary-blue"
+              className="bg-white hover:bg-gray-50 text-gray-700 border-primary-blue/30"
               onClick={() => handleAddSuggestion(suggestion)}
             >
               <PlusCircle className="h-4 w-4 mr-1 text-primary-blue" />

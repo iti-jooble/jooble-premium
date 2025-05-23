@@ -4,7 +4,7 @@ import OnboardingLayout from "@/components/onboarding/OnboardingLayout";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/redux/store";
 import { parseCv } from "@/redux/thunks";
-import { FileText, X, AlertCircle, Loader2 } from "lucide-react";
+import { X, AlertCircle, Loader2 } from "lucide-react";
 
 // Define file size limit in bytes (5MB)
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -133,11 +133,11 @@ const OnboardingStep3: React.FC = () => {
   return (
     <OnboardingLayout step={3}>
       <div className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 px-8">
           Let's start with your resume
         </h2>
 
-        <p className="text-lg text-gray-700 mb-10">
+        <p className="text-lg text-gray-700 mb-10 px-8">
           We'll analyze it to better understand your preferences — so
           <br />
           we can match you with the jobs you'll truly love.
@@ -145,16 +145,14 @@ const OnboardingStep3: React.FC = () => {
 
         <div
           ref={dropAreaRef}
-          className={`bg-primary-background p-20 rounded-lg border-2 ${isDragging ? "border-primary border-solid" : "border-gray-300 border-dashed"} mb-6 flex flex-col items-center justify-center transition-colors cursor-pointer`}
+          className={`bg-primary-background shadow-secondary-box p-20 rounded-lg border-2 ${isDragging ? "border-primary border-solid" : "border-gray/60 border-dashed"} mb-6 flex flex-col items-center justify-center transition-colors cursor-pointer`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
         >
           <div className="mb-4">
-            <FileText
-              className={`h-16 w-16 ${!file ? "text-gray-400" : "text-primary-blue"}`}
-            />
+            <img src="/images/cv.svg" />
           </div>
 
           {file ? (
@@ -179,7 +177,7 @@ const OnboardingStep3: React.FC = () => {
             </>
           ) : (
             <>
-              <p className="text-gray-500 mb-6">
+              <p className="text-gray mb-6 px-16">
                 Choose file or drag and drop here (PDF up to 5MB)
               </p>
 
@@ -208,7 +206,7 @@ const OnboardingStep3: React.FC = () => {
         )}
 
         {!file && (
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-8">
             <Button
               variant="outline"
               onClick={handleNoResume}
