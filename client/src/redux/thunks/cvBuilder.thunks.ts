@@ -1,5 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ICreateCvRequest } from "../../types/api/cvBuilder.types";
+import {
+  IAISuggestResponse,
+  ICreateCvRequest,
+} from "../../types/api/cvBuilder.types";
 import { IUpdateCvRequest } from "../../types/api/cvBuilder.types";
 import { getErrorMessage } from "../helpers";
 import { cvApiSlice } from "../api/cvApiSlice";
@@ -12,6 +15,7 @@ import {
   getUserCv as getUserCvLocaly,
   clearUserCv as clearUserCvLocaly,
 } from "@/utils/localStorage";
+import { IPromptConfig } from "@/types/state/cvBuilder.types";
 
 /**
  * AsyncThunk for initializing the CV builder
@@ -222,6 +226,25 @@ export const tryCreateCvFromLocalStorage = createAsyncThunk(
       await dispatch(createCv({ cvModel: { ...cv, templateId: 1, score: 0 } }));
 
       clearUserCvLocaly();
+    }
+  },
+);
+
+export const initAiAssistant = createAsyncThunk<string | null, IPromptConfig>(
+  "cvBuilder/initAiAssistant",
+  async (data: IPromptConfig, { dispatch }) => {
+    try {
+      const response = await dispatch(
+        cvApiSlice.endpoints.getAISuggestion.initiate(data),
+      );
+
+      if (!response.data) {
+        throw new Error("Failed to get AI suggestion");
+      }
+
+      return response.data.content;
+    } catch (error) {
+      return null;
     }
   },
 );

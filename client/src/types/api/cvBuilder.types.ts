@@ -32,7 +32,11 @@ export interface IDuplicateCvRequest {
 
 // AI Suggestion API types
 export interface IPromptConfigApi {
-  section: string;
-  jobTitle?: string;
-  additionalContext?: string;
+  type: string;
+  userReplacements: Record<string, string>;
+  systemReplacements: Record<string, string>;
+}
+
+export interface IAISuggestResponse {
+  content: string;
 }

@@ -4,7 +4,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +12,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Check, SparkleIcon, FileText, Wand2 } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
+import { CV } from "@shared/schema";
+import { Check, Sparkles, FileText, Wand2, Loader2 } from "lucide-react";
+import { Namespaces, States } from "./AIAssistance/enums";
+import useAIAssistance from "./AIAssistance/hooks/useAIAssistance";
+import { getAIAssistanceConfigByNamespace } from "./AIAssistance/helpers";
 
 const summarySchema = z.object({
   summary: z
@@ -27,9 +31,15 @@ export type SummaryValues = z.infer<typeof summarySchema>;
 interface SummarySectionProps {
   defaultValues?: Partial<SummaryValues>;
   onSave: (values: SummaryValues) => void;
+  currentCv: CV;
 }
 
-export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
+export function SummarySection({
+  defaultValues,
+  onSave,
+  currentCv,
+}: SummarySectionProps) {
+  const { t } = useTranslation();
   const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm<SummaryValues>({
@@ -37,6 +47,33 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
     defaultValues: {
       summary: defaultValues?.summary || "",
     },
+  });
+
+  const aiConfig = getAIAssistanceConfigByNamespace(Namespaces.summary, {
+    experience: currentCv.userInfo.experience,
+    skills: currentCv.userInfo.skills.map((skill) => skill.name),
+    education: currentCv.userInfo.education,
+    summary: form.getValues().summary,
+    languageCode: "en",
+    t,
+  });
+
+  const handleAddSuggestion = (summanry: string) => {
+    form.setValue("summary", summanry);
+  };
+
+  const {
+    state,
+    response,
+    handleInsertResponseClick,
+    handleGenerateClick,
+    handleFixSpellingClick,
+    handleClearResponseClick,
+    handleRetryClick,
+    handleRephraseClick,
+  } = useAIAssistance({
+    insertResponse: handleAddSuggestion,
+    config: aiConfig,
   });
 
   const handleSave = async (values: SummaryValues) => {
@@ -47,50 +84,6 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
     setIsSaving(false);
   };
 
-  const generateSummary = () => {
-    // This would normally call an AI service to generate content
-    const sampleSummary =
-      "Experienced professional with a proven track record of success in delivering high-quality results. Skilled in problem-solving, communication, and team collaboration. Seeking new opportunities to leverage expertise and contribute to organizational growth.";
-    form.setValue("summary", sampleSummary);
-
-    toast({
-      title: "Summary generated",
-      description:
-        "A sample professional summary has been added. Feel free to edit it to match your profile.",
-    });
-  };
-
-  const improveSummary = () => {
-    const currentText = form.getValues("summary");
-    if (!currentText) {
-      toast({
-        title: "No text to improve",
-        description:
-          "Please enter some text first before trying to improve it.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // This would normally call an AI service to improve content
-    const improvedText =
-      currentText +
-      " Adept at navigating complex challenges and driving innovation while maintaining a focus on quality and efficiency.";
-    form.setValue("summary", improvedText);
-
-    toast({
-      title: "Summary improved",
-      description: "Your professional summary has been enhanced.",
-    });
-  };
-
-  const checkSpelling = () => {
-    toast({
-      title: "Spelling checked",
-      description: "No spelling errors were found in your summary.",
-    });
-  };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSave)} className="space-y-4">
@@ -98,59 +91,122 @@ export function SummarySection({ defaultValues, onSave }: SummarySectionProps) {
           control={form.control}
           name="summary"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="space-y-0">
               <FormControl>
                 <Textarea
                   placeholder="Write a brief overview of your professional background, key skills, and career goals..."
-                  className="min-h-[150px] resize-y"
+                  className="min-h-[150px] resize-y rounded-b-none"
                   {...field}
                 />
               </FormControl>
 
-              <div className="bg-gradient-to-r from-blue-100 to-violet-200 p-4 rounded-md mt-3">
+              <div className="bg-primary-gradient from-blue-100 to-violet-200 p-4 rounded-b-xl">
                 <div className="flex items-center mb-2">
-                  <SparkleIcon className="h-5 w-5 text-blue-500 mr-2 text-primary-blue" />
-                  <p className="font-medium">Need a hint?</p>
+                  {state === States.Loading ? (
+                    <Loader2 className="text-primary-blue h-5 w-5 mr-2 shrink-0 animate-spin" />
+                  ) : (
+                    <Sparkles className="text-primary-blue shrink-0 h-5 w-5 mr-2" />
+                  )}
+                  <p>
+                    <Trans
+                      i18nKey={aiConfig.texts[state]?.title ?? ""}
+                      components={{ strong: <strong /> }}
+                    />
+                  </p>
                 </div>
-                <p className="text-sm mb-3">
-                  Start with a draft or add your text and use the tools below to
-                  improve it.
-                </p>
 
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="bg-white border-primary-blue/30"
-                    onClick={generateSummary}
-                  >
-                    <FileText className="h-4 w-4 mr-1 text-primary-blue" />
-                    Get a draft
-                  </Button>
+                {state === States.Initial && (
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="border-primary-blue/30"
+                      onClick={handleGenerateClick}
+                    >
+                      <FileText className="h-4 w-4 mr-1 text-primary-blue" />
+                      Get a draft
+                    </Button>
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="bg-white border-primary-blue/30"
-                    onClick={improveSummary}
-                  >
-                    <Wand2 className="h-4 w-4 mr-1 text-primary-blue" />
-                    Make more professional
-                  </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="border-primary-blue/30"
+                      onClick={handleRephraseClick}
+                    >
+                      <Wand2 className="h-4 w-4 mr-1 text-primary-blue" />
+                      Make more professional
+                    </Button>
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="bg-white border-primary-blue/30"
-                    onClick={checkSpelling}
-                  >
-                    <Check className="h-4 w-4 mr-1 text-primary-blue" />
-                    Check spelling
-                  </Button>
-                </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="border-primary-blue/30"
+                      onClick={handleFixSpellingClick}
+                    >
+                      <Check className="h-4 w-4 mr-1 text-primary-blue" />
+                      Check spelling
+                    </Button>
+                  </div>
+                )}
+
+                {state === States.Loading && (
+                  <div className="py-3 animate-pulse">
+                    <div className="h-5 my-1 w-24 bg-gray/40 rounded mb-4"></div>
+                    <div className="space-y-2">
+                      <div className="h-4 w-full bg-gray/30 rounded"></div>
+                      <div className="h-4 w-3/4 bg-gray/30 rounded"></div>
+                      <div className="h-4 w-2/3 bg-gray/30 rounded"></div>
+                    </div>
+                  </div>
+                )}
+
+                {state === States.Response && (
+                  <>
+                    <p
+                      className=""
+                      dangerouslySetInnerHTML={{ __html: response as string }}
+                    />
+                    <div className="flex justify-between flex-wrap gap-2 mt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="border-primary-blue/30"
+                        onClick={() => handleClearResponseClick()}
+                      >
+                        <FileText className="h-4 w-4 mr-1 text-primary-blue" />
+                        Clear
+                      </Button>
+
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="border-primary-blue/30"
+                          onClick={handleRetryClick}
+                        >
+                          <Wand2 className="h-4 w-4 mr-1 text-primary-blue" />
+                          Retry
+                        </Button>
+
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => {
+                            handleInsertResponseClick(response as string);
+                          }}
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Add to CV
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
               <FormMessage />
             </FormItem>

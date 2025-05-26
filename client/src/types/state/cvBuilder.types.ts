@@ -16,21 +16,12 @@ export interface ICVBuilderState {
   error: string | null;
 }
 
-export interface IAISkillSuggestion {
-  skill: string;
-  relevance: number;
-  description: string;
-}
+export type TAiResponseType = "string" | "array";
 
-export interface IAISummaryRequest {
-  experience: Experience[];
-  skills: Skill[];
-  targetPosition?: string;
-}
+type TAiReplacements = Record<string, string>;
 
-export interface IAIRecommendation {
-  type: "skill" | "summary" | "experience" | "education";
-  content: string;
-  score: number;
-  reason: string;
-}
+export type IPromptConfig = {
+  type: string;
+  userReplacements: TAiReplacements;
+  systemReplacements: TAiReplacements;
+};

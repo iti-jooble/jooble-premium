@@ -1,71 +1,38 @@
+import { useTranslation } from "react-i18next";
+import isArray from "lodash/isArray";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, KeyboardEvent } from "react";
-import { PlusCircle, Sparkles, X } from "lucide-react";
+import { PlusCircle, Sparkles, X, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { Skill } from "@shared/schema";
+import { CV, Skill } from "@shared/schema";
+import useAIAssistance from "./AIAssistance/hooks/useAIAssistance";
+import { getAIAssistanceConfigByNamespace } from "./AIAssistance/helpers";
+import { Namespaces, States } from "./AIAssistance/enums";
 
 interface SkillsSectionProps {
   skills?: Skill[];
   onSave: (skills: Skill[]) => void;
+  currentCv?: CV;
 }
 
-// Front-end developer skill suggestions
-const frontendSkillSuggestions = [
-  "Front-end Developer",
-  "HTML CSS JavaScript",
-  "Responsive Design",
-  "Code Debugging",
-  "Performance Optimization",
-  "Front-end Framework",
-  "User Experience",
-  "Team Work",
-  "Web Development Training",
-  "HTML CSS JavaScript Certification",
-];
-
-export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
+export function SkillsSection({
+  skills = [],
+  onSave,
+  currentCv,
+}: SkillsSectionProps) {
+  const { t } = useTranslation();
   const [isSaving, setIsSaving] = useState(false);
   const [localSkills, setLocalSkills] = useState<Skill[]>(skills);
   const [newSkill, setNewSkill] = useState("");
   const [isAddingSkill, setIsAddingSkill] = useState(false);
 
-  const handleAddSkill = () => {
-    if (newSkill.trim() === "") {
-      setIsAddingSkill(false);
-      return;
-    }
-
-    const skill: Skill = {
-      name: newSkill.trim(),
-    };
-
-    setLocalSkills([...localSkills, skill]);
-    setNewSkill("");
-    setIsAddingSkill(false);
-
-    // Auto-save as we add skills
-    handleSaveSkills([...localSkills, skill]);
-  };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleAddSkill();
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      setIsAddingSkill(false);
-      setNewSkill("");
-    }
-  };
-
-  const handleRemoveSkill = (id: number) => {
-    const updatedSkills = localSkills.filter((_, index) => index !== id);
-    setLocalSkills(updatedSkills);
-
-    // Auto-save as we remove skills
-    handleSaveSkills(updatedSkills);
-  };
+  const config = getAIAssistanceConfigByNamespace(Namespaces.skills, {
+    experience: currentCv?.userInfo.experience ?? [],
+    education: currentCv?.userInfo.education ?? [],
+    languageCode: "en",
+    t,
+  });
 
   const handleAddSuggestion = (suggestion: string) => {
     const skill: Skill = {
@@ -88,6 +55,46 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
     handleSaveSkills([...localSkills, skill]);
   };
 
+  const { state, response, handleInsertResponseClick } = useAIAssistance({
+    insertResponse: handleAddSuggestion,
+    config,
+  });
+
+  const handleAddSkill = () => {
+    if (newSkill.trim() === "") {
+      setIsAddingSkill(false);
+      return;
+    }
+
+    const skill: Skill = {
+      name: newSkill.trim(),
+    };
+
+    setLocalSkills([...localSkills, skill]);
+    setNewSkill("");
+    setIsAddingSkill(false);
+
+    handleSaveSkills([...localSkills, skill]);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddSkill();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setIsAddingSkill(false);
+      setNewSkill("");
+    }
+  };
+
+  const handleRemoveSkill = (id: number) => {
+    const updatedSkills = localSkills.filter((_, index) => index !== id);
+    setLocalSkills(updatedSkills);
+
+    handleSaveSkills(updatedSkills);
+  };
+
   const handleSaveSkills = async (skillsToSave: Skill[]) => {
     setIsSaving(true);
 
@@ -101,20 +108,17 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       {/* Skills list */}
       <div className="flex flex-wrap gap-2">
         {localSkills.map((skill, index) => (
-          <div key={skill.name} className="relative group">
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-white pr-7 text-gray-700 hover:bg-gray-50"
+          <div
+            key={skill.name}
+            className="flex items-center bg-white border border-primary-blue/30 rounded-xl px-4 py-2"
+          >
+            <span className="mr-2">{skill.name}</span>
+            <button
+              onClick={() => handleRemoveSkill(index)}
+              className="text-gray-400 hover:text-gray-600"
             >
-              {skill.name}
-              <span
-                className="absolute right-2 hover:text-red-500 cursor-pointer"
-                onClick={() => handleRemoveSkill(index)}
-              >
-                <X className="h-3.5 w-3.5 ml-1" />
-              </span>
-            </Button>
+              <X size={16} />
+            </button>
           </div>
         ))}
       </div>
@@ -147,50 +151,46 @@ export function SkillsSection({ skills = [], onSave }: SkillsSectionProps) {
       ) : (
         <Button
           variant="ghost"
-          className="text-primary-blue pl-0"
+          className="-ml-4"
           onClick={() => {
             setIsAddingSkill(true);
             setNewSkill("");
           }}
         >
-          <PlusCircle className="h-4 w-4 mr-2" />
+          <PlusCircle className="h-4 w-4" />
           Add another skill
         </Button>
       )}
 
-      {/* AI suggestion box */}
-      <div className="bg-gradient-to-r from-blue-100 to-violet-200 rounded-md p-5 mt-6">
-        <div className="flex items-center mb-3">
-          <Sparkles className="text-primary-blue h-5 w-5 mr-2" />
-          <h3 className="font-medium">Skills index for Front-end Developer</h3>
-        </div>
+      {config.prompts.generate && (
+        <div className="bg-gradient-to-r from-blue-100 to-violet-200 rounded-xl p-5 mt-6">
+          <div className="flex items-center mb-3">
+            {state === States.Loading ? (
+              <Loader2 className="text-primary-blue h-5 w-5 mr-2 shrink-0 animate-spin" />
+            ) : (
+              <Sparkles className="text-primary-blue shrink-0 h-5 w-5 mr-2" />
+            )}
 
-        <div className="flex flex-wrap gap-2">
-          {frontendSkillSuggestions.map((suggestion) => (
-            <Button
-              key={suggestion}
-              variant="outline"
-              size="sm"
-              className="bg-white hover:bg-gray-50 text-gray-700 border-primary-blue/30"
-              onClick={() => handleAddSuggestion(suggestion)}
-            >
-              <PlusCircle className="h-4 w-4 mr-1 text-primary-blue" />
-              {suggestion}
-            </Button>
-          ))}
-        </div>
-      </div>
+            <h3 className="font-medium">{config.texts[state]?.title}</h3>
+          </div>
 
-      {/* Hidden save button - now auto-saves */}
-      <div className="hidden">
-        <Button
-          size="sm"
-          onClick={() => handleSaveSkills(localSkills)}
-          disabled={isSaving}
-        >
-          {isSaving ? "Saving..." : "Save"}
-        </Button>
-      </div>
+          <div className="flex flex-wrap gap-2">
+            {isArray(response) &&
+              response.map((suggestion) => (
+                <Button
+                  key={suggestion}
+                  variant="outline"
+                  size="sm"
+                  className="border-primary-blue/30"
+                  onClick={() => handleInsertResponseClick(suggestion)}
+                >
+                  <PlusCircle className="h-4 w-4 text-primary-blue" />
+                  {suggestion}
+                </Button>
+              ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

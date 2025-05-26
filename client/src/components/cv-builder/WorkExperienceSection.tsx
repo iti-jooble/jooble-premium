@@ -10,15 +10,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useTranslation, Trans } from "react-i18next";
 import { useState, useMemo } from "react";
 import {
   PlusCircle,
   Pencil,
   Check,
-  SparkleIcon,
+  Sparkles,
   FileText,
   Wand2,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -34,6 +36,9 @@ import {
 } from "@/components/ui/select";
 import { Experience } from "@shared/schema";
 import { getCurrentYear, getYearsArray } from "@shared/dateUtils";
+import { Namespaces, States } from "./AIAssistance/enums";
+import useAIAssistance from "./AIAssistance/hooks/useAIAssistance";
+import { getAIAssistanceConfigByNamespace } from "./AIAssistance/helpers";
 
 interface WorkExperienceSectionProps {
   experiences?: Experience[];
@@ -56,6 +61,7 @@ export function ExperienceSection({
   experiences = [],
   onSave,
 }: WorkExperienceSectionProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -74,6 +80,30 @@ export function ExperienceSection({
       isCurrent: false,
       description: "",
     },
+  });
+
+  const aiConfig = getAIAssistanceConfigByNamespace(Namespaces.experience, {
+    experience: form.getValues(),
+    languageCode: "en",
+    t,
+  });
+
+  const handleAddSuggestion = (description: string) => {
+    form.setValue("description", description);
+  };
+
+  const {
+    state,
+    response,
+    handleInsertResponseClick,
+    handleGenerateClick,
+    handleFixSpellingClick,
+    handleClearResponseClick,
+    handleRetryClick,
+    handleRephraseClick,
+  } = useAIAssistance({
+    insertResponse: handleAddSuggestion,
+    config: aiConfig,
   });
 
   const handleAddExperience = () => {
@@ -150,50 +180,6 @@ export function ExperienceSection({
     }
   };
 
-  const generateDescription = () => {
-    // This would normally call an AI service to generate content
-    const sampleDescription =
-      "Responsible for implementing and maintaining software applications. Collaborated with cross-functional teams to deliver high-quality products. Helped improve system performance by 30%.";
-    form.setValue("description", sampleDescription);
-
-    toast({
-      title: "Description generated",
-      description:
-        "A sample description has been added. Feel free to edit it to match your experience.",
-    });
-  };
-
-  const improveDescription = () => {
-    const currentText = form.getValues("description");
-    if (!currentText) {
-      toast({
-        title: "No text to improve",
-        description:
-          "Please enter some text first before trying to improve it.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // This would normally call an AI service to improve content
-    const improvedText =
-      currentText +
-      " Additionally, led initiatives to enhance team productivity and mentored junior developers.";
-    form.setValue("description", improvedText);
-
-    toast({
-      title: "Description improved",
-      description: "Your description has been enhanced.",
-    });
-  };
-
-  const checkSpelling = () => {
-    toast({
-      title: "Spelling checked",
-      description: "No spelling errors were found in your description.",
-    });
-  };
-
   return (
     <div className="space-y-4">
       {!isAddingNew && editingId === null && (
@@ -247,7 +233,7 @@ export function ExperienceSection({
           <div className="flex justify-between mt-3">
             <Button
               variant="ghost"
-              className="text-primary-blue pl-0"
+              className="-ml-4"
               onClick={handleAddExperience}
             >
               <PlusCircle className="h-4 w-4 mr-2" />
@@ -370,69 +356,134 @@ export function ExperienceSection({
               </div>
             </div>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Responsibilities and achievements</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Describe what you did, your daily tasks, and mention the results you helped to achieve."
-                      className="min-h-[120px]"
-                      {...field}
+            <FormItem className="space-y-0">
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Responsibilities and achievements</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe what you did, your daily tasks, and mention the results you helped to achieve."
+                        className="min-h-[120px] rounded-b-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="bg-primary-gradient from-blue-100 to-violet-200 p-4 rounded-b-xl">
+                <div className="flex items-center mb-2">
+                  {state === States.Loading ? (
+                    <Loader2 className="text-primary-blue h-5 w-5 mr-2 shrink-0 animate-spin" />
+                  ) : (
+                    <Sparkles className="text-primary-blue shrink-0 h-5 w-5 mr-2" />
+                  )}
+                  <p>
+                    <Trans
+                      i18nKey={aiConfig.texts[state]?.title ?? ""}
+                      components={{ strong: <strong /> }}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  </p>
+                </div>
 
-            <div className="bg-gradient-to-r from-blue-100 to-violet-200 p-4 mt-0 rounded-md">
-              <div className="flex items-center mb-2">
-                <SparkleIcon className="h-5 w-5 text-blue-500 mr-2 text-primary-blue" />
-                <p className="font-medium">Need a hint?</p>
+                {state === States.Initial && (
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="border-primary-blue/30"
+                      onClick={handleGenerateClick}
+                    >
+                      <FileText className="h-4 w-4 mr-1 text-primary-blue" />
+                      Get a draft
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="border-primary-blue/30"
+                      onClick={handleRephraseClick}
+                    >
+                      <Wand2 className="h-4 w-4 mr-1 text-primary-blue" />
+                      Make more professional
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="border-primary-blue/30"
+                      onClick={handleFixSpellingClick}
+                    >
+                      <Check className="h-4 w-4 mr-1 text-primary-blue" />
+                      Check spelling
+                    </Button>
+                  </div>
+                )}
+
+                {state === States.Loading && (
+                  <div className="py-3 animate-pulse">
+                    <div className="h-5 my-1 w-24 bg-gray/40 rounded mb-4"></div>
+                    <div className="space-y-2">
+                      <div className="h-4 w-full bg-gray/30 rounded"></div>
+                      <div className="h-4 w-3/4 bg-gray/30 rounded"></div>
+                      <div className="h-4 w-2/3 bg-gray/30 rounded"></div>
+                    </div>
+                  </div>
+                )}
+
+                {state === States.Response && (
+                  <>
+                    <p
+                      className=""
+                      dangerouslySetInnerHTML={{ __html: response as string }}
+                    />
+                    <div className="flex justify-between flex-wrap gap-2 mt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="border-primary-blue/30"
+                        onClick={() => handleClearResponseClick()}
+                      >
+                        <FileText className="h-4 w-4 mr-1 text-primary-blue" />
+                        Clear
+                      </Button>
+
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="border-primary-blue/30"
+                          onClick={handleRetryClick}
+                        >
+                          <Wand2 className="h-4 w-4 mr-1 text-primary-blue" />
+                          Retry
+                        </Button>
+
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => {
+                            handleInsertResponseClick(response as string);
+                          }}
+                        >
+                          <Check className="h-4 w-4 mr-1" />
+                          Add to CV
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
-              <p className="text-sm mb-3">
-                Start with a draft or add your text and use the tools below to
-                improve it.
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="bg-white border-primary-blue/30"
-                  onClick={generateDescription}
-                >
-                  <FileText className="h-4 w-4 mr-1 text-primary-blue" />
-                  Get a draft
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="bg-white border-primary-blue/30"
-                  onClick={improveDescription}
-                >
-                  <Wand2 className="h-4 w-4 mr-1 text-primary-blue" />
-                  Make more professional
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="bg-white border-primary-blue/30"
-                  onClick={checkSpelling}
-                >
-                  <Check className="h-4 w-4 mr-1 text-primary-blue" />
-                  Check spelling
-                </Button>
-              </div>
-            </div>
+            </FormItem>
 
             <div className="flex justify-end space-x-2 pt-2">
               <Button

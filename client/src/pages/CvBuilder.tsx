@@ -1,15 +1,10 @@
 import { useLayoutEffect } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "react-i18next";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  FileEditIcon,
-  LinkedinIcon,
-  PlusIcon,
-  ChevronRightIcon,
-  Loader2,
-} from "lucide-react";
+import { Loader } from "@/components/ui/loader";
+import { FileEditIcon, ChevronRightIcon } from "lucide-react";
 import { initCvBuilder, downloadCv } from "@/redux/thunks";
 import { CvTable } from "@/components/cv-builder/CvTable";
 import { useToast } from "@/hooks/use-toast";
@@ -99,7 +94,7 @@ const CvBuilder = () => {
         <Card className="shadow-lg border-0 bg-gradient-to-br from-background to-muted/50">
           <CardContent className="p-10 flex flex-col items-center justify-center text-center">
             {isLoading ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Loader size="sm" />
             ) : (
               <p className="text-red-600">
                 {t("Something went wrong. Please try again later.")}

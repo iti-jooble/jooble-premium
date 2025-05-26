@@ -475,6 +475,7 @@ const CvBuilderCreate = () => {
                 <SkillsSection
                   skills={userInfo.skills}
                   onSave={handleSkillsSave}
+                  currentCv={localCv}
                 />
               </AccordionContent>
             </AccordionItem>
@@ -503,6 +504,7 @@ const CvBuilderCreate = () => {
                 <SummarySection
                   defaultValues={{ summary: userInfo.summary || "" }}
                   onSave={handleSummarySave}
+                  currentCv={localCv}
                 />
               </AccordionContent>
             </AccordionItem>

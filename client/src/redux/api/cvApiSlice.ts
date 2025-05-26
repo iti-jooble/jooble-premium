@@ -1,7 +1,9 @@
 import type { CV } from "@shared/schema";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
 import {
+  IAISuggestResponse,
   ICreateCvRequest,
+  IPromptConfigApi,
   IUpdateCvRequest,
 } from "@/types/api/cvBuilder.types";
 import { User } from "@/types/state/user.types";
@@ -74,12 +76,9 @@ export const cvApiSlice = createApi({
     }),
 
     // Get AI suggestions
-    getAISuggestion: builder.mutation<
-      { suggestion: string },
-      { section: string; additionalContext?: string }
-    >({
+    getAISuggestion: builder.mutation<IAISuggestResponse, IPromptConfigApi>({
       query: (data) => ({
-        url: "/ai-suggestions",
+        url: "/cvs/getAISuggestion",
         method: "POST",
         body: data,
       }),

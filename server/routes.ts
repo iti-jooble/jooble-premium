@@ -91,6 +91,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
   });
 
+  app.post(
+    "/api/cvs/getAISuggestion",
+    createApiProxy({ targetUrl: `${getBaseApiUrl()}/api/cvbuilder/suggestv2` }),
+  );
+
   // === Auth API Routes ===
 
   // Login
